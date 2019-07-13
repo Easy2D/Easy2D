@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{bd4d20da-68ca-4ebb-a55e-ed7f21353f6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{181bba91-823e-4033-85f3-588dc8e3e8d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Transition">
+      <UniqueIdentifier>{563b19f2-4c5e-4362-983a-94d2ae724550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Tool">
+      <UniqueIdentifier>{42d46a92-c043-4667-8c20-358319e5c313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Node">
+      <UniqueIdentifier>{51864c81-02ee-4043-bf09-9ce3cbe5b6da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Node\Shape">
+      <UniqueIdentifier>{eb72b49a-5b2f-4fc0-9ad2-8f5e02efac6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Manager">
+      <UniqueIdentifier>{9031e36b-fa85-4b4e-8e80-657c7e68f283}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Action">
+      <UniqueIdentifier>{50293f38-87fe-4dde-b938-cf1b7a2921f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Base">
+      <UniqueIdentifier>{261633d3-3814-40c7-bd6d-201ede6c6ade}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Collider">
+      <UniqueIdentifier>{765a2a00-5764-40f9-a15d-17b0640c6b53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Common">
+      <UniqueIdentifier>{be5d9314-b00a-4f11-bd2a-1f720dc32407}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Base\Input.cpp">
+      <Filter>src\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Image.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Object.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Scene.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Manager\ActionManager.cpp">
+      <Filter>src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Button.cpp">
+      <Filter>src\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Menu.cpp">
+      <Filter>src\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Node.cpp">
+      <Filter>src\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Sprite.cpp">
+      <Filter>src\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Text.cpp">
+      <Filter>src\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tool\Random.cpp">
+      <Filter>src\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tool\Timer.cpp">
+      <Filter>src\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Base\Game.cpp">
+      <Filter>src\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Base\Window.cpp">
+      <Filter>src\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Manager\SceneManager.cpp">
+      <Filter>src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Base\Time.cpp">
+      <Filter>src\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Base\Renderer.cpp">
+      <Filter>src\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Point.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Size.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tool\Data.cpp">
+      <Filter>src\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tool\Path.cpp">
+      <Filter>src\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collider\Collider.cpp">
+      <Filter>src\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Manager\ColliderManager.cpp">
+      <Filter>src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Shape\Shape.cpp">
+      <Filter>src\Node\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Color.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\Action.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\Sequence.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\ScaleTo.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\ScaleBy.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\RotateTo.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\RotateBy.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\OpacityTo.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\OpacityBy.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\MoveTo.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\MoveBy.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\Loop.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\CallFunc.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\Delay.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\Spawn.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transition\Transition.cpp">
+      <Filter>src\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\Animate.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\JumpBy.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\JumpTo.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tool\Player.cpp">
+      <Filter>src\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tool\Music.cpp">
+      <Filter>src\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collider\Collision.cpp">
+      <Filter>src\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\Animation.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Base\GC.cpp">
+      <Filter>src\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tool\Listener.cpp">
+      <Filter>src\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Font.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Shape\CircleShape.cpp">
+      <Filter>src\Node\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Shape\EllipseShape.cpp">
+      <Filter>src\Node\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Shape\RectShape.cpp">
+      <Filter>src\Node\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Shape\RoundRectShape.cpp">
+      <Filter>src\Node\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transition\BoxTransition.cpp">
+      <Filter>src\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transition\EmergeTransition.cpp">
+      <Filter>src\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transition\FadeTransition.cpp">
+      <Filter>src\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transition\MoveTransition.cpp">
+      <Filter>src\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collider\CircleCollider.cpp">
+      <Filter>src\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collider\EllipseCollider.cpp">
+      <Filter>src\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collider\RectCollider.cpp">
+      <Filter>src\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\FiniteTimeAction.cpp">
+      <Filter>src\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\ToggleButton.cpp">
+      <Filter>src\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Rect.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Base\Logger.cpp">
+      <Filter>src\Base</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\e2daction.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\e2dbase.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\e2dcollider.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\e2dcommon.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\e2dmacros.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\e2dmanager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\e2dnode.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\e2dshape.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\e2dtool.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\e2dtransition.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\easy2d.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
