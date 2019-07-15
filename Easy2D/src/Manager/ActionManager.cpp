@@ -16,7 +16,7 @@ void easy2d::ActionManager::__update()
 	{
 		auto action = s_vRunningActions[i];
 		// 获取动作运行状态
-		if (action->_isDone() || action->_target->getRefCount() == 0)
+		if (action->_isDone())
 		{
 			action->release();
 			action->_target = nullptr;

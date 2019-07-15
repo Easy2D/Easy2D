@@ -11,7 +11,7 @@ easy2d::RectShape::RectShape(Size size)
 
 easy2d::RectShape::RectShape(Point topLeft, Size size)
 {
-	this->setPivot(0, 0);
+	this->setAnchor(0, 0);
 	this->setPos(topLeft);
 	this->setSize(size);
 }

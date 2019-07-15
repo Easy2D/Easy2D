@@ -38,20 +38,27 @@ void easy2d::Sequence::_update()
 {
 	Action::_update();
 
-	auto &action = _actions[_currIndex];
-	action->_update();
-
-	if (action->_isDone())
+	if (!_actions.empty())
 	{
-		++_currIndex;
-		if (_currIndex == _actions.size())
+		auto& action = _actions[_currIndex];
+		action->_update();
+
+		if (action->_isDone())
 		{
-			this->stop();
+			++_currIndex;
+			if (_currIndex == _actions.size())
+			{
+				this->stop();
+			}
+			else
+			{
+				_actions[_currIndex]->_init();
+			}
 		}
-		else
-		{
-			_actions[_currIndex]->_init();
-		}
+	}
+	else
+	{
+		this->stop();
 	}
 }
 

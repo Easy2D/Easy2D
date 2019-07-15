@@ -4,14 +4,14 @@ easy2d::EllipseShape::EllipseShape()
 	: _radiusX(0)
 	, _radiusY(0)
 {
-	this->setPivot(0.5, 0.5);
+	this->setAnchor(0.5, 0.5);
 }
 
 easy2d::EllipseShape::EllipseShape(float radiusX, float radiusY)
 {
 	this->setRadiusX(radiusX);
 	this->setRadiusY(radiusY);
-	this->setPivot(0.5, 0.5);
+	this->setAnchor(0.5, 0.5);
 }
 
 easy2d::EllipseShape::EllipseShape(Point center, float radiusX, float radiusY)
@@ -19,7 +19,7 @@ easy2d::EllipseShape::EllipseShape(Point center, float radiusX, float radiusY)
 	this->setRadiusX(radiusX);
 	this->setRadiusY(radiusY);
 	this->setPos(center);
-	this->setPivot(0.5, 0.5);
+	this->setAnchor(0.5, 0.5);
 }
 
 easy2d::EllipseShape::~EllipseShape()

@@ -3,20 +3,20 @@
 easy2d::CircleShape::CircleShape()
 	: _radius(0)
 {
-	this->setPivot(0.5, 0.5);
+	this->setAnchor(0.5, 0.5);
 }
 
 easy2d::CircleShape::CircleShape(float radius)
 {
 	this->setRadius(radius);
-	this->setPivot(0.5, 0.5);
+	this->setAnchor(0.5, 0.5);
 }
 
 easy2d::CircleShape::CircleShape(Point center, float radius)
 {
 	this->setRadius(radius);
 	this->setPos(center);
-	this->setPivot(0.5, 0.5);
+	this->setAnchor(0.5, 0.5);
 }
 
 easy2d::CircleShape::~CircleShape()

@@ -20,8 +20,8 @@ easy2d::Node::Node()
 	, _skewAngleY(0)
 	, _displayOpacity(1.0f)
 	, _realOpacity(1.0f)
-	, _pivotX(s_fDefaultPiovtX)
-	, _pivotY(s_fDefaultPiovtY)
+	, _anchorX(s_fDefaultPiovtX)
+	, _anchorY(s_fDefaultPiovtY)
 	, _transform()
 	, _visiable(true)
 	, _parent(nullptr)
@@ -157,7 +157,7 @@ void easy2d::Node::_updateTransform() const
 		* Matrix32::rotation(_rotation)
 		* Matrix32::translation(_posX, _posY);
 
-	_transform.translate(-_width * _pivotX, -_height * _pivotY);
+	_transform.translate(-_width * _anchorX, -_height * _anchorY);
 
 	if (_parent)
 	{
@@ -255,14 +255,14 @@ easy2d::Size easy2d::Node::getRealSize() const
 	return Size(_width, _height);
 }
 
-float easy2d::Node::getPivotX() const
+float easy2d::Node::getAnchorX() const
 {
-	return _pivotX;
+	return _anchorX;
 }
 
-float easy2d::Node::getPivotY() const
+float easy2d::Node::getAnchorY() const
 {
-	return _pivotY;
+	return _anchorY;
 }
 
 easy2d::Size easy2d::Node::getSize() const
@@ -309,8 +309,8 @@ easy2d::Node::Property easy2d::Node::getProperty() const
 	prop.width = _width;
 	prop.height = _height;
 	prop.opacity = _realOpacity;
-	prop.pivotX = _pivotX;
-	prop.pivotY = _pivotY;
+	prop.anchorX = _anchorX;
+	prop.anchorY = _anchorY;
 	prop.scaleX = _scaleX;
 	prop.scaleY = _scaleY;
 	prop.rotation = _rotation;
@@ -457,23 +457,23 @@ void easy2d::Node::setOpacity(float opacity)
 	_updateOpacity();
 }
 
-void easy2d::Node::setPivotX(float pivotX)
+void easy2d::Node::setAnchorX(float anchorX)
 {
-	this->setPivot(pivotX, _pivotY);
+	this->setAnchor(anchorX, _anchorY);
 }
 
-void easy2d::Node::setPivotY(float pivotY)
+void easy2d::Node::setAnchorY(float anchorY)
 {
-	this->setPivot(_pivotX, pivotY);
+	this->setAnchor(_anchorX, anchorY);
 }
 
-void easy2d::Node::setPivot(float pivotX, float pivotY)
+void easy2d::Node::setAnchor(float anchorX, float anchorY)
 {
-	if (_pivotX == pivotX && _pivotY == pivotY)
+	if (_anchorX == anchorX && _anchorY == anchorY)
 		return;
 
-	_pivotX = min(max(float(pivotX), 0), 1);
-	_pivotY = min(max(float(pivotY), 0), 1);
+	_anchorX = min(max(float(anchorX), 0), 1);
+	_anchorY = min(max(float(anchorY), 0), 1);
 	_needTransform = true;
 }
 
@@ -508,7 +508,7 @@ void easy2d::Node::setProperty(Property prop)
 	this->setPos(prop.posX, prop.posY);
 	this->setSize(prop.width, prop.height);
 	this->setOpacity(prop.opacity);
-	this->setPivot(prop.pivotX, prop.pivotY);
+	this->setAnchor(prop.anchorX, prop.anchorY);
 	this->setScale(prop.scaleX, prop.scaleY);
 	this->setRotation(prop.rotation);
 	this->setSkew(prop.skewAngleX, prop.skewAngleY);

@@ -35,20 +35,27 @@ void easy2d::Spawn::_update()
 {
 	Action::_update();
 
-	size_t doneNum = 0;
-	for (auto action : _actions)
+	if (!_actions.empty())
 	{
-		if (action->_isDone())
+		size_t doneNum = 0;
+		for (auto action : _actions)
 		{
-			++doneNum;
+			if (action->_isDone())
+			{
+				++doneNum;
+			}
+			else
+			{
+				action->_update();
+			}
 		}
-		else
+
+		if (doneNum == _actions.size())
 		{
-			action->_update();
+			this->stop();
 		}
 	}
-
-	if (doneNum == _actions.size())
+	else
 	{
 		this->stop();
 	}

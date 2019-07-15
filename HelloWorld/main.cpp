@@ -8,7 +8,7 @@ int main()
 		SceneManager::enter(scene);					// 进入该场景
 		
 		auto text = gcnew Text(L"Hello Easy2D!");	// 创建一个文本
-		text->setPivot(0.5, 0.5);					// 设置文本中心点
+		text->setAnchor(0.5, 0.5);					// 设置文本中心点
 		text->setPos(Window::getSize() / 2);		// 文本位置居中
 		scene->add(text);							// 将这个文本添加到场景中
 

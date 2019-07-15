@@ -83,7 +83,7 @@ void easy2d::Timer::add(const Function<void()>& func, const String& name)
 
 void easy2d::Timer::start(float timeout, const Function<void()>& func)
 {
-	Timer::add(func, timeout, -1, false, L"");
+	Timer::add(func, timeout, 1, false, L"");
 }
 
 void easy2d::Timer::stop(const String& name)

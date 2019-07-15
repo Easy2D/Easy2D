@@ -12,3 +12,5 @@ ipch/
 *.user
 *.lnk
 .vs
+
+output/

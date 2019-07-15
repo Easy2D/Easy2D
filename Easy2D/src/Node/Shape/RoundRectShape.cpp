@@ -17,7 +17,7 @@ easy2d::RoundRectShape::RoundRectShape(Point topLeft, Size size, float radiusX, 
 	: _radiusX(float(radiusX))
 	, _radiusY(float(radiusY))
 {
-	this->setPivot(0, 0);
+	this->setAnchor(0, 0);
 	this->setPos(topLeft);
 	this->setSize(size);
 }

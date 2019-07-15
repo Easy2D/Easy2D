@@ -27,8 +27,8 @@ public:
 		float width;		// 宽度
 		float height;		// 高度
 		float opacity;		// 透明度
-		float pivotX;		// 中心点 X 坐标
-		float pivotY;		// 中心点 Y 坐标
+		float anchorX;		// 锚点 X 坐标
+		float anchorY;		// 锚点 Y 坐标
 		float scaleX;		// 横向缩放
 		float scaleY;		// 纵向缩放
 		float rotation;	// 旋转角度
@@ -83,11 +83,11 @@ public:
 	// 获取节点大小（不考虑缩放）
 	Size getRealSize() const;
 
-	// 获取节点的中心点
-	float getPivotX() const;
+	// 获取节点的锚点
+	float getAnchorX() const;
 
-	// 获取节点的中心点
-	float getPivotY() const;
+	// 获取节点的锚点
+	float getAnchorY() const;
 
 	// 获取节点大小
 	Size getSize() const;
@@ -284,23 +284,23 @@ public:
 		float opacity
 	);
 
-	// 设置中心点的横向位置
+	// 设置锚点的横向位置
 	// 默认为 0, 范围 [0, 1]
-	void setPivotX(
-		float pivotX
+	void setAnchorX(
+		float anchorX
 	);
 
-	// 设置中心点的纵向位置
+	// 设置锚点的纵向位置
 	// 默认为 0, 范围 [0, 1]
-	void setPivotY(
-		float pivotY
+	void setAnchorY(
+		float anchorY
 	);
 
-	// 设置中心点位置
+	// 设置锚点位置
 	// 默认为 (0, 0), 范围 [0, 1]
-	void setPivot(
-		float pivotX,
-		float pivotY
+	void setAnchor(
+		float anchorX,
+		float anchorY
 	);
 
 	// 修改节点宽度
@@ -370,7 +370,7 @@ public:
 	// 停止所有动作
 	void stopAllActions();
 
-	// 修改节点的默认中心点位置
+	// 修改节点的默认锚点位置
 	static void setDefaultPiovt(
 		float defaultPiovtX,
 		float defaultPiovtY
@@ -416,8 +416,8 @@ protected:
 	float		_skewAngleY;
 	float		_displayOpacity;
 	float		_realOpacity;
-	float		_pivotX;
-	float		_pivotY;
+	float		_anchorX;
+	float		_anchorY;
 	int			_nOrder;
 	String		_name;
 	size_t		_hashName;
