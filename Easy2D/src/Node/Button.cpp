@@ -217,11 +217,6 @@ void easy2d::Button::onUpdate()
 		}
 		else if (_normal->getBoundingBox().containsPoint(Input::getMousePos()))
 		{
-			auto box = _normal->getBoundingBox();
-			E2D_LOG(L"IMAGE %.1f %.1f %.1f %.1f (%.1f %.1f)"
-				, box.getLeft(), box.getRight(), box.getTop(), box.getBottom()
-				, Input::getMousePos().x, Input::getMousePos().y);
-
 			_setState(ButtonState::Mouseover);
 			Window::setCursor(Window::Cursor::Hand);
 			return;
