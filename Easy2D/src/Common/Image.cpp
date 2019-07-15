@@ -3,10 +3,11 @@
 #include <e2dtool.h>
 #include <map>
 
-static std::map<size_t, ID2D1Bitmap*> s_mBitmapsFromFile;
-static std::map<int, ID2D1Bitmap*> s_mBitmapsFromResource;
-static std::set<ID2D1Bitmap*> s_vBitmaps;
-
+namespace
+{
+	std::map<size_t, ID2D1Bitmap*> s_mBitmapsFromFile;
+	std::map<int, ID2D1Bitmap*> s_mBitmapsFromResource;
+}
 
 easy2d::Image::Image()
 	: _bitmap(nullptr)
@@ -379,12 +380,6 @@ void easy2d::Image::clearCache()
 		SafeRelease(bitmap.second);
 	}
 	s_mBitmapsFromResource.clear();
-
-	for (auto bitmap : s_vBitmaps)
-	{
-		SafeRelease(bitmap);
-	}
-	s_vBitmaps.clear();
 }
 
 void easy2d::Image::_setBitmap(ID2D1Bitmap * bitmap)

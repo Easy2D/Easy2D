@@ -4,6 +4,7 @@
 namespace easy2d
 {
 	class TimerEntity
+		: public Object
 	{
 	public:
 		explicit TimerEntity(
@@ -60,8 +61,8 @@ namespace easy2d
 		int		totalTimes;
 		double	delay;
 		double	lastTime;
-		easy2d::String		name;
-		easy2d::Function<void()>	callback;
+		easy2d::String name;
+		easy2d::Function<void()> callback;
 	};
 }
 
@@ -70,8 +71,9 @@ static std::vector<easy2d::TimerEntity*> s_vTimers;
 
 void easy2d::Timer::add(const Function<void()>& func, double delay, int updateTimes, bool paused, const String& name)
 {
-	auto timer = new (std::nothrow) TimerEntity(func, name, delay, updateTimes, paused);
+	auto timer = gcnew TimerEntity(func, name, delay, updateTimes, paused);
 	s_vTimers.push_back(timer);
+	GC::retain(timer);
 }
 
 void easy2d::Timer::add(const Function<void()>& func, const String& name)
@@ -81,8 +83,7 @@ void easy2d::Timer::add(const Function<void()>& func, const String& name)
 
 void easy2d::Timer::start(double timeout, const Function<void()>& func)
 {
-	auto timer = new (std::nothrow) TimerEntity(func, L"", timeout, 1, false);
-	s_vTimers.push_back(timer);
+	Timer::add(func, timeout, -1, false, L"");
 }
 
 void easy2d::Timer::stop(const String& name)
@@ -153,7 +154,7 @@ void easy2d::Timer::__update()
 		// 清除已停止的定时器
 		if (timer->stopped)
 		{
-			delete timer;
+			GC::release(timer);
 			s_vTimers.erase(s_vTimers.begin() + i);
 		}
 		else
@@ -181,7 +182,7 @@ void easy2d::Timer::__uninit()
 {
 	for (auto timer : s_vTimers)
 	{
-		delete timer;
+		GC::release(timer);
 	}
 	s_vTimers.clear();
 }

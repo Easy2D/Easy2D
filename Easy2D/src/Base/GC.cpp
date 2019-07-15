@@ -8,49 +8,45 @@
 
 namespace
 {
-	std::set<easy2d::Object*> s_vObjectPool;
-	bool s_bNotifyed = false;
+	std::vector<easy2d::Object*> s_vObjectPool;
+	bool s_bClearing = false;
 }
 
-void easy2d::GC::flush()
+bool easy2d::GC::isInPool(Object* pObject)
 {
-	if (!s_bNotifyed) return;
-
-	s_bNotifyed = false;
-	for (auto iter = s_vObjectPool.begin(); iter != s_vObjectPool.end();)
+	if (pObject)
 	{
-		if ((*iter)->getRefCount() <= 0)
+		for (const auto& pObj : s_vObjectPool)
 		{
-			delete (*iter);
-			iter = s_vObjectPool.erase(iter);
-		}
-		else
-		{
-			++iter;
+			if (pObj == pObject)
+				return true;
 		}
 	}
+	return false;
+}
+
+bool easy2d::GC::isClearing()
+{
+	return s_bClearing;
 }
 
 void easy2d::GC::clear()
 {
-	std::set<Object*> releaseThings;
+	std::vector<Object*> releaseThings;
 	releaseThings.swap(s_vObjectPool);
 
+	s_bClearing = true;
 	for (auto pObj : releaseThings)
 	{
 		pObj->release();
 	}
+	s_bClearing = false;
 }
 
 void easy2d::GC::trace(easy2d::Object * pObject)
 {
 	if (pObject)
 	{
-		s_vObjectPool.insert(pObject);
+		s_vObjectPool.push_back(pObject);
 	}
-}
-
-void easy2d::GC::notify()
-{
-	s_bNotifyed = true;
 }

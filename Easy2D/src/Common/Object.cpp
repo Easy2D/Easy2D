@@ -3,8 +3,9 @@
 
 
 easy2d::Object::Object()
-	: _refCount(0)
+	: _refCount(1)
 {
+	// 构造对象时，引用计数置 1
 }
 
 easy2d::Object::~Object()
@@ -24,7 +25,18 @@ void easy2d::Object::retain()
 void easy2d::Object::release()
 {
 	_refCount--;
-	GC::notify();
+
+	if (_refCount == 0)
+	{
+#ifdef E2D_DEBUG
+		if (!GC::isClearing() && GC::isInPool(this))
+		{
+			// 不应存在引用计数为 0 且仍在 GC 池中的情况
+			E2D_ERROR(L"释放引用计数为 0 的对象时其仍在 GC 池中");
+		}
+#endif
+		delete this;
+	}
 }
 
 int easy2d::Object::getRefCount() const

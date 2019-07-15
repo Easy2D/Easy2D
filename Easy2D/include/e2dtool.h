@@ -253,23 +253,23 @@ class Timer
 public:
 	// 添加定时器（每帧执行一次）
 	static void add(
-		const Function<void()>& func,		/* 执行函数 */
-		const String& name = L""	/* 定时器名称 */
+		const Function<void()>& func,	/* 执行函数 */
+		const String& name = L""		/* 定时器名称 */
 	);
 
 	// 添加定时器
 	static void add(
-		const Function<void()>& func,		/* 执行函数 */
-		double delay,				/* 时间间隔（秒） */
-		int times = -1,				/* 执行次数（设 -1 为永久执行） */
-		bool paused = false,		/* 是否暂停 */
-		const String& name = L""	/* 定时器名称 */
+		const Function<void()>& func,	/* 执行函数 */
+		double delay,					/* 时间间隔（秒） */
+		int times = -1,					/* 执行次数（设 -1 为永久执行） */
+		bool paused = false,			/* 是否暂停 */
+		const String& name = L""		/* 定时器名称 */
 	);
 
 	// 在足够延迟后执行指定函数
 	static void start(
-		double timeout,				/* 等待的时长（秒） */
-		const Function<void()>& func		/* 执行的函数 */
+		double timeout,					/* 等待的时长（秒） */
+		const Function<void()>& func	/* 执行的函数 */
 	);
 
 	// 启动具有相同名称的定时器

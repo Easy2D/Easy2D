@@ -47,6 +47,7 @@ easy2d::Node::~Node()
 	ColliderManager::__removeCollider(_collider);
 	for (auto child : _children)
 	{
+		child->_parent = nullptr;
 		GC::release(child);
 	}
 }

@@ -131,13 +131,13 @@ void easy2d::Game::start()
 			ActionManager::__update();	// 更新动作管理器
 			SceneManager::__update();	// 更新场景内容
 			Renderer::__render();		// 渲染游戏画面
+			GC::clear();				// 清理内存
 
 			Time::__updateLast();		// 刷新时间信息
 		}
 		else
 		{
 			Time::__sleep();			// 挂起线程
-			GC::flush();				// 刷新内存池
 		}
 	}
 
@@ -193,14 +193,14 @@ void easy2d::Game::destroy()
 	ActionManager::__uninit();
 	// 回收音乐播放器资源
 	Player::__uninit();
+	// 清空定时器
+	Timer::__uninit();
 	// 删除所有对象
 	GC::clear();
 	// 清空图片缓存
 	Image::clearCache();
 	// 回收音乐相关资源
 	Music::__uninit();
-	// 清空定时器
-	Timer::__uninit();
 	// 关闭输入
 	Input::__uninit();
 	// 回收渲染相关资源

@@ -36,7 +36,6 @@
 #include <d2d1helper.h>
 
 // C++ RunTime Header Files
-#include <set>
 #include <stack>
 #include <vector>
 #include <functional>

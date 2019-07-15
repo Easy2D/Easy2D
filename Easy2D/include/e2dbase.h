@@ -476,14 +476,14 @@ public:
 		Object* pObject
 	);
 
-	// 激活 GC
-	static void notify();
-
 	// 清理对象
 	static void clear();
 
-	// 更新 GC
-	static void flush();
+	// 检查对象是否在 GC 池中
+	static bool isInPool(Object* pObject);
+
+	// GC 池状态
+	static bool isClearing();
 
 	// 保留对象
 	template <typename Type>

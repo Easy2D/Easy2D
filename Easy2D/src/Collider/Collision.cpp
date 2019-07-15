@@ -1,6 +1,7 @@
 #include <e2dcollider.h>
 #include <e2dnode.h>
 #include <e2dtool.h>
+#include <set>
 
 typedef std::pair<size_t, size_t> HashPair;
 
