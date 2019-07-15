@@ -95,7 +95,7 @@ void easy2d::Spawn::add(const std::vector<Action*>& actions)
 
 easy2d::Spawn * easy2d::Spawn::clone() const
 {
-	auto spawn = Create<Spawn>();
+	auto spawn = gcnew Spawn;
 	for (const auto& action : _actions)
 	{
 		if (action)
@@ -108,7 +108,7 @@ easy2d::Spawn * easy2d::Spawn::clone() const
 
 easy2d::Spawn * easy2d::Spawn::reverse() const
 {
-	auto spawn = Create<Spawn>();
+	auto spawn = gcnew Spawn;
 	if (spawn && !_actions.empty())
 	{
 		std::vector<Action*> newActions(_actions.size());

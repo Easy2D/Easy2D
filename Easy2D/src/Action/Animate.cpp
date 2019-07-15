@@ -98,7 +98,7 @@ easy2d::Animate * easy2d::Animate::clone() const
 {
 	if (_animation)
 	{
-		return Create<Animate>(_animation);
+		return gcnew Animate(_animation);
 	}
 	return nullptr;
 }
@@ -110,7 +110,7 @@ easy2d::Animate * easy2d::Animate::reverse() const
 		auto animation = _animation->reverse();
 		if (animation)
 		{
-			return Create<Animate>(animation);
+			return gcnew Animate(animation);
 		}
 	}
 	return nullptr;

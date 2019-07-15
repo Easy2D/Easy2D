@@ -10,7 +10,7 @@ easy2d::OpacityTo::OpacityTo(double duration, double opacity)
 
 easy2d::OpacityTo * easy2d::OpacityTo::clone() const
 {
-	return Create<OpacityTo>(_duration, _endVal);
+	return gcnew OpacityTo(_duration, _endVal);
 }
 
 void easy2d::OpacityTo::_init()

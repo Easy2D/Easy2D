@@ -8,12 +8,12 @@ easy2d::Delay::Delay(double duration)
 
 easy2d::Delay * easy2d::Delay::clone() const
 {
-	return Create<Delay>(_delay);
+	return gcnew Delay(_delay);
 }
 
 easy2d::Delay * easy2d::Delay::reverse() const
 {
-	return Create<Delay>(_delay);
+	return gcnew Delay(_delay);
 }
 
 void easy2d::Delay::reset()

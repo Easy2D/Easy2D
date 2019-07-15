@@ -544,19 +544,19 @@ void easy2d::Node::setCollider(Collider::Type type)
 	{
 	case Collider::Type::Rect:
 	{
-		this->setCollider(Create<RectCollider>(this));
+		this->setCollider(gcnew RectCollider(this));
 		break;
 	}
 
 	case Collider::Type::Circle:
 	{
-		this->setCollider(Create<CircleCollider>(this));
+		this->setCollider(gcnew CircleCollider(this));
 		break;
 	}
 
 	case Collider::Type::Ellipse:
 	{
-		this->setCollider(Create<EllipseCollider>(this));
+		this->setCollider(gcnew EllipseCollider(this));
 		break;
 	}
 

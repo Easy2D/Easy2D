@@ -226,7 +226,7 @@ double Input::getMouseDeltaZ()
 
 easy2d::Listener * easy2d::Input::addListener(const Function<void()>& func, const String& name, bool paused)
 {
-	auto listener = Create<Listener>(func, name, paused);
+	auto listener = gcnew Listener(func, name, paused);
 	GC::retain(listener);
 	s_vListeners.push_back(listener);
 	return listener;

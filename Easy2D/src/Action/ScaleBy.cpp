@@ -39,10 +39,10 @@ void easy2d::ScaleBy::_update()
 
 easy2d::ScaleBy * easy2d::ScaleBy::clone() const
 {
-	return Create<ScaleBy>(_duration, _deltaX, _deltaY);
+	return gcnew ScaleBy(_duration, _deltaX, _deltaY);
 }
 
 easy2d::ScaleBy * easy2d::ScaleBy::reverse() const
 {
-	return Create<ScaleBy>(_duration, -_deltaX, -_deltaY);
+	return gcnew ScaleBy(_duration, -_deltaX, -_deltaY);
 }

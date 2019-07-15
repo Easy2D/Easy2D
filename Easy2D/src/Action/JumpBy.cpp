@@ -11,12 +11,12 @@ easy2d::JumpBy::JumpBy(double duration, const Vector & vec, double height, int j
 
 easy2d::JumpBy * easy2d::JumpBy::clone() const
 {
-	return Create<JumpBy>(_duration, _deltaPos, _height, _jumps);
+	return gcnew JumpBy(_duration, _deltaPos, _height, _jumps);
 }
 
 easy2d::JumpBy * easy2d::JumpBy::reverse() const
 {
-	return Create<JumpBy>(_duration, -_deltaPos, _height, _jumps);
+	return gcnew JumpBy(_duration, -_deltaPos, _height, _jumps);
 }
 
 void easy2d::JumpBy::_init()

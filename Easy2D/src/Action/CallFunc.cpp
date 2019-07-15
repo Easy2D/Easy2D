@@ -7,12 +7,12 @@ easy2d::CallFunc::CallFunc(const Function<void()>& func) :
 
 easy2d::CallFunc * easy2d::CallFunc::clone() const
 {
-	return Create<CallFunc>(_func);
+	return gcnew CallFunc(_func);
 }
 
 easy2d::CallFunc * easy2d::CallFunc::reverse() const
 {
-	return Create<CallFunc>(_func);
+	return gcnew CallFunc(_func);
 }
 
 void easy2d::CallFunc::_init()

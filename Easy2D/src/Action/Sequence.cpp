@@ -97,7 +97,7 @@ void easy2d::Sequence::add(const std::vector<Action*>& actions)
 
 easy2d::Sequence * easy2d::Sequence::clone() const
 {
-	auto sequence = Create<Sequence>();
+	auto sequence = gcnew Sequence;
 	for (const auto& action : _actions)
 	{
 		if (action)
@@ -110,7 +110,7 @@ easy2d::Sequence * easy2d::Sequence::clone() const
 
 easy2d::Sequence * easy2d::Sequence::reverse() const
 {
-	auto sequence = Create<Sequence>();
+	auto sequence = gcnew Sequence;
 	if (sequence && !_actions.empty())
 	{
 		std::vector<Action*> newActions(_actions.size());

@@ -17,7 +17,7 @@ easy2d::ScaleTo::ScaleTo(double duration, double scaleX, double scaleY)
 
 easy2d::ScaleTo * easy2d::ScaleTo::clone() const
 {
-	return Create<ScaleTo>(_duration, _endScaleX, _endScaleY);
+	return gcnew ScaleTo(_duration, _endScaleX, _endScaleY);
 }
 
 void easy2d::ScaleTo::_init()

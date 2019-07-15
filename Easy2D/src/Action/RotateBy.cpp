@@ -30,10 +30,10 @@ void easy2d::RotateBy::_update()
 
 easy2d::RotateBy * easy2d::RotateBy::clone() const
 {
-	return Create<RotateBy>(_duration, _deltaVal);
+	return gcnew RotateBy(_duration, _deltaVal);
 }
 
 easy2d::RotateBy * easy2d::RotateBy::reverse() const
 {
-	return Create<RotateBy>(_duration, -_deltaVal);
+	return gcnew RotateBy(_duration, -_deltaVal);
 }

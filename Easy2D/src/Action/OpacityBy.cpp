@@ -30,10 +30,10 @@ void easy2d::OpacityBy::_update()
 
 easy2d::OpacityBy * easy2d::OpacityBy::clone() const
 {
-	return Create<OpacityBy>(_duration, _deltaVal);
+	return gcnew OpacityBy(_duration, _deltaVal);
 }
 
 easy2d::OpacityBy * easy2d::OpacityBy::reverse() const
 {
-	return Create<OpacityBy>(_duration, -_deltaVal);
+	return gcnew OpacityBy(_duration, -_deltaVal);
 }

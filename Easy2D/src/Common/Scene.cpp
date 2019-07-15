@@ -7,7 +7,7 @@ easy2d::Scene::Scene()
 	, _colliderVisiable(false)
 	, _root(nullptr)
 {
-	_root = Create<Node>();
+	_root = gcnew Node;
 	if (_root)
 	{
 		_root->retain();

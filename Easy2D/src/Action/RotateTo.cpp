@@ -10,7 +10,7 @@ easy2d::RotateTo::RotateTo(double duration, double rotation)
 
 easy2d::RotateTo * easy2d::RotateTo::clone() const
 {
-	return Create<RotateTo>(_duration, _endVal);
+	return gcnew RotateTo(_duration, _endVal);
 }
 
 void easy2d::RotateTo::_init()

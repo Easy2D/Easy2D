@@ -9,7 +9,7 @@ easy2d::MoveTo::MoveTo(double duration, Point pos)
 
 easy2d::MoveTo * easy2d::MoveTo::clone() const
 {
-	return Create<MoveTo>(_duration, _endPos);
+	return gcnew MoveTo(_duration, _endPos);
 }
 
 void easy2d::MoveTo::_init()

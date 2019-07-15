@@ -37,10 +37,10 @@ void easy2d::MoveBy::_update()
 
 easy2d::MoveBy * easy2d::MoveBy::clone() const
 {
-	return Create<MoveBy>(_duration, _deltaPos);
+	return gcnew MoveBy(_duration, _deltaPos);
 }
 
 easy2d::MoveBy * easy2d::MoveBy::reverse() const
 {
-	return Create<MoveBy>(_duration, -_deltaPos);
+	return gcnew MoveBy(_duration, -_deltaPos);
 }

@@ -514,6 +514,40 @@ private:
 	static void __clear();
 };
 
+
+//
+// GC macros
+//
+
+class E2D_GCNewHelper
+{
+public:
+	static inline E2D_GCNewHelper& GetInstance()
+	{
+		static E2D_GCNewHelper helper;
+		return helper;
+	}
+
+	template <typename _Ty>
+	_Ty* operator- (_Ty* newObj) const
+	{
+		if (newObj)
+		{
+			newObj->autorelease();
+		}
+		return newObj;
+	}
+};
+
+#ifndef gcnew
+#	define gcnew E2D_GCNewHelper::GetInstance() - new (std::nothrow)
+#endif
+
+
+//
+// Log macros
+//
+
 #ifndef E2D_LOG
 #	ifdef E2D_DEBUG
 #		define E2D_LOG(FORMAT, ...) easy2d::Logger::messageln(FORMAT, __VA_ARGS__)

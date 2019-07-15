@@ -23,7 +23,7 @@ easy2d::Loop * easy2d::Loop::clone() const
 {
 	if (_action)
 	{
-		return Create<Loop>(_action->clone());
+		return gcnew Loop(_action->clone());
 	}
 	else
 	{
@@ -35,7 +35,7 @@ easy2d::Loop * easy2d::Loop::reverse() const
 {
 	if (_action)
 	{
-		return Create<Loop>(_action->clone());
+		return gcnew Loop(_action->clone());
 	}
 	else
 	{

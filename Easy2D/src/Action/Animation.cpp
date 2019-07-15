@@ -68,7 +68,7 @@ const std::vector<easy2d::Image*>& easy2d::Animation::getFrames() const
 
 easy2d::Animation * easy2d::Animation::clone() const
 {
-	auto animation = Create<Animation>(_interval);
+	auto animation = gcnew Animation(_interval);
 	if (animation)
 	{
 		for (auto frame : _frames)
@@ -99,5 +99,5 @@ easy2d::Animation * easy2d::Animation::reverse() const
 		}
 	}
 
-	return Create<Animation>(this->getInterval(), frames);
+	return gcnew Animation(this->getInterval(), frames);
 }

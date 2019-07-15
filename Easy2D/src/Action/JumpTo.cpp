@@ -9,7 +9,7 @@ easy2d::JumpTo::JumpTo(double duration, const Point & pos, double height, int ju
 
 easy2d::JumpTo * easy2d::JumpTo::clone() const
 {
-	return Create<JumpTo>(_duration, _endPos, _height, _jumps);
+	return gcnew JumpTo(_duration, _endPos, _height, _jumps);
 }
 
 void easy2d::JumpTo::_init()
