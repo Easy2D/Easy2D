@@ -11,12 +11,12 @@ easy2d::Animation::Animation(const std::vector<Image*>& frames)
 	this->add(frames);
 }
 
-easy2d::Animation::Animation(double interval)
+easy2d::Animation::Animation(float interval)
 	: _interval(interval)
 {
 }
 
-easy2d::Animation::Animation(double interval, const std::vector<Image*>& frames)
+easy2d::Animation::Animation(float interval, const std::vector<Image*>& frames)
 	: _interval(interval)
 {
 	this->add(frames);
@@ -30,7 +30,7 @@ easy2d::Animation::~Animation()
 	}
 }
 
-void easy2d::Animation::setInterval(double interval)
+void easy2d::Animation::setInterval(float interval)
 {
 	_interval = max(interval, 0);
 }
@@ -52,7 +52,7 @@ void easy2d::Animation::add(const std::vector<Image*>& frames)
 	}
 }
 
-double easy2d::Animation::getInterval() const
+float easy2d::Animation::getInterval() const
 {
 	return _interval;
 }

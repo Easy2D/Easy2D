@@ -1,6 +1,5 @@
 #pragma once
 #include <e2dbase.h>
-#include <e2dcollider.h>
 
 namespace easy2d 
 {
@@ -23,18 +22,18 @@ public:
 	struct Property
 	{
 		bool visable;		// 可见性
-		double posX;		// X 坐标
-		double posY;		// Y 坐标
-		double width;		// 宽度
-		double height;		// 高度
-		double opacity;		// 透明度
-		double pivotX;		// 中心点 X 坐标
-		double pivotY;		// 中心点 Y 坐标
-		double scaleX;		// 横向缩放
-		double scaleY;		// 纵向缩放
-		double rotation;	// 旋转角度
-		double skewAngleX;	// 横向倾斜角度
-		double skewAngleY;	// 纵向倾斜角度
+		float posX;		// X 坐标
+		float posY;		// Y 坐标
+		float width;		// 宽度
+		float height;		// 高度
+		float opacity;		// 透明度
+		float pivotX;		// 中心点 X 坐标
+		float pivotY;		// 中心点 Y 坐标
+		float scaleX;		// 横向缩放
+		float scaleY;		// 纵向缩放
+		float rotation;	// 旋转角度
+		float skewAngleX;	// 横向倾斜角度
+		float skewAngleY;	// 纵向倾斜角度
 	};
 
 public:
@@ -49,351 +48,332 @@ public:
 	virtual void onRender() {}
 
 	// 获取节点显示状态
-	virtual bool isVisiable() const;
-
-	// 判断点是否在节点内
-	virtual bool containsPoint(
-		const Point& point
-	) const;
-
-	// 判断两物体是否相交
-	virtual bool intersects(
-		Node * node
-	) const;
+	bool isVisiable() const;
 
 	// 获取节点名称
-	virtual String getName() const;
+	String getName() const;
 
 	// 获取节点名称的 Hash 值
-	virtual size_t getHashName() const;
+	size_t getHashName() const;
 
 	// 获取节点绘图顺序
-	virtual int getOrder() const;
+	int getOrder() const;
 
 	// 获取节点横坐标
-	virtual double getPosX() const;
+	float getPosX() const;
 
 	// 获取节点纵坐标
-	virtual double getPosY() const;
+	float getPosY() const;
 
 	// 获取节点坐标
-	virtual Point getPos() const;
+	Point getPos() const;
 
 	// 获取节点宽度
-	virtual double getWidth() const;
+	float getWidth() const;
 
 	// 获取节点高度
-	virtual double getHeight() const;
+	float getHeight() const;
 
 	// 获取节点宽度（不考虑缩放）
-	virtual double getRealWidth() const;
+	float getRealWidth() const;
 
 	// 获取节点高度（不考虑缩放）
-	virtual double getRealHeight() const;
+	float getRealHeight() const;
 
 	// 获取节点大小（不考虑缩放）
-	virtual Size getRealSize() const;
+	Size getRealSize() const;
 
 	// 获取节点的中心点
-	virtual double getPivotX() const;
+	float getPivotX() const;
 
 	// 获取节点的中心点
-	virtual double getPivotY() const;
+	float getPivotY() const;
 
 	// 获取节点大小
-	virtual Size getSize() const;
+	Size getSize() const;
 
 	// 获取节点横向缩放比例
-	virtual double getScaleX() const;
+	float getScaleX() const;
 
 	// 获取节点纵向缩放比例
-	virtual double getScaleY() const;
+	float getScaleY() const;
 
 	// 获取节点横向倾斜角度
-	virtual double getSkewX() const;
+	float getSkewX() const;
 
 	// 获取节点纵向倾斜角度
-	virtual double getSkewY() const;
+	float getSkewY() const;
 
 	// 获取节点旋转角度
-	virtual double getRotation() const;
+	float getRotation() const;
 
 	// 获取节点透明度
-	virtual double getOpacity() const;
+	float getOpacity() const;
 
 	// 获取节点属性
-	virtual Property getProperty() const;
+	Property getProperty() const;
 
-	// 获取节点碰撞体
-	virtual Collider * getCollider() const;
+	// 获取边框
+	Rect getBounds() const;
+
+	// 获取外切包围盒
+	Rect getBoundingBox() const;
+
+	// 获取二维变换矩阵
+	Matrix32 getTransform() const;
 
 	// 获取父节点
-	virtual Node * getParent() const;
+	Node * getParent() const;
 
 	// 获取节点所在场景
-	virtual Scene * getParentScene() const;
+	Scene * getParentScene() const;
 
 	// 获取所有名称相同的子节点
-	virtual std::vector<Node*> getChildren(
+	std::vector<Node*> getChildren(
 		const String& name
 	) const;
 
 	// 获取名称相同的子节点
-	virtual Node* getChild(
+	Node* getChild(
 		const String& name
 	) const;
 
 	// 获取所有子节点
-	virtual const std::vector<Node*>& getAllChildren() const;
+	const std::vector<Node*>& getAllChildren() const;
 
 	// 获取子节点数量
-	virtual int getChildrenCount() const;
+	int getChildrenCount() const;
 
 	// 移除子节点
-	virtual bool removeChild(
+	bool removeChild(
 		Node * child
 	);
 
 	// 移除所有名称相同的子节点
-	virtual void removeChildren(
+	void removeChildren(
 		const String& childName
 	);
 
 	// 从父节点移除
-	virtual void removeFromParent();
+	void removeFromParent();
 
 	// 移除所有节点
-	virtual void clearAllChildren();
+	void clearAllChildren();
 
 	// 设置节点是否显示
-	virtual void setVisiable(
+	void setVisiable(
 		bool value
 	);
 
 	// 开启或禁用 onUpdate 函数
-	virtual void setAutoUpdate(
+	void setAutoUpdate(
 		bool bAutoUpdate
 	);
 
 	// 设置节点名称
-	virtual void setName(
+	void setName(
 		const String& name
 	);
 
 	// 设置节点横坐标
-	virtual void setPosX(
-		double x
+	void setPosX(
+		float x
 	);
 
 	// 设置节点纵坐标
-	virtual void setPosY(
-		double y
+	void setPosY(
+		float y
 	);
 
 	// 设置节点坐标
-	virtual void setPos(
+	void setPos(
 		const Point & point
 	);
 
 	// 设置节点坐标
-	virtual void setPos(
-		double x,
-		double y
+	void setPos(
+		float x,
+		float y
 	);
 
 	// 节点坐标固定
-	virtual void setPosFixed(
+	void setPosFixed(
 		bool fixed
 	);
 
 	// 移动节点
-	virtual void movePosX(
-		double x
+	void movePosX(
+		float x
 	);
 
 	// 移动节点
-	virtual void movePosY(
-		double y
+	void movePosY(
+		float y
 	);
 
 	// 移动节点
-	virtual void movePos(
-		double x,
-		double y
+	void movePos(
+		float x,
+		float y
 	);
 
 	// 移动节点
-	virtual void movePos(
-		const Vector & v
+	void movePos(
+		const Vector2 & v
 	);
 
 	// 设置节点绘图顺序
 	// 默认为 0
-	virtual void setOrder(
+	void setOrder(
 		int order
 	);
 
 	// 设置横向缩放比例
 	// 默认为 1.0f
-	virtual void setScaleX(
-		double scaleX
+	void setScaleX(
+		float scaleX
 	);
 
 	// 设置纵向缩放比例
 	// 默认为 1.0f
-	virtual void setScaleY(
-		double scaleY
+	void setScaleY(
+		float scaleY
 	);
 
 	// 设置缩放比例
 	// 默认为 (1.0f, 1.0f)
-	virtual void setScale(
-		double scaleX,
-		double scaleY
+	void setScale(
+		float scaleX,
+		float scaleY
 	);
 
 	// 设置缩放比例
 	// 默认为 1.0f
-	virtual void setScale(
-		double scale
+	void setScale(
+		float scale
 	);
 
 	// 设置横向倾斜角度
 	// 默认为 0
-	virtual void setSkewX(
-		double angleX
+	void setSkewX(
+		float angleX
 	);
 
 	// 设置纵向倾斜角度
 	// 默认为 0
-	virtual void setSkewY(
-		double angleY
+	void setSkewY(
+		float angleY
 	);
 
 	// 设置倾斜角度
 	// 默认为 (0, 0)
-	virtual void setSkew(
-		double angleX,
-		double angleY
+	void setSkew(
+		float angleX,
+		float angleY
 	);
 
 	// 设置旋转角度
 	// 默认为 0
-	virtual void setRotation(
-		double rotation
+	void setRotation(
+		float rotation
 	);
 
 	// 设置透明度
 	// 默认为 1.0f, 范围 [0, 1]
-	virtual void setOpacity(
-		double opacity
+	void setOpacity(
+		float opacity
 	);
 
 	// 设置中心点的横向位置
 	// 默认为 0, 范围 [0, 1]
-	virtual void setPivotX(
-		double pivotX
+	void setPivotX(
+		float pivotX
 	);
 
 	// 设置中心点的纵向位置
 	// 默认为 0, 范围 [0, 1]
-	virtual void setPivotY(
-		double pivotY
+	void setPivotY(
+		float pivotY
 	);
 
 	// 设置中心点位置
 	// 默认为 (0, 0), 范围 [0, 1]
-	virtual void setPivot(
-		double pivotX,
-		double pivotY
+	void setPivot(
+		float pivotX,
+		float pivotY
 	);
 
 	// 修改节点宽度
-	virtual void setWidth(
-		double width
+	void setWidth(
+		float width
 	);
 
 	// 修改节点高度
-	virtual void setHeight(
-		double height
+	void setHeight(
+		float height
 	);
 
 	// 修改节点大小
-	virtual void setSize(
-		double width,
-		double height
+	void setSize(
+		float width,
+		float height
 	);
 
 	// 修改节点大小
-	virtual void setSize(
+	void setSize(
 		Size size
 	);
 
 	// 设置节点属性
-	virtual void setProperty(
+	void setProperty(
 		Property prop
 	);
 
-	// 设置碰撞体
-	virtual void setCollider(
-		Collider::Type type
-	);
-
-	// 设置碰撞体
-	virtual void setCollider(
-		Collider * pCollider
-	);
-
 	// 添加子节点
-	virtual void addChild(
+	void addChild(
 		Node * child,
 		int order = 0	/* 渲染顺序 */
 	);
 
 	// 添加多个子节点
-	virtual void addChild(
+	void addChild(
 		const std::vector<Node*>& nodes,	/* 节点数组 */
 		int order = 0						/* 渲染顺序 */
 	);
 
 	// 执行动作
-	virtual void runAction(
+	void runAction(
 		Action * action
 	);
 
 	// 继续动作
-	virtual void resumeAction(
+	void resumeAction(
 		const String& name
 	);
 
 	// 暂停动作
-	virtual void pauseAction(
+	void pauseAction(
 		const String& name
 	);
 
 	// 停止动作
-	virtual void stopAction(
+	void stopAction(
 		const String& name
 	);
 
 	// 继续所有暂停动作
-	virtual void resumeAllActions();
+	void resumeAllActions();
 
 	// 暂停所有动作
-	virtual void pauseAllActions();
+	void pauseAllActions();
 
 	// 停止所有动作
-	virtual void stopAllActions();
+	void stopAllActions();
 
 	// 修改节点的默认中心点位置
 	static void setDefaultPiovt(
-		double defaultPiovtX,
-		double defaultPiovtY
-	);
-
-	// 设置节点的默认碰撞体类型（默认无）
-	static void setDefaultCollider(
-		Collider::Type type
+		float defaultPiovtX,
+		float defaultPiovtY
 	);
 
 protected:
@@ -412,7 +392,7 @@ protected:
 	);
 
 	// 更新节点二维矩阵
-	void _updateTransform();
+	void _updateTransform() const;
 
 	// 子节点排序
 	void _sortChildren();
@@ -420,12 +400,11 @@ protected:
 	// 更新节点透明度
 	void _updateOpacity();
 
-	// 提供给子类的更新函数
-	virtual void _fixedUpdate() {}
-
 protected:
-	String		_name;
-	size_t		_hashName;
+	bool		_visiable;
+	bool		_autoUpdate;
+	bool		_needSort;
+	bool		_positionFixed;
 	float		_posX;
 	float		_posY;
 	float		_width;
@@ -440,17 +419,15 @@ protected:
 	float		_pivotX;
 	float		_pivotY;
 	int			_nOrder;
-	bool		_visiable;
-	bool		_autoUpdate;
-	bool		_needSort;
-	bool		_needTransform;
-	bool		_positionFixed;
-	Collider *	_collider;
+	String		_name;
+	size_t		_hashName;
 	Scene *		_parentScene;
 	Node *		_parent;
-	D2D1::Matrix3x2F	_initialMatri;
-	D2D1::Matrix3x2F	_finalMatri;
+	
 	std::vector<Node*>	_children;
+
+	mutable bool		_needTransform;
+	mutable Matrix32	_transform;
 };
 
 
@@ -538,13 +515,13 @@ public:
 		Color		color;				// 颜色
 		Align		alignment;			// 对齐方式
 		bool		wrapping;			// 打开自动换行
-		double		wrappingWidth;		// 自动换行宽度
-		double		lineSpacing;		// 行间距
+		float		wrappingWidth;		// 自动换行宽度
+		float		lineSpacing;		// 行间距
 		bool		hasUnderline;		// 下划线
 		bool		hasStrikethrough;	// 删除线
 		bool		hasOutline;			// 显示描边
 		Color		outlineColor;		// 描边颜色
-		double		outlineWidth;		// 描边线宽
+		float		outlineWidth;		// 描边线宽
 		LineJoin	outlineJoin;		// 描边线相交样式
 
 	public:
@@ -554,13 +531,13 @@ public:
 			Color color,
 			Align alignment = Align::Left,
 			bool wrapping = false,
-			double wrappingWidth = 0.0,
-			double lineSpacing = 0.0,
+			float wrappingWidth = 0.0,
+			float lineSpacing = 0.0,
 			bool hasUnderline = false,
 			bool hasStrikethrough = false,
 			bool hasOutline = true,
 			Color outlineColor = Color(Color::Black, 0.5),
-			double outlineWidth = 1.0,
+			float outlineWidth = 1.0,
 			LineJoin outlineJoin = LineJoin::Round
 		);
 	};
@@ -589,7 +566,7 @@ public:
 	String getFontFamily() const;
 
 	// 获取当前字号
-	double getFontSize() const;
+	float getFontSize() const;
 
 	// 获取当前字体粗细值
 	UINT getFontWeight() const;
@@ -601,7 +578,7 @@ public:
 	Color getOutlineColor() const;
 
 	// 获取描边线宽
-	double getOutlineWidth() const;
+	float getOutlineWidth() const;
 
 	// 获取描边线相交样式
 	LineJoin getOutlineJoin() const;
@@ -643,7 +620,7 @@ public:
 
 	// 设置字号（默认值为 22）
 	void setFontSize(
-		double size
+		float size
 	);
 
 	// 设置字体粗细值（默认值为 Text::Font::Weight::Normal）
@@ -668,12 +645,12 @@ public:
 
 	// 设置文本自动换行的宽度（默认为 0）
 	void setWrappingWidth(
-		double wrappingWidth
+		float wrappingWidth
 	);
 
 	// 设置行间距（默认为 0）
 	void setLineSpacing(
-		double lineSpacing
+		float lineSpacing
 	);
 
 	// 设置对齐方式（默认为 Align::Left）
@@ -703,7 +680,7 @@ public:
 
 	// 设置描边线宽
 	void setOutlineWidth(
-		double outlineWidth
+		float outlineWidth
 	);
 
 	// 设置描边线相交样式
@@ -737,24 +714,26 @@ class Button :
 	public Node
 {
 public:
+	using Callback = Function<void()>;
+
 	Button();
 
 	explicit Button(
 		Node * normal,					/* 普通状态 */
-		const Function<void()>& func = nullptr	/* 按钮点击后的执行函数 */
+		const Callback& func = nullptr	/* 按钮点击后的执行函数 */
 	);
 
 	explicit Button(
 		Node * normal,					/* 普通状态 */
 		Node * selected,				/* 鼠标按下状态 */
-		const Function<void()>& func = nullptr	/* 按钮点击后的执行函数 */
+		const Callback& func = nullptr	/* 按钮点击后的执行函数 */
 	);
 
 	explicit Button(
 		Node * normal,					/* 普通状态 */
 		Node * mouseover,				/* 鼠标移入状态 */
 		Node * selected,				/* 鼠标按下状态 */
-		const Function<void()>& func = nullptr	/* 按钮点击后的执行函数 */
+		const Callback& func = nullptr	/* 按钮点击后的执行函数 */
 	);
 
 	explicit Button(
@@ -762,7 +741,7 @@ public:
 		Node * mouseover,				/* 鼠标移入状态 */
 		Node * selected,				/* 鼠标移入状态 */
 		Node * disabled,				/* 按钮禁用状态 */
-		const Function<void()>& func = nullptr	/* 按钮点击后的执行函数 */
+		const Callback& func = nullptr	/* 按钮点击后的执行函数 */
 	);
 
 	// 获取按钮状态是启用还是禁用
@@ -795,8 +774,10 @@ public:
 
 	// 设置按钮点击后的执行函数
 	void setClickFunc(
-		const Function<void()>& func
+		const Callback& func
 	);
+
+	void onUpdate() override;
 
 protected:
 	// 按钮状态枚举
@@ -807,9 +788,6 @@ protected:
 
 	// 刷新按钮显示
 	virtual void _updateVisiable();
-
-	// 更新按钮状态
-	virtual void _fixedUpdate() override;
 
 	// 执行按钮函数对象
 	virtual void _runCallback();
@@ -822,7 +800,7 @@ protected:
 	bool		_enable;
 	bool		_isSelected;
 	ButtonState	_state;
-	Function<void()>	_func;
+	Callback	_func;
 };
 
 

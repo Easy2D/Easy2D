@@ -2,7 +2,7 @@
 #include <e2dnode.h>
 
 
-easy2d::OpacityBy::OpacityBy(double duration, double opacity)
+easy2d::OpacityBy::OpacityBy(float duration, float opacity)
 	: FiniteTimeAction(duration)
 {
 	_deltaVal = opacity;

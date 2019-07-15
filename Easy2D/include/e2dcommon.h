@@ -1,5 +1,6 @@
 #pragma once
 #include <e2dmacros.h>
+#include <e2dmath.h>
 
 namespace easy2d
 {
@@ -24,40 +25,6 @@ enum class LineJoin : int
 };
 
 
-class Size;
-
-// 坐标
-class Point
-{
-public:
-	double x;	// X 坐标
-	double y;	// Y 坐标
-
-public:
-	Point();
-
-	Point(double x, double y);
-
-	Point(const Point& other);
-
-	Point operator + (Point const & point) const;
-	Point operator - (Point const & point) const;
-	Point operator * (double const & point) const;
-	Point operator / (double const & point) const;
-	Point operator - () const;
-	bool operator== (const Point& point) const;
-
-	operator easy2d::Size() const;
-
-	// 判断两点间距离
-	static double distance(const Point&, const Point&);
-};
-
-
-// 二维向量
-using Vector = Point;
-
-
 // 字符串
 using String = std::wstring;
 
@@ -67,71 +34,6 @@ template <typename _Fty>
 using Function = std::function<_Fty>;
 
 
-// 大小
-class Size
-{
-public:
-	double width;	// 宽度
-	double height;	// 高度
-
-public:
-	Size();
-
-	Size(double width, double height);
-
-	Size(const Size& other);
-
-	Size operator + (Size const & size) const;
-	Size operator - (Size const & size) const;
-	Size operator * (double const & size) const;
-	Size operator / (double const & size) const;
-	Size operator - () const;
-	bool operator== (const Size& size) const;
-
-	operator easy2d::Point() const;
-};
-
-
-// 矩形
-class Rect
-{
-public:
-	Point origin;	// 原点坐标
-	Size  size;		// 宽度和高度
-
-public:
-	Rect();
-	
-	Rect(double x, double y, double width, double height);
-	
-	Rect(const Point& pos, const Size& size);
-	
-	Rect(const Rect& other);
-	
-	Rect& operator= (const Rect& other);
-
-	bool operator== (const Rect& rect) const;
-	
-	// 设置矩形
-	void setRect(
-		double x, 
-		double y, 
-		double width, 
-		double height
-	);
-	
-	// 判断点是否在矩形内
-	bool containsPoint(
-		const Point& point
-	) const;
-	
-	// 判断两矩形是否相交
-	bool intersects(
-		const Rect& rect
-	) const;
-};
-
-
 // 颜色
 class Color
 {
@@ -139,16 +41,16 @@ public:
 	Color();
 
 	Color(
-		double r,
-		double g,
-		double b
+		float r,
+		float g,
+		float b
 	);
 
 	Color(
-		double r,
-		double g,
-		double b,
-		double alpha
+		float r,
+		float g,
+		float b,
+		float alpha
 	);
 
 	Color(
@@ -157,7 +59,7 @@ public:
 
 	Color(
 		UINT rgb,
-		double alpha
+		float alpha
 	);
 
 	D2D1_COLOR_F toD2DColorF() const;
@@ -209,7 +111,7 @@ public:
 private:
 	void _init(
 		UINT rgb,
-		double alpha
+		float alpha
 	);
 
 private:
@@ -225,7 +127,7 @@ class Font
 {
 public:
 	String	family;			// 字体族
-	double	size;			// 字号
+	float	size;			// 字号
 	UINT	weight;			// 粗细值
 	bool	italic;			// 斜体
 
@@ -249,7 +151,7 @@ public:
 
 	explicit Font(
 		const String& family,
-		double size = 22,
+		float size = 22,
 		UINT weight = Font::Weight::Normal,
 		bool italic = false
 	);
@@ -327,28 +229,28 @@ public:
 	);
 
 	// 获取宽度
-	virtual double getWidth() const;
+	virtual float getWidth() const;
 
 	// 获取高度
-	virtual double getHeight() const;
+	virtual float getHeight() const;
 
 	// 获取大小
 	virtual Size getSize() const;
 
 	// 获取源图片宽度
-	virtual double getSourceWidth() const;
+	virtual float getSourceWidth() const;
 
 	// 获取源图片高度
-	virtual double getSourceHeight() const;
+	virtual float getSourceHeight() const;
 
 	// 获取源图片大小
 	virtual Size getSourceSize() const;
 	
 	// 获取裁剪位置 X 坐标
-	virtual double getCropX() const;
+	virtual float getCropX() const;
 
 	// 获取裁剪位置 Y 坐标
-	virtual double getCropY() const;
+	virtual float getCropY() const;
 
 	// 获取裁剪位置
 	virtual Point getCropPos() const;

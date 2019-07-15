@@ -6,7 +6,6 @@
 // 默认中心点位置
 static float s_fDefaultPiovtX = 0;
 static float s_fDefaultPiovtY = 0;
-static easy2d::Collider::Type s_fDefaultColliderType = easy2d::Collider::Type::None;
 
 easy2d::Node::Node()
 	: _nOrder(0)
@@ -23,10 +22,8 @@ easy2d::Node::Node()
 	, _realOpacity(1.0f)
 	, _pivotX(s_fDefaultPiovtX)
 	, _pivotY(s_fDefaultPiovtY)
-	, _initialMatri(D2D1::Matrix3x2F::Identity())
-	, _finalMatri(D2D1::Matrix3x2F::Identity())
+	, _transform()
 	, _visiable(true)
-	, _collider(nullptr)
 	, _parent(nullptr)
 	, _parentScene(nullptr)
 	, _hashName(0)
@@ -35,16 +32,11 @@ easy2d::Node::Node()
 	, _autoUpdate(true)
 	, _positionFixed(false)
 {
-	if (s_fDefaultColliderType != Collider::Type::None)
-	{
-		this->setCollider(s_fDefaultColliderType);
-	}
 }
 
 easy2d::Node::~Node()
 {
 	ActionManager::__clearAllBindedWith(this);
-	ColliderManager::__removeCollider(_collider);
 	for (auto child : _children)
 	{
 		child->_parent = nullptr;
@@ -63,7 +55,6 @@ void easy2d::Node::_update()
 		{
 			this->onUpdate();
 		}
-		this->_fixedUpdate();
 	}
 	else
 	{
@@ -91,7 +82,6 @@ void easy2d::Node::_update()
 		{
 			this->onUpdate();
 		}
-		this->_fixedUpdate();
 
 		// 访问其他节点
 		for (; i < size; ++i)
@@ -112,7 +102,7 @@ void easy2d::Node::_render()
 	if (_children.empty())
 	{
 		// 转换渲染器的二维矩阵
-		Renderer::getRenderTarget()->SetTransform(_finalMatri);
+		Renderer::getRenderTarget()->SetTransform(_transform.toD2DMatrix());
 		// 渲染自身
 		this->onRender();
 	}
@@ -138,7 +128,7 @@ void easy2d::Node::_render()
 		}
 
 		// 转换渲染器的二维矩阵
-		Renderer::getRenderTarget()->SetTransform(_finalMatri);
+		Renderer::getRenderTarget()->SetTransform(_transform.toD2DMatrix());
 		// 渲染自身
 		this->onRender();
 
@@ -150,12 +140,6 @@ void easy2d::Node::_render()
 
 void easy2d::Node::_drawCollider()
 {
-	// 绘制自身的几何碰撞体
-	if (_collider && _collider->_visiable)
-	{
-		_collider->_render();
-	}
-
 	// 绘制所有子节点的几何碰撞体
 	for (auto child : _children)
 	{
@@ -163,43 +147,23 @@ void easy2d::Node::_drawCollider()
 	}
 }
 
-void easy2d::Node::_updateTransform()
+void easy2d::Node::_updateTransform() const
 {
 	if (!_needTransform)
 		return;
 
-	// 计算中心点坐标
-	D2D1_POINT_2F pivot = { _width * _pivotX, _height * _pivotY };
-	// 变换 Initial 矩阵，子节点将根据这个矩阵进行变换
-	_initialMatri = D2D1::Matrix3x2F::Scale(
-		_scaleX,
-		_scaleY,
-		pivot
-	) * D2D1::Matrix3x2F::Skew(
-		_skewAngleX,
-		_skewAngleY,
-		pivot
-	) * D2D1::Matrix3x2F::Rotation(
-		_rotation,
-		pivot
-	) * D2D1::Matrix3x2F::Translation(
-		_posX,
-		_posY
-	);
-	// 根据自身中心点变换 Final 矩阵
-	_finalMatri = _initialMatri * D2D1::Matrix3x2F::Translation(-pivot.x, -pivot.y);
-	// 和父节点矩阵相乘
-	if (!_positionFixed && _parent)
+	_transform = Matrix32::scaling(_scaleX, _scaleY)
+		* Matrix32::skewing(_skewAngleX, _skewAngleY)
+		* Matrix32::rotation(_rotation)
+		* Matrix32::translation(_posX, _posY);
+
+	_transform.translate(-_width * _pivotX, -_height * _pivotY);
+
+	if (_parent)
 	{
-		_initialMatri = _initialMatri * _parent->_initialMatri;
-		_finalMatri = _finalMatri * _parent->_initialMatri;
+		_transform = _transform * _parent->_transform;
 	}
 
-	// 绑定于自身的碰撞体也进行相应转换
-	if (_collider)
-	{
-		_collider->_transform();
-	}
 	// 标志已执行过变换
 	_needTransform = false;
 
@@ -251,12 +215,12 @@ size_t easy2d::Node::getHashName() const
 	return _hashName;
 }
 
-double easy2d::Node::getPosX() const
+float easy2d::Node::getPosX() const
 {
 	return _posX;
 }
 
-double easy2d::Node::getPosY() const
+float easy2d::Node::getPosY() const
 {
 	return _posY;
 }
@@ -266,22 +230,22 @@ easy2d::Point easy2d::Node::getPos() const
 	return Point(_posX, _posY);
 }
 
-double easy2d::Node::getWidth() const
+float easy2d::Node::getWidth() const
 {
 	return _width * _scaleX;
 }
 
-double easy2d::Node::getHeight() const
+float easy2d::Node::getHeight() const
 {
 	return _height * _scaleY;
 }
 
-double easy2d::Node::getRealWidth() const
+float easy2d::Node::getRealWidth() const
 {
 	return _width;
 }
 
-double easy2d::Node::getRealHeight() const
+float easy2d::Node::getRealHeight() const
 {
 	return _height;
 }
@@ -291,12 +255,12 @@ easy2d::Size easy2d::Node::getRealSize() const
 	return Size(_width, _height);
 }
 
-double easy2d::Node::getPivotX() const
+float easy2d::Node::getPivotX() const
 {
 	return _pivotX;
 }
 
-double easy2d::Node::getPivotY() const
+float easy2d::Node::getPivotY() const
 {
 	return _pivotY;
 }
@@ -306,32 +270,32 @@ easy2d::Size easy2d::Node::getSize() const
 	return Size(getWidth(), getHeight());
 }
 
-double easy2d::Node::getScaleX() const
+float easy2d::Node::getScaleX() const
 {
 	return _scaleX;
 }
 
-double easy2d::Node::getScaleY() const
+float easy2d::Node::getScaleY() const
 {
 	return _scaleY;
 }
 
-double easy2d::Node::getSkewX() const
+float easy2d::Node::getSkewX() const
 {
 	return _skewAngleX;
 }
 
-double easy2d::Node::getSkewY() const
+float easy2d::Node::getSkewY() const
 {
 	return _skewAngleY;
 }
 
-double easy2d::Node::getRotation() const
+float easy2d::Node::getRotation() const
 {
 	return _rotation;
 }
 
-double easy2d::Node::getOpacity() const
+float easy2d::Node::getOpacity() const
 {
 	return _realOpacity;
 }
@@ -355,9 +319,14 @@ easy2d::Node::Property easy2d::Node::getProperty() const
 	return prop;
 }
 
-easy2d::Collider * easy2d::Node::getCollider() const
+easy2d::Rect easy2d::Node::getBounds() const
 {
-	return _collider;
+	return Rect(Point{}, Size(_width, _height));
+}
+
+easy2d::Rect easy2d::Node::getBoundingBox() const
+{
+	return getTransform().transform(getBounds());
 }
 
 int easy2d::Node::getOrder() const
@@ -370,12 +339,12 @@ void easy2d::Node::setOrder(int order)
 	_nOrder = order;
 }
 
-void easy2d::Node::setPosX(double x)
+void easy2d::Node::setPosX(float x)
 {
 	this->setPos(x, _posY);
 }
 
-void easy2d::Node::setPosY(double y)
+void easy2d::Node::setPosY(float y)
 {
 	this->setPos(_posX, y);
 }
@@ -385,7 +354,7 @@ void easy2d::Node::setPos(const Point & p)
 	this->setPos(p.x, p.y);
 }
 
-void easy2d::Node::setPos(double x, double y)
+void easy2d::Node::setPos(float x, float y)
 {
 	if (_posX == x && _posY == y)
 		return;
@@ -404,42 +373,42 @@ void easy2d::Node::setPosFixed(bool fixed)
 	_needTransform = true;
 }
 
-void easy2d::Node::movePosX(double x)
+void easy2d::Node::movePosX(float x)
 {
 	this->movePos(x, 0);
 }
 
-void easy2d::Node::movePosY(double y)
+void easy2d::Node::movePosY(float y)
 {
 	this->movePos(0, y);
 }
 
-void easy2d::Node::movePos(double x, double y)
+void easy2d::Node::movePos(float x, float y)
 {
 	this->setPos(_posX + x, _posY + y);
 }
 
-void easy2d::Node::movePos(const Vector & v)
+void easy2d::Node::movePos(const Vector2 & v)
 {
 	this->movePos(v.x, v.y);
 }
 
-void easy2d::Node::setScaleX(double scaleX)
+void easy2d::Node::setScaleX(float scaleX)
 {
 	this->setScale(scaleX, _scaleY);
 }
 
-void easy2d::Node::setScaleY(double scaleY)
+void easy2d::Node::setScaleY(float scaleY)
 {
 	this->setScale(_scaleX, scaleY);
 }
 
-void easy2d::Node::setScale(double scale)
+void easy2d::Node::setScale(float scale)
 {
 	this->setScale(scale, scale);
 }
 
-void easy2d::Node::setScale(double scaleX, double scaleY)
+void easy2d::Node::setScale(float scaleX, float scaleY)
 {
 	if (_scaleX == scaleX && _scaleY == scaleY)
 		return;
@@ -449,17 +418,17 @@ void easy2d::Node::setScale(double scaleX, double scaleY)
 	_needTransform = true;
 }
 
-void easy2d::Node::setSkewX(double angleX)
+void easy2d::Node::setSkewX(float angleX)
 {
 	this->setSkew(angleX, _skewAngleY);
 }
 
-void easy2d::Node::setSkewY(double angleY)
+void easy2d::Node::setSkewY(float angleY)
 {
 	this->setSkew(_skewAngleX, angleY);
 }
 
-void easy2d::Node::setSkew(double angleX, double angleY)
+void easy2d::Node::setSkew(float angleX, float angleY)
 {
 	if (_skewAngleX == angleX && _skewAngleY == angleY)
 		return;
@@ -469,7 +438,7 @@ void easy2d::Node::setSkew(double angleX, double angleY)
 	_needTransform = true;
 }
 
-void easy2d::Node::setRotation(double angle)
+void easy2d::Node::setRotation(float angle)
 {
 	if (_rotation == angle)
 		return;
@@ -478,7 +447,7 @@ void easy2d::Node::setRotation(double angle)
 	_needTransform = true;
 }
 
-void easy2d::Node::setOpacity(double opacity)
+void easy2d::Node::setOpacity(float opacity)
 {
 	if (_realOpacity == opacity)
 		return;
@@ -488,17 +457,17 @@ void easy2d::Node::setOpacity(double opacity)
 	_updateOpacity();
 }
 
-void easy2d::Node::setPivotX(double pivotX)
+void easy2d::Node::setPivotX(float pivotX)
 {
 	this->setPivot(pivotX, _pivotY);
 }
 
-void easy2d::Node::setPivotY(double pivotY)
+void easy2d::Node::setPivotY(float pivotY)
 {
 	this->setPivot(_pivotX, pivotY);
 }
 
-void easy2d::Node::setPivot(double pivotX, double pivotY)
+void easy2d::Node::setPivot(float pivotX, float pivotY)
 {
 	if (_pivotX == pivotX && _pivotY == pivotY)
 		return;
@@ -508,17 +477,17 @@ void easy2d::Node::setPivot(double pivotX, double pivotY)
 	_needTransform = true;
 }
 
-void easy2d::Node::setWidth(double width)
+void easy2d::Node::setWidth(float width)
 {
 	this->setSize(width, _height);
 }
 
-void easy2d::Node::setHeight(double height)
+void easy2d::Node::setHeight(float height)
 {
 	this->setSize(_width, height);
 }
 
-void easy2d::Node::setSize(double width, double height)
+void easy2d::Node::setSize(float width, float height)
 {
 	if (_width == width && _height == height)
 		return;
@@ -543,58 +512,6 @@ void easy2d::Node::setProperty(Property prop)
 	this->setScale(prop.scaleX, prop.scaleY);
 	this->setRotation(prop.rotation);
 	this->setSkew(prop.skewAngleX, prop.skewAngleY);
-}
-
-void easy2d::Node::setCollider(Collider::Type type)
-{
-	switch (type)
-	{
-	case Collider::Type::Rect:
-	{
-		this->setCollider(gcnew RectCollider(this));
-		break;
-	}
-
-	case Collider::Type::Circle:
-	{
-		this->setCollider(gcnew CircleCollider(this));
-		break;
-	}
-
-	case Collider::Type::Ellipse:
-	{
-		this->setCollider(gcnew EllipseCollider(this));
-		break;
-	}
-
-	case Collider::Type::None:
-	{
-		this->setCollider(nullptr);
-		break;
-	}
-
-	default:
-		break;
-	}
-}
-
-void easy2d::Node::setCollider(Collider * pCollider)
-{
-	// 删除旧的碰撞体
-	ColliderManager::__removeCollider(_collider);
-	// 添加新的碰撞体
-	ColliderManager::__addCollider(pCollider);
-
-	if (pCollider)
-	{
-		// 双向绑定
-		this->_collider = pCollider;
-		pCollider->_parentNode = this;
-	}
-	else
-	{
-		this->_collider = nullptr;
-	}
 }
 
 void easy2d::Node::addChild(Node * child, int order  /* = 0 */)
@@ -646,6 +563,12 @@ void easy2d::Node::addChild(const std::vector<Node*>& nodes, int order)
 	{
 		this->addChild(node, order);
 	}
+}
+
+easy2d::Matrix32 easy2d::Node::getTransform() const
+{
+	_updateTransform();
+	return _transform;
 }
 
 easy2d::Node * easy2d::Node::getParent() const
@@ -817,118 +740,15 @@ void easy2d::Node::stopAction(const String& name)
 	}
 }
 
-bool easy2d::Node::containsPoint(const Point& point) const
-{
-	BOOL ret = 0;
-	// 如果存在碰撞体，用碰撞体判断
-	if (_collider)
-	{
-		_collider->getD2dGeometry()->FillContainsPoint(
-			D2D1::Point2F(
-				float(point.x),
-				float(point.y)),
-			_finalMatri,
-			&ret
-		);
-	}
-	else
-	{
-		// 为节点创建一个临时碰撞体
-		ID2D1RectangleGeometry * rect;
-		Renderer::getID2D1Factory()->CreateRectangleGeometry(
-			D2D1::RectF(0, 0, _width, _height),
-			&rect
-		);
-		// 判断点是否在碰撞体内
-		rect->FillContainsPoint(
-			D2D1::Point2F(
-				float(point.x),
-				float(point.y)),
-			_finalMatri,
-			&ret
-		);
-		// 删除临时创建的碰撞体
-		SafeRelease(rect);
-	}
-
-	if (ret)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-bool easy2d::Node::intersects(Node * node) const
-{
-	// 如果存在碰撞体，用碰撞体判断
-	if (this->_collider && node->_collider)
-	{
-		Collider::Relation relation = this->_collider->getRelationWith(node->_collider);
-		if ((relation != Collider::Relation::Unknown) &&
-			(relation != Collider::Relation::Disjoin))
-		{
-			return true;
-		}
-	}
-	else
-	{
-		// 为节点创建一个临时碰撞体
-		ID2D1RectangleGeometry * pRect1;
-		ID2D1RectangleGeometry * pRect2;
-		ID2D1TransformedGeometry * pCollider;
-		D2D1_GEOMETRY_RELATION relation;
-
-		// 根据自身大小位置创建矩形
-		Renderer::getID2D1Factory()->CreateRectangleGeometry(
-			D2D1::RectF(0, 0, _width, _height),
-			&pRect1
-		);
-		// 根据二维矩阵进行转换
-		Renderer::getID2D1Factory()->CreateTransformedGeometry(
-			pRect1,
-			_finalMatri,
-			&pCollider
-		);
-		// 根据相比较节点的大小位置创建矩形
-		Renderer::getID2D1Factory()->CreateRectangleGeometry(
-			D2D1::RectF(0, 0, node->_width, node->_height),
-			&pRect2
-		);
-		// 获取相交状态
-		pCollider->CompareWithGeometry(
-			pRect2,
-			node->_finalMatri,
-			&relation
-		);
-		// 删除临时创建的碰撞体
-		SafeRelease(pRect1);
-		SafeRelease(pRect2);
-		SafeRelease(pCollider);
-		if ((relation != D2D1_GEOMETRY_RELATION_UNKNOWN) &&
-			(relation != D2D1_GEOMETRY_RELATION_DISJOINT))
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
 void easy2d::Node::setAutoUpdate(bool bAutoUpdate)
 {
 	_autoUpdate = bAutoUpdate;
 }
 
-void easy2d::Node::setDefaultPiovt(double defaultPiovtX, double defaultPiovtY)
+void easy2d::Node::setDefaultPiovt(float defaultPiovtX, float defaultPiovtY)
 {
 	s_fDefaultPiovtX = min(max(float(defaultPiovtX), 0), 1);
 	s_fDefaultPiovtY = min(max(float(defaultPiovtY), 0), 1);
-}
-
-void easy2d::Node::setDefaultCollider(Collider::Type type)
-{
-	s_fDefaultColliderType = type;
 }
 
 void easy2d::Node::resumeAllActions()

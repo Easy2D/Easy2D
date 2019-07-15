@@ -2,7 +2,7 @@
 #include <e2dtransition.h>
 #include <e2dnode.h>
 
-easy2d::Transition::Transition(double duration)
+easy2d::Transition::Transition(float duration)
 	: _end(false)
 	, _last(0)
 	, _delta(0)

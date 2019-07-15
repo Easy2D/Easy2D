@@ -194,34 +194,34 @@ bool easy2d::Input::isRelease(Mouse code)
 	return false;
 }
 
-double Input::getMouseX()
+float Input::getMouseX()
 {
-	return (double)s_MousePosition.x;
+	return (float)s_MousePosition.x;
 }
 
-double Input::getMouseY()
+float Input::getMouseY()
 {
-	return (double)s_MousePosition.y;
+	return (float)s_MousePosition.y;
 }
 
 Point Input::getMousePos()
 {
-	return Point((double)s_MousePosition.x, (double)s_MousePosition.y);
+	return Point((float)s_MousePosition.x, (float)s_MousePosition.y);
 }
 
-double Input::getMouseDeltaX()
+float Input::getMouseDeltaX()
 {
-	return (double)s_MouseState.lX;
+	return (float)s_MouseState.lX;
 }
 
-double Input::getMouseDeltaY()
+float Input::getMouseDeltaY()
 {
-	return (double)s_MouseState.lY;
+	return (float)s_MouseState.lY;
 }
 
-double Input::getMouseDeltaZ()
+float Input::getMouseDeltaZ()
 {
-	return (double)s_MouseState.lZ;
+	return (float)s_MouseState.lZ;
 }
 
 easy2d::Listener * easy2d::Input::addListener(const Function<void()>& func, const String& name, bool paused)

@@ -151,27 +151,4 @@ private:
 };
 
 
-// 碰撞体管理器
-class ColliderManager
-{
-	friend class Node;
-	friend class Collider;
-
-private:
-	// 更新碰撞体
-	static void __updateCollider(
-		Collider * pActiveCollider
-	);
-
-	// 添加碰撞体
-	static void __addCollider(
-		Collider * pCollider
-	);
-
-	// 删除已绑定的碰撞体
-	static void __removeCollider(
-		Collider * pCollider
-	);
-};
-
 }

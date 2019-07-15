@@ -22,13 +22,13 @@ easy2d::Text::Style::Style(
 	Color color,
 	Align alignment,
 	bool wrapping,
-	double wrappingWidth,
-	double lineSpacing,
+	float wrappingWidth,
+	float lineSpacing,
 	bool hasUnderline,
 	bool hasStrikethrough,
 	bool hasOutline,
 	Color outlineColor,
-	double outlineWidth,
+	float outlineWidth,
 	LineJoin outlineJoin
 )
 	: color(color)
@@ -94,7 +94,7 @@ easy2d::String easy2d::Text::getFontFamily() const
 	return _font.family;
 }
 
-double easy2d::Text::getFontSize() const
+float easy2d::Text::getFontSize() const
 {
 	return _font.size;
 }
@@ -114,7 +114,7 @@ easy2d::Color easy2d::Text::getOutlineColor() const
 	return _style.outlineColor;
 }
 
-double easy2d::Text::getOutlineWidth() const
+float easy2d::Text::getOutlineWidth() const
 {
 	return _style.outlineWidth;
 }
@@ -182,7 +182,7 @@ void easy2d::Text::setFontFamily(const String& family)
 	_reset();
 }
 
-void easy2d::Text::setFontSize(double size)
+void easy2d::Text::setFontSize(float size)
 {
 	_font.size = size;
 	_reset();
@@ -214,7 +214,7 @@ void easy2d::Text::setWrapping(bool wrapping)
 	}
 }
 
-void easy2d::Text::setWrappingWidth(double wrappingWidth)
+void easy2d::Text::setWrappingWidth(float wrappingWidth)
 {
 	if (_style.wrappingWidth != wrappingWidth)
 	{
@@ -227,7 +227,7 @@ void easy2d::Text::setWrappingWidth(double wrappingWidth)
 	}
 }
 
-void easy2d::Text::setLineSpacing(double lineSpacing)
+void easy2d::Text::setLineSpacing(float lineSpacing)
 {
 	if (_style.lineSpacing != lineSpacing)
 	{
@@ -277,7 +277,7 @@ void easy2d::Text::setOutlineColor(Color outlineColor)
 	_style.outlineColor = outlineColor;
 }
 
-void easy2d::Text::setOutlineWidth(double outlineWidth)
+void easy2d::Text::setOutlineWidth(float outlineWidth)
 {
 	_style.outlineWidth = outlineWidth;
 }

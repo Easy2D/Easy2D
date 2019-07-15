@@ -16,7 +16,7 @@ easy2d::Button::Button()
 {
 }
 
-easy2d::Button::Button(Node * normal, const Function<void()>& func)
+easy2d::Button::Button(Node * normal, const Callback& func)
 	: _func(nullptr)
 	, _state(ButtonState::Normal)
 	, _enable(true)
@@ -30,7 +30,7 @@ easy2d::Button::Button(Node * normal, const Function<void()>& func)
 	this->setClickFunc(func);
 }
 
-easy2d::Button::Button(Node * normal, Node * selected, const Function<void()>& func)
+easy2d::Button::Button(Node * normal, Node * selected, const Callback& func)
 	: _func(nullptr)
 	, _state(ButtonState::Normal)
 	, _enable(true)
@@ -45,7 +45,7 @@ easy2d::Button::Button(Node * normal, Node * selected, const Function<void()>& f
 	this->setClickFunc(func);
 }
 
-easy2d::Button::Button(Node * normal, Node * mouseover, Node * selected, const Function<void()>& func)
+easy2d::Button::Button(Node * normal, Node * mouseover, Node * selected, const Callback& func)
 	: _func(nullptr)
 	, _state(ButtonState::Normal)
 	, _enable(true)
@@ -61,7 +61,7 @@ easy2d::Button::Button(Node * normal, Node * mouseover, Node * selected, const F
 	this->setClickFunc(func);
 }
 
-easy2d::Button::Button(Node * normal, Node * mouseover, Node * selected, Node * disabled, const Function<void()>& func)
+easy2d::Button::Button(Node * normal, Node * mouseover, Node * selected, Node * disabled, const Callback& func)
 	: _func(nullptr)
 	, _state(ButtonState::Normal)
 	, _enable(true)
@@ -170,13 +170,15 @@ void easy2d::Button::setEnable(bool enable)
 	}
 }
 
-void easy2d::Button::setClickFunc(const Function<void()>& func)
+void easy2d::Button::setClickFunc(const Callback& func)
 {
 	_func = func;
 }
 
-void easy2d::Button::_fixedUpdate()
+void easy2d::Button::onUpdate()
 {
+	Node::onUpdate();
+
 	if (SceneManager::isTransitioning())
 		return;
 
@@ -186,7 +188,7 @@ void easy2d::Button::_fixedUpdate()
 		{
 			// 鼠标左键抬起时，判断鼠标坐标是否在按钮内部
 			if (_isSelected &&
-				_normal->containsPoint(Input::getMousePos()))
+				_normal->getBoundingBox().containsPoint(Input::getMousePos()))
 			{
 				_runCallback();
 			}
@@ -196,7 +198,7 @@ void easy2d::Button::_fixedUpdate()
 
 		if (Input::isPress(Input::Mouse::Left))
 		{
-			if (_normal->containsPoint(Input::getMousePos()))
+			if (_normal->getBoundingBox().containsPoint(Input::getMousePos()))
 			{
 				// 鼠标左键按下，且位于按钮内时，标记 _isSelected 为 true
 				_isSelected = true;
@@ -206,14 +208,14 @@ void easy2d::Button::_fixedUpdate()
 
 		if (_isSelected && Input::isDown(Input::Mouse::Left))
 		{
-			if (_normal->containsPoint(Input::getMousePos()))
+			if (_normal->getBoundingBox().containsPoint(Input::getMousePos()))
 			{
 				_setState(ButtonState::Selected);
 				Window::setCursor(Window::Cursor::Hand);
 				return;
 			}
 		}
-		else if (_normal->containsPoint(Input::getMousePos()))
+		else if (_normal->getBoundingBox().containsPoint(Input::getMousePos()))
 		{
 			_setState(ButtonState::Mouseover);
 			Window::setCursor(Window::Cursor::Hand);
@@ -223,7 +225,7 @@ void easy2d::Button::_fixedUpdate()
 		_setState(ButtonState::Normal);
 	}
 
-	if (_visiable && !_enable && _normal && _normal->containsPoint(Input::getMousePos()))
+	if (_visiable && !_enable && _normal && _normal->getBoundingBox().containsPoint(Input::getMousePos()))
 	{
 		Window::setCursor(Window::Cursor::No);
 	}

@@ -112,28 +112,14 @@ void easy2d::Window::__poll()
 	}
 }
 
-double easy2d::Window::getWidth()
+float easy2d::Window::getWidth()
 {
-	if (s_HWnd)
-	{
-		// 获取客户区大小
-		tagRECT rcClient;
-		::GetClientRect(s_HWnd, &rcClient);
-		return rcClient.right - rcClient.left;
-	}
-	return 0;
+	return getSize().width;
 }
 
-double easy2d::Window::getHeight()
+float easy2d::Window::getHeight()
 {
-	if (s_HWnd)
-	{
-		// 获取客户区大小
-		tagRECT rcClient;
-		::GetClientRect(s_HWnd, &rcClient);
-		return rcClient.bottom - rcClient.top;
-	}
-	return 0;
+	return getSize().height;
 }
 
 easy2d::Size easy2d::Window::getSize()
@@ -143,7 +129,7 @@ easy2d::Size easy2d::Window::getSize()
 		// 获取客户区大小
 		tagRECT rcClient;
 		::GetClientRect(s_HWnd, &rcClient);
-		return Size(rcClient.right - rcClient.left, rcClient.bottom - rcClient.top);
+		return Size(float(rcClient.right - rcClient.left), float(rcClient.bottom - rcClient.top));
 	}
 	return Size();
 }

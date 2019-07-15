@@ -87,10 +87,10 @@ public:
 	static String getTitle();
 
 	// 获取窗口宽度
-	static double getWidth();
+	static float getWidth();
 
 	// 获取窗口高度
-	static double getHeight();
+	static float getHeight();
 
 	// 获取窗口大小
 	static Size getSize();
@@ -143,13 +143,13 @@ class Time
 
 public:
 	// 获取上一帧与当前帧的时间间隔（秒）
-	static double getDeltaTime();
+	static float getDeltaTime();
 
 	// 获取上一帧与当前帧的时间间隔（毫秒）
 	static unsigned int getDeltaTimeMilliseconds();
 
 	// 获取游戏总时长（秒）
-	static double getTotalTime();
+	static float getTotalTime();
 
 	// 获取游戏总时长（毫秒）
 	static unsigned int getTotalTimeMilliseconds();
@@ -282,22 +282,22 @@ public:
 	);
 
 	// 获得鼠标X轴坐标值
-	static double getMouseX();
+	static float getMouseX();
 
 	// 获得鼠标Y轴坐标值
-	static double getMouseY();
+	static float getMouseY();
 
 	// 获得鼠标坐标值
 	static Point getMousePos();
 
 	// 获得鼠标X轴坐标增量
-	static double getMouseDeltaX();
+	static float getMouseDeltaX();
 
 	// 获得鼠标Y轴坐标增量
-	static double getMouseDeltaY();
+	static float getMouseDeltaY();
 
 	// 获得鼠标Z轴（鼠标滚轮）坐标增量
-	static double getMouseDeltaZ();
+	static float getMouseDeltaZ();
 
 	// 添加输入监听
 	static Listener * addListener(

@@ -6,13 +6,13 @@ easy2d::CircleShape::CircleShape()
 	this->setPivot(0.5, 0.5);
 }
 
-easy2d::CircleShape::CircleShape(double radius)
+easy2d::CircleShape::CircleShape(float radius)
 {
 	this->setRadius(radius);
 	this->setPivot(0.5, 0.5);
 }
 
-easy2d::CircleShape::CircleShape(Point center, double radius)
+easy2d::CircleShape::CircleShape(Point center, float radius)
 {
 	this->setRadius(radius);
 	this->setPos(center);
@@ -23,12 +23,12 @@ easy2d::CircleShape::~CircleShape()
 {
 }
 
-double easy2d::CircleShape::getRadius() const
+float easy2d::CircleShape::getRadius() const
 {
 	return _radius;
 }
 
-void easy2d::CircleShape::setRadius(double radius)
+void easy2d::CircleShape::setRadius(float radius)
 {
 	_radius = float(radius);
 	Node::setSize(radius * 2, radius * 2);

@@ -1,6 +1,6 @@
 #include <e2daction.h>
 
-easy2d::Delay::Delay(double duration)
+easy2d::Delay::Delay(float duration)
 	: _delta(0)
 	, _delay(max(duration, 0))
 {

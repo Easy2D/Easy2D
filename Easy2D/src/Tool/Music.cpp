@@ -358,7 +358,7 @@ IXAudio2SourceVoice * easy2d::Music::getIXAudio2SourceVoice() const
 	return _voice;
 }
 
-bool easy2d::Music::setVolume(double volume)
+bool easy2d::Music::setVolume(float volume)
 {
 	if (_voice)
 	{

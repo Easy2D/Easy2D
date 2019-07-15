@@ -15,7 +15,7 @@ class Transition :
 	friend class SceneManager;
 
 public:
-	explicit Transition(double duration);
+	explicit Transition(float duration);
 
 	virtual ~Transition();
 
@@ -46,9 +46,9 @@ protected:
 
 protected:
 	bool _end;
-	double _last;
-	double _duration;
-	double _delta;
+	float _last;
+	float _duration;
+	float _delta;
 	Size _windowSize;
 	Scene * _outScene;
 	Scene * _inScene;
@@ -65,7 +65,7 @@ class FadeTransition :
 {
 public:
 	explicit FadeTransition(
-		double duration	/* 动画持续时长 */
+		float duration	/* 动画持续时长 */
 	);
 
 protected:
@@ -87,7 +87,7 @@ class EmergeTransition :
 {
 public:
 	explicit EmergeTransition(
-		double duration	/* 浮现动画持续时长 */
+		float duration	/* 浮现动画持续时长 */
 	);
 
 protected:
@@ -109,7 +109,7 @@ class BoxTransition :
 {
 public:
 	explicit BoxTransition(
-		double duration	/* 动画持续时长 */
+		float duration	/* 动画持续时长 */
 	);
 
 protected:
@@ -131,7 +131,7 @@ class MoveTransition :
 {
 public:
 	explicit MoveTransition(
-		double moveDuration,					/* 场景移动动画持续时长 */
+		float moveDuration,					/* 场景移动动画持续时长 */
 		Direction direction = Direction::Left	/* 场景移动方向 */
 	);
 
@@ -148,7 +148,7 @@ protected:
 
 protected:
 	Direction _direction;
-	Vector _posDelta;
+	Vector2 _posDelta;
 	Point _startPos;
 };
 

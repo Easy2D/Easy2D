@@ -83,7 +83,7 @@ protected:
 	bool	_done;
 	bool	_initialized;
 	Node *	_target;
-	double	_last;
+	float	_last;
 };
 
 
@@ -94,7 +94,7 @@ class FiniteTimeAction :
 public:
 	// 创建特定时长的持续动作
 	explicit FiniteTimeAction(
-		double duration
+		float duration
 	);
 
 	// 重置动作
@@ -111,8 +111,8 @@ protected:
 	virtual void _resetTime() override;
 
 protected:
-	double _duration;
-	double _delta;
+	float _duration;
+	float _delta;
 };
 
 
@@ -122,8 +122,8 @@ class MoveBy :
 {
 public:
 	explicit MoveBy(
-		double duration,	/* 持续时长 */
-		Vector vector		/* 移动距离 */
+		float duration,	/* 持续时长 */
+		Vector2 vector		/* 移动距离 */
 	);
 
 	// 获取该动作的拷贝对象
@@ -142,7 +142,7 @@ protected:
 protected:
 	Point	_startPos;
 	Point	_prevPos;
-	Vector	_deltaPos;
+	Vector2	_deltaPos;
 };
 
 
@@ -152,7 +152,7 @@ class MoveTo :
 {
 public:
 	explicit MoveTo(
-		double duration,	/* 持续时长 */
+		float duration,	/* 持续时长 */
 		Point pos			/* 目的坐标 */
 	);
 
@@ -181,9 +181,9 @@ class JumpBy :
 {
 public:
 	explicit JumpBy(
-		double duration,		/* 持续时长 */
-		const Vector& vec,		/* 跳跃距离 */
-		double height,			/* 跳跃高度 */
+		float duration,		/* 持续时长 */
+		const Vector2& vec,		/* 跳跃距离 */
+		float height,			/* 跳跃高度 */
 		int jumps = 1			/* 跳跃次数 */
 	);
 
@@ -202,8 +202,8 @@ protected:
 
 protected:
 	Point	_startPos;
-	Vector	_deltaPos;
-	double	_height;
+	Vector2	_deltaPos;
+	float	_height;
 	int		_jumps;
 	Point	_prevPos;
 };
@@ -215,9 +215,9 @@ class JumpTo :
 {
 public:
 	explicit JumpTo(
-		double duration,		/* 持续时长 */
+		float duration,		/* 持续时长 */
 		const Point& pos,		/* 目的坐标 */
-		double height,			/* 跳跃高度 */
+		float height,			/* 跳跃高度 */
 		int jumps = 1			/* 跳跃次数 */
 	);
 
@@ -246,14 +246,14 @@ class ScaleBy :
 {
 public:
 	explicit ScaleBy(
-		double duration,	/* 持续时长 */
-		double scale		/* 相对变化值 */
+		float duration,	/* 持续时长 */
+		float scale		/* 相对变化值 */
 	);
 
 	explicit ScaleBy(
-		double duration,	/* 持续时长 */
-		double scaleX,		/* 横向缩放相对变化值 */
-		double scaleY		/* 纵向缩放相对变化值 */
+		float duration,	/* 持续时长 */
+		float scaleX,		/* 横向缩放相对变化值 */
+		float scaleY		/* 纵向缩放相对变化值 */
 	);
 
 	// 获取该动作的拷贝对象
@@ -270,10 +270,10 @@ protected:
 	virtual void _update() override;
 
 protected:
-	double	_startScaleX;
-	double	_startScaleY;
-	double	_deltaX;
-	double	_deltaY;
+	float	_startScaleX;
+	float	_startScaleY;
+	float	_deltaX;
+	float	_deltaY;
 };
 
 
@@ -283,14 +283,14 @@ class ScaleTo :
 {
 public:
 	explicit ScaleTo(
-		double duration,	/* 持续时长 */
-		double scale		/* 目标值 */
+		float duration,	/* 持续时长 */
+		float scale		/* 目标值 */
 	);
 
 	explicit ScaleTo(
-		double duration,	/* 持续时长 */
-		double scaleX,		/* 横向缩放目标值 */
-		double scaleY		/* 纵向缩放目标值 */
+		float duration,	/* 持续时长 */
+		float scaleX,		/* 横向缩放目标值 */
+		float scaleY		/* 纵向缩放目标值 */
 	);
 
 	// 获取该动作的拷贝对象
@@ -308,8 +308,8 @@ protected:
 	virtual void _init() override;
 
 protected:
-	double	_endScaleX;
-	double	_endScaleY;
+	float	_endScaleX;
+	float	_endScaleY;
 };
 
 
@@ -319,8 +319,8 @@ class OpacityBy :
 {
 public:
 	explicit OpacityBy(
-		double duration,	/* 持续时长 */
-		double opacity		/* 相对变化值 */
+		float duration,	/* 持续时长 */
+		float opacity		/* 相对变化值 */
 	);
 
 	// 获取该动作的拷贝对象
@@ -337,8 +337,8 @@ protected:
 	virtual void _update() override;
 
 protected:
-	double _startVal;
-	double _deltaVal;
+	float _startVal;
+	float _deltaVal;
 };
 
 
@@ -348,8 +348,8 @@ class OpacityTo :
 {
 public:
 	explicit OpacityTo(
-		double duration,	/* 持续时长 */
-		double opacity		/* 目标值 */
+		float duration,	/* 持续时长 */
+		float opacity		/* 目标值 */
 	);
 
 	// 获取该动作的拷贝对象
@@ -367,7 +367,7 @@ protected:
 	virtual void _init() override;
 
 protected:
-	double _endVal;
+	float _endVal;
 };
 
 
@@ -378,7 +378,7 @@ class FadeIn :
 public:
 	// 创建淡入动作
 	explicit FadeIn(
-		double duration		/* 持续时长 */
+		float duration		/* 持续时长 */
 	)
 	: OpacityTo(duration, 1) 
 	{
@@ -393,7 +393,7 @@ class FadeOut :
 public:
 	// 创建淡出动作
 	explicit FadeOut(
-		double duration		/* 持续时长 */
+		float duration		/* 持续时长 */
 	)
 	: OpacityTo(duration, 0) 
 	{
@@ -407,8 +407,8 @@ class RotateBy :
 {
 public:
 	explicit RotateBy(
-		double duration,	/* 持续时长 */
-		double rotation		/* 相对变化值 */
+		float duration,	/* 持续时长 */
+		float rotation		/* 相对变化值 */
 	);
 
 	// 获取该动作的拷贝对象
@@ -425,8 +425,8 @@ protected:
 	virtual void _update() override;
 
 protected:
-	double _startVal;
-	double _deltaVal;
+	float _startVal;
+	float _deltaVal;
 };
 
 
@@ -436,8 +436,8 @@ class RotateTo :
 {
 public:
 	explicit RotateTo(
-		double duration,	/* 持续时长 */
-		double rotation		/* 目标值 */
+		float duration,	/* 持续时长 */
+		float rotation		/* 目标值 */
 	);
 
 	// 获取该动作的拷贝对象
@@ -455,7 +455,7 @@ protected:
 	virtual void _init() override;
 
 protected:
-	double _endVal;
+	float _endVal;
 };
 
 
@@ -465,7 +465,7 @@ class Delay :
 {
 public:
 	explicit Delay(
-		double duration	/* 延迟时长（秒） */
+		float duration	/* 延迟时长（秒） */
 	);
 
 	// 获取该动作的拷贝对象
@@ -488,8 +488,8 @@ protected:
 	virtual void _resetTime() override;
 
 protected:
-	double _delay;
-	double _delta;
+	float _delay;
+	float _delta;
 };
 
 
@@ -665,11 +665,11 @@ public:
 	);
 
 	explicit Animation(
-		double interval						/* 帧间隔（秒） */
+		float interval						/* 帧间隔（秒） */
 	);
 
 	explicit Animation(
-		double interval,					/* 帧间隔（秒） */
+		float interval,					/* 帧间隔（秒） */
 		const std::vector<Image*>& frames	/* 关键帧数组 */
 	);
 
@@ -686,14 +686,14 @@ public:
 	);
 
 	// 获取帧间隔
-	double getInterval() const;
+	float getInterval() const;
 
 	// 获取关键帧
 	const std::vector<Image*>& getFrames() const;
 
 	// 设置每一帧的时间间隔
 	void setInterval(
-		double interval		/* 帧间隔（秒） */
+		float interval		/* 帧间隔（秒） */
 	);
 
 	// 获取帧动画的拷贝对象
@@ -703,7 +703,7 @@ public:
 	Animation * reverse() const;
 
 protected:
-	double	_interval;
+	float	_interval;
 	std::vector<Image*> _frames;
 };
 

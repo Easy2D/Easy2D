@@ -168,12 +168,12 @@ bool easy2d::Player::isPlaying(int resNameId, const String& resType)
 	return false;
 }
 
-double easy2d::Player::getVolume()
+float easy2d::Player::getVolume()
 {
 	return s_fMusicVolume;
 }
 
-void easy2d::Player::setVolume(double volume)
+void easy2d::Player::setVolume(float volume)
 {
 	s_fMusicVolume = min(max(float(volume), -224), 224);
 	for (auto pair : GetMusicFileList())

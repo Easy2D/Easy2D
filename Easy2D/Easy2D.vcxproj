@@ -2,10 +2,10 @@
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="include\e2daction.h" />
+    <ClInclude Include="include\e2dmath.h" />
     <ClInclude Include="include\easy2d.h" />
     <ClInclude Include="include\e2dbase.h" />
     <ClInclude Include="include\e2dcommon.h" />
-    <ClInclude Include="include\e2dcollider.h" />
     <ClInclude Include="include\e2dmacros.h" />
     <ClInclude Include="include\e2dmanager.h" />
     <ClInclude Include="include\e2dnode.h" />
@@ -40,22 +40,17 @@
     <ClCompile Include="src\Base\Renderer.cpp" />
     <ClCompile Include="src\Base\Time.cpp" />
     <ClCompile Include="src\Base\Window.cpp" />
-    <ClCompile Include="src\Collider\Collider.cpp" />
-    <ClCompile Include="src\Collider\CircleCollider.cpp" />
-    <ClCompile Include="src\Collider\EllipseCollider.cpp" />
-    <ClCompile Include="src\Collider\RectCollider.cpp" />
-    <ClCompile Include="src\Collider\Collision.cpp" />
     <ClCompile Include="src\Common\Color.cpp" />
     <ClCompile Include="src\Common\Font.cpp" />
     <ClCompile Include="src\Common\Object.cpp" />
-    <ClCompile Include="src\Common\Point.cpp" />
-    <ClCompile Include="src\Common\Rect.cpp" />
     <ClCompile Include="src\Common\Scene.cpp" />
-    <ClCompile Include="src\Common\Size.cpp" />
     <ClCompile Include="src\Common\Image.cpp" />
     <ClCompile Include="src\Manager\ActionManager.cpp" />
-    <ClCompile Include="src\Manager\ColliderManager.cpp" />
     <ClCompile Include="src\Manager\SceneManager.cpp" />
+    <ClCompile Include="src\Math\Matrix.cpp" />
+    <ClCompile Include="src\Math\Point.cpp" />
+    <ClCompile Include="src\Math\Rect.cpp" />
+    <ClCompile Include="src\Math\Size.cpp" />
     <ClCompile Include="src\Node\Button.cpp" />
     <ClCompile Include="src\Node\ToggleButton.cpp" />
     <ClCompile Include="src\Node\Menu.cpp" />

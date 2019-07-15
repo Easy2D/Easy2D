@@ -59,7 +59,7 @@ easy2d::Color easy2d::Shape::getLineColor() const
 	return _lineColor;
 }
 
-double easy2d::Shape::getStrokeWidth() const
+float easy2d::Shape::getStrokeWidth() const
 {
 	return _strokeWidth;
 }
@@ -79,7 +79,7 @@ void easy2d::Shape::setLineColor(Color lineColor)
 	_lineColor = lineColor;
 }
 
-void easy2d::Shape::setStrokeWidth(double strokeWidth)
+void easy2d::Shape::setStrokeWidth(float strokeWidth)
 {
 	_strokeWidth = float(strokeWidth) * 2;
 }

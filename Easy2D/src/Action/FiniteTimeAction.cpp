@@ -1,6 +1,6 @@
 #include <e2daction.h>
 
-easy2d::FiniteTimeAction::FiniteTimeAction(double duration)
+easy2d::FiniteTimeAction::FiniteTimeAction(float duration)
 	: _delta(0)
 	, _duration(max(duration, 0))
 {

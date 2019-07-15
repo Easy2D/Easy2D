@@ -16,9 +16,9 @@ static steady_clock::time_point s_tFixed;
 static milliseconds s_tExceptedInvertal;
 
 
-double easy2d::Time::getTotalTime()
+float easy2d::Time::getTotalTime()
 {
-	return duration_cast<microseconds>(s_tNow - s_tStart).count() / 1000.0 / 1000.0;
+	return duration_cast<microseconds>(s_tNow - s_tStart).count() / 1000.f / 1000.f;
 }
 
 unsigned int easy2d::Time::getTotalTimeMilliseconds()
@@ -26,9 +26,9 @@ unsigned int easy2d::Time::getTotalTimeMilliseconds()
 	return static_cast<unsigned int>(duration_cast<milliseconds>(s_tNow - s_tStart).count());
 }
 
-double easy2d::Time::getDeltaTime()
+float easy2d::Time::getDeltaTime()
 {
-	return duration_cast<microseconds>(s_tNow - s_tLast).count() / 1000.0 / 1000.0;
+	return duration_cast<microseconds>(s_tNow - s_tLast).count() / 1000.f / 1000.f;
 }
 
 unsigned int easy2d::Time::getDeltaTimeMilliseconds()

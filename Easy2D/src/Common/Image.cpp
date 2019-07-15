@@ -89,12 +89,12 @@ void easy2d::Image::crop(const Rect& cropRect)
 	}
 }
 
-double easy2d::Image::getWidth() const
+float easy2d::Image::getWidth() const
 {
 	return _cropRect.size.width;
 }
 
-double easy2d::Image::getHeight() const
+float easy2d::Image::getHeight() const
 {
 	return _cropRect.size.height;
 }
@@ -104,7 +104,7 @@ easy2d::Size easy2d::Image::getSize() const
 	return _cropRect.size;
 }
 
-double easy2d::Image::getSourceWidth() const
+float easy2d::Image::getSourceWidth() const
 {
 	if (_bitmap)
 	{
@@ -116,7 +116,7 @@ double easy2d::Image::getSourceWidth() const
 	}
 }
 
-double easy2d::Image::getSourceHeight() const
+float easy2d::Image::getSourceHeight() const
 {
 	if (_bitmap)
 	{
@@ -140,12 +140,12 @@ easy2d::Size easy2d::Image::getSourceSize() const
 	}
 }
 
-double easy2d::Image::getCropX() const
+float easy2d::Image::getCropX() const
 {
 	return _cropRect.origin.x;
 }
 
-double easy2d::Image::getCropY() const
+float easy2d::Image::getCropY() const
 {
 	return _cropRect.origin.y;
 }

@@ -1,7 +1,7 @@
 #include <e2dtransition.h>
 #include <e2dnode.h>
 
-easy2d::BoxTransition::BoxTransition(double duration)
+easy2d::BoxTransition::BoxTransition(float duration)
 	: Transition(duration)
 {
 }

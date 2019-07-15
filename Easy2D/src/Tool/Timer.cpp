@@ -10,7 +10,7 @@ namespace easy2d
 		explicit TimerEntity(
 			const easy2d::Function<void()>& func,
 			const easy2d::String& name,
-			double delay,
+			float delay,
 			int updateTimes,
 			bool paused
 		)
@@ -59,8 +59,8 @@ namespace easy2d
 		bool	stopped;
 		int		runTimes;
 		int		totalTimes;
-		double	delay;
-		double	lastTime;
+		float	delay;
+		float	lastTime;
 		easy2d::String name;
 		easy2d::Function<void()> callback;
 	};
@@ -69,7 +69,7 @@ namespace easy2d
 static std::vector<easy2d::TimerEntity*> s_vTimers;
 
 
-void easy2d::Timer::add(const Function<void()>& func, double delay, int updateTimes, bool paused, const String& name)
+void easy2d::Timer::add(const Function<void()>& func, float delay, int updateTimes, bool paused, const String& name)
 {
 	auto timer = gcnew TimerEntity(func, name, delay, updateTimes, paused);
 	s_vTimers.push_back(timer);
@@ -81,7 +81,7 @@ void easy2d::Timer::add(const Function<void()>& func, const String& name)
 	Timer::add(func, 0, -1, false, name);
 }
 
-void easy2d::Timer::start(double timeout, const Function<void()>& func)
+void easy2d::Timer::start(float timeout, const Function<void()>& func)
 {
 	Timer::add(func, timeout, -1, false, L"");
 }

@@ -16,7 +16,7 @@ easy2d::Color::Color()
 {
 }
 
-easy2d::Color::Color(double r, double g, double b)
+easy2d::Color::Color(float r, float g, float b)
 	: r(float(r))
 	, g(float(g))
 	, b(float(b))
@@ -24,7 +24,7 @@ easy2d::Color::Color(double r, double g, double b)
 {
 }
 
-easy2d::Color::Color(double r, double g, double b, double alpha)
+easy2d::Color::Color(float r, float g, float b, float alpha)
 	: r(float(r))
 	, g(float(g))
 	, b(float(b))
@@ -37,12 +37,12 @@ easy2d::Color::Color(UINT rgb)
 	_init(rgb, 1);
 }
 
-easy2d::Color::Color(UINT rgb, double alpha)
+easy2d::Color::Color(UINT rgb, float alpha)
 {
 	_init(rgb, alpha);
 }
 
-void easy2d::Color::_init(UINT rgb, double alpha)
+void easy2d::Color::_init(UINT rgb, float alpha)
 {
 	r = float((rgb & sc_redMask) >> sc_redShift) / 255.f;
 	g = float((rgb & sc_greenMask) >> sc_greenShift) / 255.f;

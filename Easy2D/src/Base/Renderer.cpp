@@ -713,12 +713,12 @@ void easy2d::Renderer::__render()
 	if (s_bShowFps && s_pTextFormat)
 	{
 		static int s_nRenderTimes = 0;
-		static double s_fLastRenderTime = 0;
+		static float s_fLastRenderTime = 0;
 		static String s_sFpsText;
 
 		++s_nRenderTimes;
 
-		double fDelay = Time::getTotalTime() - s_fLastRenderTime;
+		float fDelay = Time::getTotalTime() - s_fLastRenderTime;
 		if (fDelay >= 0.3)
 		{
 			wchar_t fpsText[20] = { 0 };

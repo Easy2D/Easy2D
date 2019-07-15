@@ -6,14 +6,14 @@ easy2d::RoundRectShape::RoundRectShape()
 {
 }
 
-easy2d::RoundRectShape::RoundRectShape(Size size, double radiusX, double radiusY)
+easy2d::RoundRectShape::RoundRectShape(Size size, float radiusX, float radiusY)
 	: _radiusX(float(radiusX))
 	, _radiusY(float(radiusY))
 {
 	this->setSize(size);
 }
 
-easy2d::RoundRectShape::RoundRectShape(Point topLeft, Size size, double radiusX, double radiusY)
+easy2d::RoundRectShape::RoundRectShape(Point topLeft, Size size, float radiusX, float radiusY)
 	: _radiusX(float(radiusX))
 	, _radiusY(float(radiusY))
 {
@@ -26,22 +26,22 @@ easy2d::RoundRectShape::~RoundRectShape()
 {
 }
 
-double easy2d::RoundRectShape::getRadiusX() const
+float easy2d::RoundRectShape::getRadiusX() const
 {
 	return _radiusX;
 }
 
-double easy2d::RoundRectShape::getRadiusY() const
+float easy2d::RoundRectShape::getRadiusY() const
 {
 	return _radiusY;
 }
 
-void easy2d::RoundRectShape::setRadiusX(double radiusX)
+void easy2d::RoundRectShape::setRadiusX(float radiusX)
 {
 	_radiusX = float(radiusX);
 }
 
-void easy2d::RoundRectShape::setRadiusY(double radiusY)
+void easy2d::RoundRectShape::setRadiusY(float radiusY)
 {
 	_radiusY = float(radiusY);
 }

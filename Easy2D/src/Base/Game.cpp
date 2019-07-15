@@ -1,7 +1,6 @@
 #include <e2dbase.h>
 #include <e2dmanager.h>
 #include <e2dtool.h>
-#include <e2dcollider.h>
 
 
 // 控制游戏终止
@@ -43,7 +42,11 @@ bool easy2d::Game::init(const String& name, const String& mutexName)
 	}
 
 	// 初始化 COM 组件
-	CoInitialize(nullptr);
+	if (FAILED(CoInitialize(nullptr)))
+	{
+		E2D_ERROR(L"初始化 COM 组件失败");
+		return false;
+	}
 
 	// 创建设备无关资源
 	if (!Renderer::__createDeviceIndependentResources())
@@ -187,8 +190,6 @@ void easy2d::Game::destroy()
 	SceneManager::__uninit();
 	// 删除输入监听器
 	Input::__clearListeners();
-	// 删除碰撞监听器
-	Collision::__clearListeners();
 	// 删除动作
 	ActionManager::__uninit();
 	// 回收音乐播放器资源

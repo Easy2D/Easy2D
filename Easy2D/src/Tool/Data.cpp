@@ -6,7 +6,7 @@ void easy2d::Data::saveInt(const String& key, int value, const String& field)
 	::WritePrivateProfileString(field.c_str(), key.c_str(), std::to_wstring(value).c_str(), Path::getDataSavePath().c_str());
 }
 
-void easy2d::Data::saveDouble(const String& key, double value, const String& field)
+void easy2d::Data::saveDouble(const String& key, float value, const String& field)
 {
 	::WritePrivateProfileString(field.c_str(), key.c_str(), std::to_wstring(value).c_str(), Path::getDataSavePath().c_str());
 }
@@ -26,7 +26,7 @@ int easy2d::Data::getInt(const String& key, int defaultValue, const String& fiel
 	return ::GetPrivateProfileInt(field.c_str(), key.c_str(), defaultValue, Path::getDataSavePath().c_str());
 }
 
-double easy2d::Data::getDouble(const String& key, double defaultValue, const String& field)
+float easy2d::Data::getDouble(const String& key, float defaultValue, const String& field)
 {
 	wchar_t temp[32] = { 0 };
 	::GetPrivateProfileString(field.c_str(), key.c_str(), std::to_wstring(defaultValue).c_str(), temp, 31, Path::getDataSavePath().c_str());

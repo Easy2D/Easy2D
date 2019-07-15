@@ -6,7 +6,7 @@ easy2d::Size::Size()
 	height = 0;
 }
 
-easy2d::Size::Size(double width, double height)
+easy2d::Size::Size(float width, float height)
 {
 	this->width = width;
 	this->height = height;
@@ -28,12 +28,12 @@ easy2d::Size easy2d::Size::operator-(Size const & size) const
 	return Size(width - size.width, height - size.height);
 }
 
-easy2d::Size easy2d::Size::operator*(double const & value) const
+easy2d::Size easy2d::Size::operator*(float const & value) const
 {
 	return Size(width * value, height * value);
 }
 
-easy2d::Size easy2d::Size::operator/(double const & value) const
+easy2d::Size easy2d::Size::operator/(float const & value) const
 {
 	return Size(width / value, height / value);
 }

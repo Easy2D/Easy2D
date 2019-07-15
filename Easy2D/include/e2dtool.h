@@ -18,13 +18,13 @@ public:
 	}
 
 	// 取得范围内的一个浮点数随机数
-	static inline double range(float min, float max) 
+	static inline float range(float min, float max) 
 	{ 
 		return easy2d::Random::__randomReal(min, max); 
 	}
 
 	// 取得范围内的一个浮点数随机数
-	static inline double range(double min, double max) 
+	static inline double range(double min, double max)
 	{ 
 		return easy2d::Random::__randomReal(min, max); 
 	}
@@ -102,7 +102,7 @@ public:
 
 	// 设置音量
 	bool setVolume(
-		double volume
+		float volume
 	);
 
 	// 获取 IXAudio2SourceVoice 对象
@@ -224,11 +224,11 @@ public:
 	);
 
 	// 获取音量
-	static double getVolume();
+	static float getVolume();
 
 	// 设置音量
 	static void setVolume(
-		double volume			/* 音量范围为 -224 ~ 224，0 是静音，1 是正常音量 */
+		float volume			/* 音量范围为 -224 ~ 224，0 是静音，1 是正常音量 */
 	);
 
 	// 暂停所有音乐
@@ -260,7 +260,7 @@ public:
 	// 添加定时器
 	static void add(
 		const Function<void()>& func,	/* 执行函数 */
-		double delay,					/* 时间间隔（秒） */
+		float delay,					/* 时间间隔（秒） */
 		int times = -1,					/* 执行次数（设 -1 为永久执行） */
 		bool paused = false,			/* 是否暂停 */
 		const String& name = L""		/* 定时器名称 */
@@ -268,7 +268,7 @@ public:
 
 	// 在足够延迟后执行指定函数
 	static void start(
-		double timeout,					/* 等待的时长（秒） */
+		float timeout,					/* 等待的时长（秒） */
 		const Function<void()>& func	/* 执行的函数 */
 	);
 
@@ -371,10 +371,10 @@ public:
 		const String& field = L"Defalut"	/* 字段名称 */
 	);
 
-	// 保存 double 类型的值
+	// 保存 float 类型的值
 	static void saveDouble(
 		const String& key,					/* 键值 */
-		double value,						/* 数据 */
+		float value,						/* 数据 */
 		const String& field = L"Defalut"	/* 字段名称 */
 	);
 
@@ -400,11 +400,11 @@ public:
 		const String& field = L"Defalut"	/* 字段名称 */
 	);
 
-	// 获取 double 类型的值
+	// 获取 float 类型的值
 	// （若不存在则返回 defaultValue 参数的值）
-	static double getDouble(
+	static float getDouble(
 		const String& key,					/* 键值 */
-		double defaultValue,				/* 默认值 */
+		float defaultValue,				/* 默认值 */
 		const String& field = L"Defalut"	/* 字段名称 */
 	);
 
