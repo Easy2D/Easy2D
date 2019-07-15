@@ -21,7 +21,7 @@ bool easy2d::Window::__init()
 	wcex.hInstance = HINST_THISCOMPONENT;
 	wcex.hbrBackground = nullptr;
 	wcex.lpszMenuName = nullptr;
-	wcex.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
+	wcex.hCursor = nullptr;
 
 	RegisterClassEx(&wcex);
 

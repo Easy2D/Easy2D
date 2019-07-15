@@ -42,7 +42,7 @@ void easy2d::Rect::setRect(float x, float y, float width, float height)
 
 bool easy2d::Rect::containsPoint(const Point& point) const
 {
-	if (point.x >= origin.x && point.x <= (origin.y + size.height)
+	if (point.x >= origin.x && point.x <= (origin.x + size.width)
 		&& point.y >= origin.y && point.y <= (origin.y + size.height))
 	{
 		return true;

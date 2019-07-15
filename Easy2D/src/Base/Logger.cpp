@@ -1,8 +1,6 @@
 #include <e2dbase.h>
 #include <iostream>
 #include <fstream>
-#include <ctime>
-#include <iomanip>
 
 namespace
 {
@@ -17,15 +15,6 @@ namespace
 
 namespace 
 {
-	std::wostream& OutPrefix(std::wostream& out)
-	{
-		std::time_t unix = std::time(nullptr);
-		std::tm tmbuf;
-		localtime_s(&tmbuf, &unix);
-		out << std::put_time(&tmbuf, L"[easy2d] %H:%M:%S ");
-		return out;
-	}
-
 	void Output(std::wostream& os, const wchar_t* prompt, const wchar_t* format, va_list args)
 	{
 		if (s_bEnable)
@@ -33,7 +22,6 @@ namespace
 			static wchar_t tempBuffer[1024 * 3 + 1];
 
 			std::wstringstream ss;
-			ss << OutPrefix;
 
 			if (prompt)
 				ss << prompt;
