@@ -6,12 +6,13 @@
 // 所有的 Object 对象都应在被使用时（例如 Text 添加到了场景中）
 // 调用 retain 函数保证该对象不被删除，并在不再使用时调用 release 函数
 
-// 对象管理池
-static std::set<easy2d::Object*> s_vObjectPool;
-// 标志释放池执行状态
-static bool s_bNotifyed = false;
+namespace
+{
+	std::set<easy2d::Object*> s_vObjectPool;
+	bool s_bNotifyed = false;
+}
 
-void easy2d::GC::__update()
+void easy2d::GC::flush()
 {
 	if (!s_bNotifyed) return;
 
@@ -20,7 +21,6 @@ void easy2d::GC::__update()
 	{
 		if ((*iter)->getRefCount() <= 0)
 		{
-			(*iter)->onDestroy();
 			delete (*iter);
 			iter = s_vObjectPool.erase(iter);
 		}
@@ -31,16 +31,18 @@ void easy2d::GC::__update()
 	}
 }
 
-void easy2d::GC::__clear()
+void easy2d::GC::clear()
 {
-	for (auto pObj : s_vObjectPool)
+	std::set<Object*> releaseThings;
+	releaseThings.swap(s_vObjectPool);
+
+	for (auto pObj : releaseThings)
 	{
-		delete pObj;
+		pObj->release();
 	}
-	s_vObjectPool.clear();
 }
 
-void easy2d::GC::__add(easy2d::Object * pObject)
+void easy2d::GC::trace(easy2d::Object * pObject)
 {
 	if (pObject)
 	{
@@ -51,10 +53,4 @@ void easy2d::GC::__add(easy2d::Object * pObject)
 void easy2d::GC::notify()
 {
 	s_bNotifyed = true;
-}
-
-void easy2d::GC::flush()
-{
-	GC::notify();
-	GC::__update();
 }

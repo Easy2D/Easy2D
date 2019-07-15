@@ -43,6 +43,12 @@ easy2d::Node::Node()
 
 easy2d::Node::~Node()
 {
+	ActionManager::__clearAllBindedWith(this);
+	ColliderManager::__removeCollider(_collider);
+	for (auto child : _children)
+	{
+		GC::release(child);
+	}
 }
 
 void easy2d::Node::_update()
@@ -922,16 +928,6 @@ void easy2d::Node::setDefaultPiovt(double defaultPiovtX, double defaultPiovtY)
 void easy2d::Node::setDefaultCollider(Collider::Type type)
 {
 	s_fDefaultColliderType = type;
-}
-
-void easy2d::Node::onDestroy()
-{
-	ActionManager::__clearAllBindedWith(this);
-	ColliderManager::__removeCollider(_collider);
-	for (auto child : _children)
-	{
-		GC::release(child);
-	}
 }
 
 void easy2d::Node::resumeAllActions()

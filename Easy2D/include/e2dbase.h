@@ -470,10 +470,21 @@ public:
 // 垃圾回收装置
 class GC
 {
-	friend class Game;
-	friend class Object;
-
 public:
+	// 将对象放入 GC 池
+	static void trace(
+		Object* pObject
+	);
+
+	// 激活 GC
+	static void notify();
+
+	// 清理对象
+	static void clear();
+
+	// 更新 GC
+	static void flush();
+
 	// 保留对象
 	template <typename Type>
 	static inline void retain(Type*& p)
@@ -494,24 +505,6 @@ public:
 			p = nullptr;
 		}
 	}
-
-	// 通知 GC 回收垃圾内存
-	static void notify();
-
-	// 手动回收垃圾内存
-	static void flush();
-
-private:
-	// 将对象放入 GC
-	static void __add(
-		Object * pObject
-	);
-
-	// 更新 GC
-	static void __update();
-
-	// 清空所有对象
-	static void __clear();
 };
 
 
@@ -529,7 +522,7 @@ public:
 	}
 
 	template <typename _Ty>
-	_Ty* operator- (_Ty* newObj) const
+	inline _Ty* operator- (_Ty* newObj) const
 	{
 		if (newObj)
 		{

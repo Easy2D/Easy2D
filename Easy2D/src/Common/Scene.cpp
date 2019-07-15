@@ -17,6 +17,7 @@ easy2d::Scene::Scene()
 
 easy2d::Scene::~Scene()
 {
+	GC::release(_root);
 }
 
 void easy2d::Scene::_render()
@@ -89,9 +90,4 @@ easy2d::Node * easy2d::Scene::getRoot() const
 void easy2d::Scene::showCollider(bool visiable)
 {
 	_colliderVisiable = visiable;
-}
-
-void easy2d::Scene::onDestroy()
-{
-	GC::release(_root);
 }

@@ -11,6 +11,10 @@ easy2d::Spawn::Spawn(const std::vector<Action*>& actions)
 
 easy2d::Spawn::~Spawn()
 {
+	for (auto action : _actions)
+	{
+		GC::release(action);
+	}
 }
 
 void easy2d::Spawn::_init()
@@ -24,15 +28,6 @@ void easy2d::Spawn::_init()
 			action->_target = _target;
 			action->_init();
 		}
-	}
-}
-
-void easy2d::Spawn::onDestroy()
-{
-	Action::onDestroy();
-	for (auto action : _actions)
-	{
-		GC::release(action);
 	}
 }
 

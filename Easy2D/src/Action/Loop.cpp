@@ -17,6 +17,7 @@ easy2d::Loop::Loop(Action * action, int times /* = -1 */)
 
 easy2d::Loop::~Loop()
 {
+	GC::release(_action);
 }
 
 easy2d::Loop * easy2d::Loop::clone() const
@@ -88,12 +89,6 @@ void easy2d::Loop::reset()
 
 	if (_action) _action->reset();
 	_times = 0;
-}
-
-void easy2d::Loop::onDestroy()
-{
-	Action::onDestroy();
-	GC::release(_action);
 }
 
 void easy2d::Loop::_resetTime()

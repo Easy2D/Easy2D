@@ -20,17 +20,14 @@ easy2d::Transition::~Transition()
 {
 	SafeRelease(_outLayer);
 	SafeRelease(_inLayer);
+
+	GC::release(_outScene);
+	GC::release(_inScene);
 }
 
 bool easy2d::Transition::isDone()
 {
 	return _end;
-}
-
-void easy2d::Transition::onDestroy()
-{
-	GC::release(_outScene);
-	GC::release(_inScene);
 }
 
 void easy2d::Transition::_init(Scene * prev, Scene * next)

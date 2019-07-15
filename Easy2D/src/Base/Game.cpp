@@ -137,7 +137,7 @@ void easy2d::Game::start()
 		else
 		{
 			Time::__sleep();			// 挂起线程
-			GC::__update();				// 刷新内存池
+			GC::flush();				// 刷新内存池
 		}
 	}
 
@@ -194,7 +194,7 @@ void easy2d::Game::destroy()
 	// 回收音乐播放器资源
 	Player::__uninit();
 	// 删除所有对象
-	GC::__clear();
+	GC::clear();
 	// 清空图片缓存
 	Image::clearCache();
 	// 回收音乐相关资源

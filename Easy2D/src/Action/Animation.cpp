@@ -24,19 +24,15 @@ easy2d::Animation::Animation(double interval, const std::vector<Image*>& frames)
 
 easy2d::Animation::~Animation()
 {
+	for (auto frame : _frames)
+	{
+		GC::release(frame);
+	}
 }
 
 void easy2d::Animation::setInterval(double interval)
 {
 	_interval = max(interval, 0);
-}
-
-void easy2d::Animation::onDestroy()
-{
-	for (auto frame : _frames)
-	{
-		GC::release(frame);
-	}
 }
 
 void easy2d::Animation::add(Image * frame)

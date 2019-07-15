@@ -40,6 +40,7 @@ easy2d::Sprite::Sprite(int resNameId, const String& resType, const Rect& cropRec
 
 easy2d::Sprite::~Sprite()
 {
+	GC::release(_image);
 }
 
 bool easy2d::Sprite::open(Image * image)
@@ -123,10 +124,4 @@ void easy2d::Sprite::onRender()
 			)
 		);
 	}
-}
-
-void easy2d::Sprite::onDestroy()
-{
-	Node::onDestroy();
-	GC::release(_image);
 }

@@ -13,6 +13,10 @@ easy2d::Sequence::Sequence(const std::vector<Action*>& actions)
 
 easy2d::Sequence::~Sequence()
 {
+	for (auto action : _actions)
+	{
+		GC::release(action);
+	}
 }
 
 void easy2d::Sequence::_init()
@@ -28,15 +32,6 @@ void easy2d::Sequence::_init()
 	}
 	// 初始化第一个动作
 	_actions[0]->_init();
-}
-
-void easy2d::Sequence::onDestroy()
-{
-	Action::onDestroy();
-	for (auto action : _actions)
-	{
-		GC::release(action);
-	}
 }
 
 void easy2d::Sequence::_update()

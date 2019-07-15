@@ -396,9 +396,6 @@ public:
 		Collider::Type type
 	);
 
-	// 销毁对象
-	virtual void onDestroy() override;
-
 protected:
 	// 更新节点
 	void _update();
@@ -515,9 +512,6 @@ public:
 
 	// 渲染精灵
 	virtual void onRender() override;
-
-	// 销毁对象
-	virtual void onDestroy() override;
 
 protected:
 	Image * _image;

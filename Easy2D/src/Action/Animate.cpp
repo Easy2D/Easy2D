@@ -16,6 +16,7 @@ easy2d::Animate::Animate(Animation * animation)
 
 easy2d::Animate::~Animate()
 {
+	GC::release(_animation);
 }
 
 easy2d::Animation * easy2d::Animate::getAnimation() const
@@ -86,12 +87,6 @@ void easy2d::Animate::reset()
 {
 	Action::reset();
 	_frameIndex = 0;
-}
-
-void easy2d::Animate::onDestroy()
-{
-	Action::onDestroy();
-	GC::release(_animation);
 }
 
 easy2d::Animate * easy2d::Animate::clone() const

@@ -276,9 +276,6 @@ public:
 	// 获取引用计数
 	int getRefCount() const;
 
-	// 销毁对象
-	virtual void onDestroy() {}
-
 private:
 	int _refCount;
 };
@@ -455,9 +452,6 @@ public:
 	void showCollider(
 		bool visiable = true
 	);
-
-	// 销毁对象
-	virtual void onDestroy() override;
 
 protected:
 	// 渲染场景画面

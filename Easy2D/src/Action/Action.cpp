@@ -52,10 +52,6 @@ easy2d::Node * easy2d::Action::getTarget()
 	return _target;
 }
 
-void easy2d::Action::onDestroy()
-{
-}
-
 void easy2d::Action::reset()
 {
 	_initialized = false;

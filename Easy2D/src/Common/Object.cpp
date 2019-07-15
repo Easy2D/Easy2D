@@ -13,7 +13,7 @@ easy2d::Object::~Object()
 
 void easy2d::Object::autorelease()
 {
-	GC::__add(this);
+	GC::trace(this);
 }
 
 void easy2d::Object::retain()

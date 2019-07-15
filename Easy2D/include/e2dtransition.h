@@ -22,9 +22,6 @@ public:
 	// 场景过渡动画是否结束
 	bool isDone();
 
-	// 销毁对象
-	virtual void onDestroy() override;
-
 protected:
 	// 初始化场景过渡动画
 	virtual void _init(
