@@ -65,7 +65,7 @@ public:
 	virtual String getName() const;
 
 	// 获取节点名称的 Hash 值
-	virtual unsigned int getHashName() const;
+	virtual size_t getHashName() const;
 
 	// 获取节点绘图顺序
 	virtual int getOrder() const;
@@ -428,7 +428,7 @@ protected:
 
 protected:
 	String		_name;
-	unsigned	_hashName;
+	size_t		_hashName;
 	float		_posX;
 	float		_posY;
 	float		_width;

@@ -1,7 +1,7 @@
 #include <e2dtool.h>
 #include <map>
 
-typedef std::map<UINT, easy2d::Music *> MusicMap;
+typedef std::map<size_t, easy2d::Music *> MusicMap;
 
 static MusicMap& GetMusicFileList()
 {
@@ -20,7 +20,7 @@ static float s_fMusicVolume = 1.0;
 
 bool easy2d::Player::preload(const String& filePath)
 {
-	UINT hash = std::hash<String>{}(filePath);
+	size_t hash = std::hash<String>{}(filePath);
 
 	if (GetMusicFileList().end() != GetMusicFileList().find(hash))
 	{
@@ -33,7 +33,7 @@ bool easy2d::Player::preload(const String& filePath)
 		if (music->open(filePath))
 		{
 			music->setVolume(s_fMusicVolume);
-			GetMusicFileList().insert(std::pair<UINT, Music *>(hash, music));
+			GetMusicFileList().insert(std::pair<size_t, Music *>(hash, music));
 			return true;
 		}
 		else
@@ -58,7 +58,7 @@ bool easy2d::Player::preload(int resNameId, const String& resType)
 		if (music->open(resNameId, resType))
 		{
 			music->setVolume(s_fMusicVolume);
-			GetMusicResList().insert(std::pair<UINT, Music *>(resNameId, music));
+			GetMusicResList().insert(std::pair<size_t, Music *>(resNameId, music));
 			return true;
 		}
 		else
@@ -74,7 +74,7 @@ bool easy2d::Player::play(const String& filePath, int nLoopCount)
 {
 	if (Player::preload(filePath))
 	{
-		UINT hash = std::hash<String>{}(filePath);
+		size_t hash = std::hash<String>{}(filePath);
 		auto music = GetMusicFileList()[hash];
 		if (music->play(nLoopCount))
 		{
@@ -102,7 +102,7 @@ void easy2d::Player::pause(const String& filePath)
 	if (filePath.empty())
 		return;
 
-	UINT hash = std::hash<String>{}(filePath);
+	size_t hash = std::hash<String>{}(filePath);
 
 	if (GetMusicFileList().end() != GetMusicFileList().find(hash))
 		GetMusicFileList()[hash]->pause();
@@ -119,7 +119,7 @@ void easy2d::Player::resume(const String& filePath)
 	if (filePath.empty())
 		return;
 
-	UINT hash = std::hash<String>{}(filePath);
+	size_t hash = std::hash<String>{}(filePath);
 
 	if (GetMusicFileList().end() != GetMusicFileList().find(hash))
 		GetMusicFileList()[hash]->resume();
@@ -136,7 +136,7 @@ void easy2d::Player::stop(const String& filePath)
 	if (filePath.empty())
 		return;
 
-	UINT hash = std::hash<String>{}(filePath);
+	size_t hash = std::hash<String>{}(filePath);
 
 	if (GetMusicFileList().end() != GetMusicFileList().find(hash))
 		GetMusicFileList()[hash]->stop();
@@ -153,7 +153,7 @@ bool easy2d::Player::isPlaying(const String& filePath)
 	if (filePath.empty())
 		return false;
 
-	UINT hash = std::hash<String>{}(filePath);
+	size_t hash = std::hash<String>{}(filePath);
 
 	if (GetMusicFileList().end() != GetMusicFileList().find(hash))
 		return GetMusicFileList()[hash]->isPlaying();

@@ -239,7 +239,7 @@ easy2d::String easy2d::Node::getName() const
 	return _name;
 }
 
-unsigned int easy2d::Node::getHashName() const
+size_t easy2d::Node::getHashName() const
 {
 	return _hashName;
 }
@@ -654,7 +654,7 @@ easy2d::Scene * easy2d::Node::getParentScene() const
 std::vector<easy2d::Node*> easy2d::Node::getChildren(const String& name) const
 {
 	std::vector<Node*> vChildren;
-	unsigned int hash = std::hash<String>{}(name);
+	size_t hash = std::hash<String>{}(name);
 
 	for (auto child : _children)
 	{
@@ -669,7 +669,7 @@ std::vector<easy2d::Node*> easy2d::Node::getChildren(const String& name) const
 
 easy2d::Node * easy2d::Node::getChild(const String& name) const
 {
-	unsigned int hash = std::hash<String>{}(name);
+	size_t hash = std::hash<String>{}(name);
 
 	for (auto child : _children)
 	{
@@ -739,7 +739,7 @@ void easy2d::Node::removeChildren(const String& childName)
 	}
 
 	// º∆À„√˚≥∆ Hash ÷µ
-	unsigned int hash = std::hash<String>{}(childName);
+	size_t hash = std::hash<String>{}(childName);
 
 	size_t size = _children.size();
 	for (size_t i = 0; i < size; ++i)

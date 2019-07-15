@@ -187,7 +187,7 @@ bool easy2d::Path::createFolder(const String& dirPath)
 	}
 
 	wchar_t tmpDirPath[_MAX_PATH] = { 0 };
-	int length = dirPath.length();
+	int length = (int)dirPath.length();
 
 	for (int i = 0; i < length; ++i)
 	{

@@ -2,7 +2,7 @@
 #include <e2dnode.h>
 #include <e2dtool.h>
 
-typedef std::pair<UINT, UINT> HashPair;
+typedef std::pair<size_t, size_t> HashPair;
 
 static std::vector<easy2d::Listener*> s_vListeners;	// ¼àÌýÆ÷ÈÝÆ÷
 static bool s_bCollisionEnable = false;				// Åö×²´¥·¢×´Ì¬
@@ -37,7 +37,7 @@ bool easy2d::Collision::isCollidable(Node * node1, Node * node2)
 
 bool easy2d::Collision::isCollidable(const String & name1, const String & name2)
 {
-	UINT hashName1 = std::hash<String>{}(name1), hashName2 = std::hash<String>{}(name2);
+	size_t hashName1 = std::hash<String>{}(name1), hashName2 = std::hash<String>{}(name2);
 	HashPair pair1 = HashPair(hashName1, hashName2), pair2 = HashPair(hashName2, hashName1);
 	for (auto& pair : s_sCollisionList)
 	{
