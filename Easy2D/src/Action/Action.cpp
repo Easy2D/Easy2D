@@ -8,12 +8,10 @@ easy2d::Action::Action()
 	, _target(nullptr)
 	, _last(0)
 {
-	ActionManager::__add(this);
 }
 
 easy2d::Action::~Action()
 {
-	ActionManager::__remove(this);
 }
 
 bool easy2d::Action::isRunning()

@@ -92,15 +92,6 @@ public:
 		const String& name
 	);
 
-	// 继续所有动作
-	static void resumeAll();
-
-	// 暂停所有动作
-	static void pauseAll();
-
-	// 停止所有动作
-	static void stopAll();
-
 	// 获取所有名称相同的动作
 	static std::vector<Action *> get(
 		const String& name
@@ -112,16 +103,6 @@ public:
 private:
 	// 更新动作状态
 	static void __update();
-
-	// 添加动作
-	static void __add(
-		Action * action
-	);
-
-	// 删除动作
-	static void __remove(
-		Action * action
-	);
 
 	// 继续绑定在节点上的所有动作
 	static void __resumeAllBindedWith(

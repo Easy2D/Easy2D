@@ -18,6 +18,7 @@
 
 
 #include <e2dmacros.h>
+#include <e2dmath.h>
 #include <e2dcommon.h>
 #include <e2dbase.h>
 #include <e2dmanager.h>
