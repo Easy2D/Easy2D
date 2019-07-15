@@ -1,5 +1,10 @@
 #include <e2dbase.h>
 
+//
+// gcnew helper
+//
+easy2d::__gc_helper::GCNewHelper easy2d::__gc_helper::GCNewHelper::instance;
+
 // GC 释放池的实现机制：
 // Object 类中的引用计数（_refCount）在一定程度上防止了内存泄漏
 // 它记录了对象被使用的次数，当计数为 0 时，GC 会自动释放这个对象

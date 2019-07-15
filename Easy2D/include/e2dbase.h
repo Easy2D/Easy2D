@@ -512,28 +512,29 @@ public:
 // GC macros
 //
 
-class E2D_GCNewHelper
+namespace __gc_helper
 {
-public:
-	static inline E2D_GCNewHelper& GetInstance()
+	class GCNewHelper
 	{
-		static E2D_GCNewHelper helper;
-		return helper;
-	}
-
-	template <typename _Ty>
-	inline _Ty* operator- (_Ty* newObj) const
-	{
-		if (newObj)
+	public:
+		template <typename _Ty>
+		inline _Ty* operator<< (_Ty* newObj) const
 		{
-			newObj->autorelease();
+			if (newObj)
+			{
+				newObj->autorelease();
+			}
+			return newObj;
 		}
-		return newObj;
-	}
-};
+
+		// 使用 static 变量而不是 static inline 函数
+		// 让 IntelliSense 正常工作
+		static GCNewHelper instance;
+	};
+}
 
 #ifndef gcnew
-#	define gcnew E2D_GCNewHelper::GetInstance() - new (std::nothrow)
+#	define gcnew __gc_helper::GCNewHelper::instance << new (std::nothrow)
 #endif
 
 
