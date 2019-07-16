@@ -40,7 +40,7 @@ git clone https://github.com/nomango/easy2d.git
 
 然后就可以在你自己的项目中使用 Easy2D 的功能了。
 
-> 注意：Easy2D 必须先编译生成 .lib 文件
+> 注意：必须先把 Easy2D 项目编译生成 .lib 文件
 
 ## Next plan
 
