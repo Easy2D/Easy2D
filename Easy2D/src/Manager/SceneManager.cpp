@@ -1,5 +1,6 @@
 #include <e2dmanager.h>
 #include <e2dbase.h>
+#include <e2dnode.h>
 #include <e2dtransition.h>
 
 static bool s_bSaveCurrScene = true;
@@ -89,6 +90,14 @@ std::stack<easy2d::Scene*> easy2d::SceneManager::getSceneStack()
 bool easy2d::SceneManager::isTransitioning()
 {
 	return s_pTransition != nullptr;
+}
+
+void easy2d::SceneManager::dispatch(Event* evt)
+{
+	if (s_pCurrScene)
+	{
+		s_pCurrScene->dispatch(evt);
+	}
 }
 
 void easy2d::SceneManager::__update()

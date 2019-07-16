@@ -1,5 +1,7 @@
 #include <e2dbase.h>
 #include <e2dmanager.h>
+#include <e2dnode.h>
+#include <Windowsx.h>
 #include <imm.h>
 #pragma comment (lib ,"imm32.lib")
 
@@ -266,6 +268,79 @@ LRESULT easy2d::Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
 	switch (message)
 	{
+
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+	{
+		KeyDownEvent evt(Key(wParam), int(lParam & 0xFF));
+		SceneManager::dispatch(&evt);
+	}
+	break;
+
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+	{
+		KeyUpEvent evt(Key(wParam), int(lParam & 0xFF));
+		SceneManager::dispatch(&evt);
+	}
+	break;
+
+	case WM_LBUTTONUP:
+	case WM_MBUTTONUP:
+	case WM_RBUTTONUP:
+	{
+		Mouse btn = Mouse::Left;
+		if (message == WM_LBUTTONUP) { btn = Mouse::Left; }
+		else if (message == WM_RBUTTONUP) { btn = Mouse::Right; }
+		else if (message == WM_MBUTTONUP) { btn = Mouse::Middle; }
+
+		MouseUpEvent evt(
+			static_cast<float>(GET_X_LPARAM(lParam)),
+			static_cast<float>(GET_Y_LPARAM(lParam)),
+			btn
+		);
+		SceneManager::dispatch(&evt);
+	}
+	break;
+
+	case WM_LBUTTONDOWN:
+	case WM_MBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+	{
+		Mouse btn = Mouse::Left;
+		if (message == WM_LBUTTONDOWN) { btn = Mouse::Left; }
+		else if (message == WM_RBUTTONDOWN) { btn = Mouse::Right; }
+		else if (message == WM_MBUTTONDOWN) { btn = Mouse::Middle; }
+
+		MouseDownEvent evt(
+			static_cast<float>(GET_X_LPARAM(lParam)),
+			static_cast<float>(GET_Y_LPARAM(lParam)),
+			btn
+		);
+		SceneManager::dispatch(&evt);
+	}
+	break;
+
+	case WM_MOUSEMOVE:
+	{
+		MouseMoveEvent evt(
+			static_cast<float>(GET_X_LPARAM(lParam)),
+			static_cast<float>(GET_Y_LPARAM(lParam))
+		);
+		SceneManager::dispatch(&evt);
+	}
+	break;
+
+	case WM_MOUSEWHEEL:
+	{
+		MouseWheelEvent evt(
+			static_cast<float>(GET_X_LPARAM(lParam)),
+			static_cast<float>(GET_Y_LPARAM(lParam)),
+			GET_WHEEL_DELTA_WPARAM(wParam) / (float)WHEEL_DELTA
+		);
+		SceneManager::dispatch(&evt);
+	}
+	break;
 
 	// 处理窗口大小变化消息
 	case WM_SIZE:

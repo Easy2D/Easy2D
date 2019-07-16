@@ -73,7 +73,6 @@ void easy2d::Timer::add(const Function<void()>& func, float delay, int updateTim
 {
 	auto timer = gcnew TimerEntity(func, name, delay, updateTimes, paused);
 	s_vTimers.push_back(timer);
-	GC::retain(timer);
 }
 
 void easy2d::Timer::add(const Function<void()>& func, const String& name)

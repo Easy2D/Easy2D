@@ -9,10 +9,9 @@ class Game;
 class Input;
 class Renderer;
 class Node;
+class Scene;
 class Timer;
 class Action;
-class Player;
-class Collider;
 class Transition;
 
 
@@ -46,6 +45,9 @@ public:
 
 	// 是否正在进行转场动作
 	static bool isTransitioning();
+
+	// 分发事件
+	static void dispatch(Event* evt);
 
 private:
 	// 更新场景内容

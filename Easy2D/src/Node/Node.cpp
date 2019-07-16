@@ -28,7 +28,7 @@ easy2d::Node::Node()
 	, _parentScene(nullptr)
 	, _hashName(0)
 	, _needSort(false)
-	, _needTransform(false)
+	, _dirtyTransform(false)
 	, _autoUpdate(true)
 	, _positionFixed(false)
 {
@@ -36,7 +36,9 @@ easy2d::Node::Node()
 
 easy2d::Node::~Node()
 {
+	__clearListeners();
 	ActionManager::__clearAllBindedWith(this);
+
 	for (auto child : _children)
 	{
 		child->_parent = nullptr;
@@ -138,19 +140,14 @@ void easy2d::Node::_render()
 	}
 }
 
-void easy2d::Node::_drawCollider()
-{
-	// 绘制所有子节点的几何碰撞体
-	for (auto child : _children)
-	{
-		child->_drawCollider();
-	}
-}
-
 void easy2d::Node::_updateTransform() const
 {
-	if (!_needTransform)
+	if (!_dirtyTransform)
 		return;
+
+	// 标志已执行过变换
+	_dirtyTransform = false;
+	_dirtyInverseTransform = true;
 
 	_transform = Matrix32::scaling(_scaleX, _scaleY)
 		* Matrix32::skewing(_skewAngleX, _skewAngleY)
@@ -164,13 +161,20 @@ void easy2d::Node::_updateTransform() const
 		_transform = _transform * _parent->_transform;
 	}
 
-	// 标志已执行过变换
-	_needTransform = false;
-
 	// 通知子节点进行转换
 	for (auto& child : _children)
 	{
-		child->_needTransform = true;
+		child->_dirtyTransform = true;
+	}
+}
+
+void easy2d::Node::_updateInverseTransform() const
+{
+	_updateTransform();
+	if (_dirtyInverseTransform)
+	{
+		_inverseTransform = Matrix32::invert(_transform);
+		_dirtyInverseTransform = false;
 	}
 }
 
@@ -361,7 +365,7 @@ void easy2d::Node::setPos(float x, float y)
 
 	_posX = float(x);
 	_posY = float(y);
-	_needTransform = true;
+	_dirtyTransform = true;
 }
 
 void easy2d::Node::setPosFixed(bool fixed)
@@ -370,7 +374,7 @@ void easy2d::Node::setPosFixed(bool fixed)
 		return;
 
 	_positionFixed = fixed;
-	_needTransform = true;
+	_dirtyTransform = true;
 }
 
 void easy2d::Node::movePosX(float x)
@@ -415,7 +419,7 @@ void easy2d::Node::setScale(float scaleX, float scaleY)
 
 	_scaleX = float(scaleX);
 	_scaleY = float(scaleY);
-	_needTransform = true;
+	_dirtyTransform = true;
 }
 
 void easy2d::Node::setSkewX(float angleX)
@@ -435,7 +439,7 @@ void easy2d::Node::setSkew(float angleX, float angleY)
 
 	_skewAngleX = float(angleX);
 	_skewAngleY = float(angleY);
-	_needTransform = true;
+	_dirtyTransform = true;
 }
 
 void easy2d::Node::setRotation(float angle)
@@ -444,7 +448,7 @@ void easy2d::Node::setRotation(float angle)
 		return;
 
 	_rotation = float(angle);
-	_needTransform = true;
+	_dirtyTransform = true;
 }
 
 void easy2d::Node::setOpacity(float opacity)
@@ -474,7 +478,7 @@ void easy2d::Node::setAnchor(float anchorX, float anchorY)
 
 	_anchorX = min(max(float(anchorX), 0), 1);
 	_anchorY = min(max(float(anchorY), 0), 1);
-	_needTransform = true;
+	_dirtyTransform = true;
 }
 
 void easy2d::Node::setWidth(float width)
@@ -494,7 +498,7 @@ void easy2d::Node::setSize(float width, float height)
 
 	_width = float(width);
 	_height = float(height);
-	_needTransform = true;
+	_dirtyTransform = true;
 }
 
 void easy2d::Node::setSize(Size size)
@@ -551,7 +555,7 @@ void easy2d::Node::addChild(Node * child, int order  /* = 0 */)
 		// 更新子节点透明度
 		child->_updateOpacity();
 		// 更新节点转换
-		child->_needTransform = true;
+		child->_dirtyTransform = true;
 		// 更新子节点排序
 		_needSort = true;
 	}
@@ -571,6 +575,12 @@ easy2d::Matrix32 easy2d::Node::getTransform() const
 	return _transform;
 }
 
+easy2d::Matrix32 easy2d::Node::getInverseTransform() const
+{
+	_updateInverseTransform();
+	return _inverseTransform;
+}
+
 easy2d::Node * easy2d::Node::getParent() const
 {
 	return _parent;
@@ -579,6 +589,15 @@ easy2d::Node * easy2d::Node::getParent() const
 easy2d::Scene * easy2d::Node::getParentScene() const
 {
 	return _parentScene;
+}
+
+bool easy2d::Node::containsPoint(Point const& point)
+{
+	if (_width == 0.f || _height == 0.f)
+		return false;
+
+	Point local = getInverseTransform().transform(point);
+	return getBounds().containsPoint(local);
 }
 
 std::vector<easy2d::Node*> easy2d::Node::getChildren(const String& name) const
@@ -766,6 +785,16 @@ void easy2d::Node::stopAllActions()
 	ActionManager::__stopAllBindedWith(this);
 }
 
+void easy2d::Node::dispatch(Event* evt)
+{
+	__updateListeners(evt);
+
+	for (const auto& child : _children)
+	{
+		child->dispatch(evt);
+	}
+}
+
 void easy2d::Node::setVisiable(bool value)
 {
 	_visiable = value;
@@ -791,4 +820,136 @@ void easy2d::Node::_setParentScene(Scene * scene)
 	{
 		child->_setParentScene(scene);
 	}
+}
+
+easy2d::Listener* easy2d::Node::addListener(const Listener::Callback& func, const String& name, bool paused)
+{
+	auto listener = gcnew Listener(func, name, paused);
+	GC::retain(listener);
+	_listeners.push_back(listener);
+	return listener;
+}
+
+void easy2d::Node::addListener(Listener* listener)
+{
+	if (listener)
+	{
+		auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
+		if (iter == _listeners.end())
+		{
+			GC::retain(listener);
+			_listeners.push_back(listener);
+		}
+	}
+}
+
+void easy2d::Node::removeListener(Listener* listener)
+{
+	if (listener)
+	{
+		auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
+		if (iter != _listeners.end())
+		{
+			GC::release(listener);
+			_listeners.erase(iter);
+		}
+	}
+}
+
+void easy2d::Node::stopListener(const String& name)
+{
+	if (_listeners.empty() || name.empty())
+		return;
+
+	for (auto listener : _listeners)
+	{
+		if (listener->getName() == name)
+		{
+			listener->stop();
+		}
+	}
+}
+
+void easy2d::Node::startListener(const String& name)
+{
+	if (_listeners.empty() || name.empty())
+		return;
+
+	for (auto listener : _listeners)
+	{
+		if (listener->getName() == name)
+		{
+			listener->start();
+		}
+	}
+}
+
+void easy2d::Node::removeListener(const String& name)
+{
+	if (_listeners.empty() || name.empty())
+		return;
+
+	for (auto listener : _listeners)
+	{
+		if (listener->getName() == name)
+		{
+			listener->done();
+		}
+	}
+}
+
+void easy2d::Node::stopAllListeners()
+{
+	for (auto listener : _listeners)
+	{
+		listener->stop();
+	}
+}
+
+void easy2d::Node::startAllListeners()
+{
+	for (auto listener : _listeners)
+	{
+		listener->start();
+	}
+}
+
+void easy2d::Node::removeAllListeners()
+{
+	for (auto listener : _listeners)
+	{
+		listener->done();
+	}
+}
+
+void easy2d::Node::__updateListeners(Event* evt)
+{
+	if (_listeners.empty() || Game::isPaused())
+		return;
+
+	for (size_t i = 0; i < _listeners.size(); ++i)
+	{
+		auto listener = _listeners[i];
+		// 清除已停止的监听器
+		if (listener->isDone())
+		{
+			GC::release(listener);
+			_listeners.erase(_listeners.begin() + i);
+		}
+		else
+		{
+			// 更新监听器
+			listener->handle(evt);
+			++i;
+		}
+	}
+}
+
+void easy2d::Node::__clearListeners()
+{
+	for (auto listener : _listeners)
+	{
+		GC::release(listener);
+	}
+	_listeners.clear();
 }

@@ -1,5 +1,4 @@
 #include <e2dbase.h>
-#include <e2dtool.h>
 #include <e2dmanager.h>
 
 #include <dinput.h>
@@ -18,8 +17,6 @@ namespace
 	DIMOUSESTATE s_MouseState;							// 鼠标信息存储结构体
 	DIMOUSESTATE s_MouseRecordState;					// 鼠标信息二级缓冲
 	POINT s_MousePosition;								// 鼠标位置存储结构体
-
-	std::vector<easy2d::Listener*> s_vListeners;		// 监听器容器
 }
 
 using namespace easy2d;
@@ -104,12 +101,6 @@ void Input::__uninit()
 
 void easy2d::Input::__update()
 {
-	Input::__updateDeviceState();
-	Input::__updateListeners();
-}
-
-void Input::__updateDeviceState()
-{
 	if (s_KeyboardDevice)
 	{
 		HRESULT hr = s_KeyboardDevice->Poll();
@@ -124,7 +115,7 @@ void Input::__updateDeviceState()
 			for (int i = 0; i < BUFFER_SIZE; ++i)
 				s_KeyRecordBuffer[i] = s_KeyBuffer[i];
 
-			s_KeyboardDevice->GetDeviceState(sizeof(s_KeyBuffer), (void**)&s_KeyBuffer);
+			s_KeyboardDevice->GetDeviceState(sizeof(s_KeyBuffer), (void**)& s_KeyBuffer);
 		}
 	}
 
@@ -140,7 +131,7 @@ void Input::__updateDeviceState()
 		else
 		{
 			s_MouseRecordState = s_MouseState;
-			s_MouseDevice->GetDeviceState(sizeof(s_MouseState), (void**)&s_MouseState);
+			s_MouseDevice->GetDeviceState(sizeof(s_MouseState), (void**)& s_MouseState);
 		}
 	}
 
@@ -222,136 +213,4 @@ float Input::getMouseDeltaY()
 float Input::getMouseDeltaZ()
 {
 	return (float)s_MouseState.lZ;
-}
-
-easy2d::Listener * easy2d::Input::addListener(const Function<void()>& func, const String& name, bool paused)
-{
-	auto listener = gcnew Listener(func, name, paused);
-	GC::retain(listener);
-	s_vListeners.push_back(listener);
-	return listener;
-}
-
-void easy2d::Input::addListener(Listener * listener)
-{
-	if (listener)
-	{
-		auto iter = std::find(s_vListeners.begin(), s_vListeners.end(), listener);
-		if (iter == s_vListeners.end())
-		{
-			GC::retain(listener);
-			s_vListeners.push_back(listener);
-		}
-	}
-}
-
-void easy2d::Input::removeListener(Listener * listener)
-{
-	if (listener)
-	{
-		auto iter = std::find(s_vListeners.begin(), s_vListeners.end(), listener);
-		if (iter != s_vListeners.end())
-		{
-			GC::release(listener);
-			s_vListeners.erase(iter);
-		}
-	}
-}
-
-void easy2d::Input::stopListener(const String& name)
-{
-	if (s_vListeners.empty() || name.empty())
-		return;
-
-	for (auto listener : s_vListeners)
-	{
-		if (listener->_name == name)
-		{
-			listener->stop();
-		}
-	}
-}
-
-void easy2d::Input::startListener(const String& name)
-{
-	if (s_vListeners.empty() || name.empty())
-		return;
-
-	for (auto listener : s_vListeners)
-	{
-		if (listener->_name == name)
-		{
-			listener->start();
-		}
-	}
-}
-
-void easy2d::Input::removeListener(const String& name)
-{
-	if (s_vListeners.empty() || name.empty())
-		return;
-
-	for (auto listener : s_vListeners)
-	{
-		if (listener->_name == name)
-		{
-			listener->_stopped = true;
-		}
-	}
-}
-
-void easy2d::Input::stopAllListeners()
-{
-	for (auto listener : s_vListeners)
-	{
-		listener->stop();
-	}
-}
-
-void easy2d::Input::startAllListeners()
-{
-	for (auto listener : s_vListeners)
-	{
-		listener->start();
-	}
-}
-
-void easy2d::Input::removeAllListeners()
-{
-	for (auto listener : s_vListeners)
-	{
-		listener->_stopped = true;
-	}
-}
-
-void easy2d::Input::__updateListeners()
-{
-	if (s_vListeners.empty() || Game::isPaused())
-		return;
-
-	for (size_t i = 0; i < s_vListeners.size(); ++i)
-	{
-		auto listener = s_vListeners[i];
-		// 清除已停止的监听器
-		if (listener->_stopped)
-		{
-			GC::release(listener);
-			s_vListeners.erase(s_vListeners.begin() + i);
-		}
-		else
-		{
-			// 更新监听器
-			listener->_update();
-			++i;
-		}
-	}
-}
-
-void easy2d::Input::__clearListeners()
-{
-	for (auto listener : s_vListeners)
-	{
-		GC::release(listener);
-	}
-	s_vListeners.clear();
 }

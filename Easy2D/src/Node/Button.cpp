@@ -9,36 +9,25 @@ easy2d::Button::Button()
 	, _state(ButtonState::Normal)
 	, _enable(true)
 	, _isSelected(false)
+	, _isHover(false)
+	, _isPressed(false)
 	, _normal(nullptr)
 	, _mouseover(nullptr)
 	, _selected(nullptr)
 	, _disabled(nullptr)
 {
+	addListener(std::bind(&Button::updateStatus, this, std::placeholders::_1), L"按钮功能监听器");
 }
 
 easy2d::Button::Button(Node * normal, const Callback& func)
-	: _func(nullptr)
-	, _state(ButtonState::Normal)
-	, _enable(true)
-	, _isSelected(false)
-	, _normal(nullptr)
-	, _mouseover(nullptr)
-	, _selected(nullptr)
-	, _disabled(nullptr)
+	: Button()
 {
 	this->setNormal(normal);
 	this->setClickFunc(func);
 }
 
 easy2d::Button::Button(Node * normal, Node * selected, const Callback& func)
-	: _func(nullptr)
-	, _state(ButtonState::Normal)
-	, _enable(true)
-	, _isSelected(false)
-	, _normal(nullptr)
-	, _mouseover(nullptr)
-	, _selected(nullptr)
-	, _disabled(nullptr)
+	: Button()
 {
 	this->setNormal(normal);
 	this->setSelected(selected);
@@ -46,14 +35,7 @@ easy2d::Button::Button(Node * normal, Node * selected, const Callback& func)
 }
 
 easy2d::Button::Button(Node * normal, Node * mouseover, Node * selected, const Callback& func)
-	: _func(nullptr)
-	, _state(ButtonState::Normal)
-	, _enable(true)
-	, _isSelected(false)
-	, _normal(nullptr)
-	, _mouseover(nullptr)
-	, _selected(nullptr)
-	, _disabled(nullptr)
+	: Button()
 {
 	this->setNormal(normal);
 	this->setMouseOver(mouseover);
@@ -62,14 +44,7 @@ easy2d::Button::Button(Node * normal, Node * mouseover, Node * selected, const C
 }
 
 easy2d::Button::Button(Node * normal, Node * mouseover, Node * selected, Node * disabled, const Callback& func)
-	: _func(nullptr)
-	, _state(ButtonState::Normal)
-	, _enable(true)
-	, _isSelected(false)
-	, _normal(nullptr)
-	, _mouseover(nullptr)
-	, _selected(nullptr)
-	, _disabled(nullptr)
+	: Button()
 {
 	this->setNormal(normal);
 	this->setMouseOver(mouseover);
@@ -175,62 +150,6 @@ void easy2d::Button::setClickFunc(const Callback& func)
 	_func = func;
 }
 
-void easy2d::Button::onUpdate()
-{
-	Node::onUpdate();
-
-	if (SceneManager::isTransitioning())
-		return;
-
-	if (_enable && _visiable && _normal)
-	{
-		if (Input::isRelease(Input::Mouse::Left))
-		{
-			// 鼠标左键抬起时，判断鼠标坐标是否在按钮内部
-			if (_isSelected &&
-				_normal->getBoundingBox().containsPoint(Input::getMousePos()))
-			{
-				_runCallback();
-			}
-			// 标记 _isSelected 为 false
-			_isSelected = false;
-		}
-
-		if (Input::isPress(Input::Mouse::Left))
-		{
-			if (_normal->getBoundingBox().containsPoint(Input::getMousePos()))
-			{
-				// 鼠标左键按下，且位于按钮内时，标记 _isSelected 为 true
-				_isSelected = true;
-				return;
-			}
-		}
-
-		if (_isSelected && Input::isDown(Input::Mouse::Left))
-		{
-			if (_normal->getBoundingBox().containsPoint(Input::getMousePos()))
-			{
-				_setState(ButtonState::Selected);
-				Window::setCursor(Window::Cursor::Hand);
-				return;
-			}
-		}
-		else if (_normal->getBoundingBox().containsPoint(Input::getMousePos()))
-		{
-			_setState(ButtonState::Mouseover);
-			Window::setCursor(Window::Cursor::Hand);
-			return;
-		}
-
-		_setState(ButtonState::Normal);
-	}
-
-	if (_visiable && !_enable && _normal && _normal->getBoundingBox().containsPoint(Input::getMousePos()))
-	{
-		Window::setCursor(Window::Cursor::No);
-	}
-}
-
 void easy2d::Button::_setState(ButtonState state)
 {
 	if (_state != state)
@@ -280,5 +199,73 @@ void easy2d::Button::_runCallback()
 	if (_func)
 	{
 		_func();
+	}
+}
+
+void easy2d::Button::updateStatus(Event* evt)
+{
+	if (SceneManager::isTransitioning())
+		return;
+
+	if (_visiable && _normal)
+	{
+		if (evt->type == Event::Type::MouseMove)
+		{
+			MouseMoveEvent* mme = dynamic_cast<MouseMoveEvent*>(evt);
+			if (!evt->target && containsPoint(Point{ mme->x, mme->y }))
+			{
+				evt->target = this;
+
+				if (!_isHover)
+				{
+					// Mouseover
+					_isHover = true;
+
+					if (_enable)
+					{
+						_setState(ButtonState::Mouseover);
+						Window::setCursor(Window::Cursor::Hand);
+					}
+					else
+					{
+						Window::setCursor(Window::Cursor::No);
+					}
+				}
+			}
+			else if (_isHover)
+			{
+				// Mouseout
+				_isHover = false;
+				_isPressed = false;
+
+				if (_enable)
+				{
+					_setState(ButtonState::Normal);
+				}
+				Window::setCursor(Window::Cursor::Normal);
+			}
+		}
+
+		if (evt->type == Event::Type::MouseDown && _isHover)
+		{
+			_isPressed = true;
+			evt->target = this;
+			if (_enable)
+			{
+				_setState(ButtonState::Selected);
+				Window::setCursor(Window::Cursor::Hand);
+			}
+		}
+
+		if (evt->type == Event::Type::MouseUp && _isPressed)
+		{
+			_isPressed = false;
+			evt->target = this;
+
+			if (_enable)
+			{
+				_runCallback();
+			}
+		}
 	}
 }

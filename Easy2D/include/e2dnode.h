@@ -7,23 +7,22 @@ namespace easy2d
 
 class Action;
 class Transition;
-class ColliderManager;
+class SceneManager;
 
 class Node :
 	public Object
 {
 	friend class Scene;
-	friend class Collider;
 	friend class Transition;
-	friend class ColliderManager;
+	friend class SceneManager;
 
 public:
 	// 节点属性
 	struct Property
 	{
 		bool visable;		// 可见性
-		float posX;		// X 坐标
-		float posY;		// Y 坐标
+		float posX;			// X 坐标
+		float posY;			// Y 坐标
 		float width;		// 宽度
 		float height;		// 高度
 		float opacity;		// 透明度
@@ -31,7 +30,7 @@ public:
 		float anchorY;		// 锚点 Y 坐标
 		float scaleX;		// 横向缩放
 		float scaleY;		// 纵向缩放
-		float rotation;	// 旋转角度
+		float rotation;		// 旋转角度
 		float skewAngleX;	// 横向倾斜角度
 		float skewAngleY;	// 纵向倾斜角度
 	};
@@ -122,11 +121,17 @@ public:
 	// 获取二维变换矩阵
 	Matrix32 getTransform() const;
 
+	// 获取二维变换逆矩阵
+	Matrix32 getInverseTransform() const;
+
 	// 获取父节点
 	Node * getParent() const;
 
 	// 获取节点所在场景
 	Scene * getParentScene() const;
+
+	// 是否包含点坐标
+	bool containsPoint(Point const& point);
 
 	// 获取所有名称相同的子节点
 	std::vector<Node*> getChildren(
@@ -341,6 +346,9 @@ public:
 		int order = 0						/* 渲染顺序 */
 	);
 
+	// 分发事件
+	void dispatch(Event* evt);
+
 	// 执行动作
 	void runAction(
 		Action * action
@@ -370,6 +378,47 @@ public:
 	// 停止所有动作
 	void stopAllActions();
 
+	// 添加输入监听
+	Listener* addListener(
+		const Listener::Callback& func,	/* 监听到用户输入时的执行函数 */
+		const String& name = L"",		/* 监听器名称 */
+		bool paused = false				/* 是否暂停 */
+	);
+
+	// 添加碰撞监听
+	void addListener(
+		Listener* listener		/* 监听器 */
+	);
+
+	// 移除监听器
+	void removeListener(
+		Listener* listener		/* 监听器 */
+	);
+
+	// 启动输入监听
+	void startListener(
+		const String& name
+	);
+
+	// 停止输入监听
+	void stopListener(
+		const String& name
+	);
+
+	// 移除输入监听
+	void removeListener(
+		const String& name
+	);
+
+	// 启动所有监听器
+	void startAllListeners();
+
+	// 停止所有监听器
+	void stopAllListeners();
+
+	// 移除所有监听器
+	void removeAllListeners();
+
 	// 修改节点的默认锚点位置
 	static void setDefaultPiovt(
 		float defaultPiovtX,
@@ -383,22 +432,28 @@ protected:
 	// 渲染节点
 	void _render();
 
-	// 渲染图形
-	void _drawCollider();
-
 	// 设置节点所在场景
 	void _setParentScene(
 		Scene * scene
 	);
 
-	// 更新节点二维矩阵
+	// 更新二维变换矩阵
 	void _updateTransform() const;
+
+	// 更新二维变换逆矩阵
+	void _updateInverseTransform() const;
 
 	// 子节点排序
 	void _sortChildren();
 
 	// 更新节点透明度
 	void _updateOpacity();
+
+	// 更新监听器
+	void __updateListeners(Event* evt);
+
+	// 清空监听器
+	void __clearListeners();
 
 protected:
 	bool		_visiable;
@@ -425,12 +480,36 @@ protected:
 	Node *		_parent;
 	
 	std::vector<Node*>	_children;
+	std::vector<Listener*> _listeners;
 
-	mutable bool		_needTransform;
+	mutable bool		_dirtyTransform;
 	mutable Matrix32	_transform;
+	mutable bool		_dirtyInverseTransform;
+	mutable Matrix32	_inverseTransform;
 };
 
 
+// 场景
+class Scene :
+	public Node
+{
+public:
+	Scene();
+
+	virtual ~Scene();
+
+	// 重写这个函数，它将在进入这个场景时自动执行
+	virtual void onEnter() {}
+
+	// 重写这个函数，它将在离开这个场景时自动执行
+	virtual void onExit() {}
+
+	// 重写这个函数，它将在关闭窗口时执行（返回 false 将阻止窗口关闭）
+	virtual bool onCloseWindow() { return true; }
+};
+
+
+// 精灵
 class Sprite :
 	public Node
 {
@@ -777,8 +856,6 @@ public:
 		const Callback& func
 	);
 
-	void onUpdate() override;
-
 protected:
 	// 按钮状态枚举
 	enum class ButtonState { Normal, Mouseover, Selected };
@@ -792,13 +869,17 @@ protected:
 	// 执行按钮函数对象
 	virtual void _runCallback();
 
+	void updateStatus(Event* evt);
+
 protected:
+	bool		_enable;
+	bool		_isSelected;
+	bool		_isHover;
+	bool		_isPressed;
 	Node *		_normal;
 	Node *		_mouseover;
 	Node *		_selected;
 	Node *		_disabled;
-	bool		_enable;
-	bool		_isSelected;
 	ButtonState	_state;
 	Callback	_func;
 };

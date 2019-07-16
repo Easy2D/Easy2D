@@ -87,7 +87,7 @@ void easy2d::Transition::_render()
 
 	if (_outScene)
 	{
-		Point rootPos = _outScene->getRoot()->getPos();
+		Point rootPos = _outScene->getPos();
 		auto clipRect = D2D1::RectF(
 			float(max(rootPos.x, 0)),
 			float(max(rootPos.y, 0)),
@@ -106,7 +106,7 @@ void easy2d::Transition::_render()
 
 	if (_inScene)
 	{
-		Point rootPos = _inScene->getRoot()->getPos();
+		Point rootPos = _inScene->getPos();
 		auto clipRect = D2D1::RectF(
 			float(max(rootPos.x, 0)),
 			float(max(rootPos.y, 0)),

@@ -41,9 +41,10 @@
     <ClCompile Include="src\Base\Time.cpp" />
     <ClCompile Include="src\Base\Window.cpp" />
     <ClCompile Include="src\Common\Color.cpp" />
+    <ClCompile Include="src\Common\Event.cpp" />
     <ClCompile Include="src\Common\Font.cpp" />
+    <ClCompile Include="src\Common\Listener.cpp" />
     <ClCompile Include="src\Common\Object.cpp" />
-    <ClCompile Include="src\Common\Scene.cpp" />
     <ClCompile Include="src\Common\Image.cpp" />
     <ClCompile Include="src\Manager\ActionManager.cpp" />
     <ClCompile Include="src\Manager\SceneManager.cpp" />
@@ -52,6 +53,7 @@
     <ClCompile Include="src\Math\Rect.cpp" />
     <ClCompile Include="src\Math\Size.cpp" />
     <ClCompile Include="src\Node\Button.cpp" />
+    <ClCompile Include="src\Node\Scene.cpp" />
     <ClCompile Include="src\Node\ToggleButton.cpp" />
     <ClCompile Include="src\Node\Menu.cpp" />
     <ClCompile Include="src\Node\Node.cpp" />
@@ -63,7 +65,6 @@
     <ClCompile Include="src\Node\Sprite.cpp" />
     <ClCompile Include="src\Node\Text.cpp" />
     <ClCompile Include="src\Tool\Data.cpp" />
-    <ClCompile Include="src\Tool\Listener.cpp" />
     <ClCompile Include="src\Tool\Music.cpp" />
     <ClCompile Include="src\Tool\Path.cpp" />
     <ClCompile Include="src\Tool\Player.cpp" />

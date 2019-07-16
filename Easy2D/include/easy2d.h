@@ -34,6 +34,3 @@
 #else
 #	pragma comment(lib, "libeasy2d.lib")
 #endif
-
-
-using namespace easy2d;

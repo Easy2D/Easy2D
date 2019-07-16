@@ -183,74 +183,6 @@ class Input
 	friend class Game;
 
 public:
-	// 鼠标键值
-	enum class Mouse : int
-	{
-		Left,		/* 鼠标左键 */
-		Right,		/* 鼠标右键 */
-		Middle		/* 鼠标中键 */
-	};
-
-
-	// 键盘键值
-	enum class Key : int
-	{
-		Up = 0xC8,
-		Left = 0xCB,
-		Right = 0xCD,
-		Down = 0xD0,
-		Enter = 0x1C,
-		Space = 0x39,
-		Esc = 0x01,
-		Q = 0x10,
-		W = 0x11,
-		E = 0x12,
-		R = 0x13,
-		T = 0x14,
-		Y = 0x15,
-		U = 0x16,
-		I = 0x17,
-		O = 0x18,
-		P = 0x19,
-		A = 0x1E,
-		S = 0x1F,
-		D = 0x20,
-		F = 0x21,
-		G = 0x22,
-		H = 0x23,
-		J = 0x24,
-		K = 0x25,
-		L = 0x26,
-		Z = 0x2C,
-		X = 0x2D,
-		C = 0x2E,
-		V = 0x2F,
-		B = 0x30,
-		N = 0x31,
-		M = 0x32,
-		Num1 = 0x02,
-		Num2 = 0x03,
-		Num3 = 0x04,
-		Num4 = 0x05,
-		Num5 = 0x06,
-		Num6 = 0x07,
-		Num7 = 0x08,
-		Num8 = 0x09,
-		Num9 = 0x0A,
-		Num0 = 0x0B,
-		Numpad7 = 0x47,
-		Numpad8 = 0x48,
-		Numpad9 = 0x49,
-		Numpad4 = 0x4B,
-		Numpad5 = 0x4C,
-		Numpad6 = 0x4D,
-		Numpad1 = 0x4F,
-		Numpad2 = 0x50,
-		Numpad3 = 0x51,
-		Numpad0 = 0x52
-	};
-
-public:
 	// 检测键盘某按键是否正被按下
 	static bool isDown(
 		Key key
@@ -299,47 +231,6 @@ public:
 	// 获得鼠标Z轴（鼠标滚轮）坐标增量
 	static float getMouseDeltaZ();
 
-	// 添加输入监听
-	static Listener * addListener(
-		const Function<void()>& func,		/* 监听到用户输入时的执行函数 */
-		const String& name = L"",	/* 监听器名称 */
-		bool paused = false			/* 是否暂停 */
-	);
-
-	// 添加碰撞监听
-	static void addListener(
-		Listener * listener			/* 监听器 */
-	);
-
-	// 移除监听器
-	static void removeListener(
-		Listener * listener			/* 监听器 */
-	);
-
-	// 启动输入监听
-	static void startListener(
-		const String& name
-	);
-
-	// 停止输入监听
-	static void stopListener(
-		const String& name
-	);
-
-	// 移除输入监听
-	static void removeListener(
-		const String& name
-	);
-
-	// 启动所有监听器
-	static void startAllListeners();
-
-	// 停止所有监听器
-	static void stopAllListeners();
-
-	// 移除所有监听器
-	static void removeAllListeners();
-
 private:
 	// 初始化 DirectInput 以及键盘鼠标设备
 	static bool __init();
@@ -347,17 +238,8 @@ private:
 	// 刷新输入信息
 	static void __update();
 
-	// 刷新设备状态
-	static void __updateDeviceState();
-
-	// 更新监听器
-	static void __updateListeners();
-
 	// 卸载 DirectInput
 	static void __uninit();
-
-	// 清空监听器
-	static void __clearListeners();
 };
 
 

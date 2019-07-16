@@ -34,6 +34,17 @@ template <typename _Fty>
 using Function = std::function<_Fty>;
 
 
+template<class Interface>
+inline void SafeRelease(Interface*& p)
+{
+	if (p != nullptr)
+	{
+		p->Release();
+		p = nullptr;
+	}
+}
+
+
 // 颜色
 class Color
 {
@@ -284,100 +295,199 @@ protected:
 };
 
 
-class Node;
-class SceneManager;
-class Transition;
-
-// 场景
-class Scene :
-	public Object
+// 鼠标键值
+enum class Mouse : int
 {
-	friend class SceneManager;
-	friend class Transition;
-
-public:
-	Scene();
-
-	virtual ~Scene();
-
-	// 重写这个函数，它将在进入这个场景时自动执行
-	virtual void onEnter() {}
-
-	// 重写这个函数，它将在离开这个场景时自动执行
-	virtual void onExit() {}
-
-	// 重写这个函数，它将在关闭窗口时执行（返回 false 将阻止窗口关闭）
-	virtual bool onCloseWindow() { return true; }
-
-	// 重写这个函数，它将在每一帧画面刷新时执行
-	virtual void onUpdate() {}
-
-	// 开启或禁用 onUpdate 函数
-	void setAutoUpdate(
-		bool bAutoUpdate
-	);
-
-	// 添加节点到场景
-	void add(
-		Node * child,	/* 要添加的节点 */
-		int zOrder = 0	/* 渲染顺序 */
-	);
-
-	// 添加多个节点到场景
-	virtual void add(
-		const std::vector<Node*>& nodes,	/* 节点数组 */
-		int order = 0						/* 渲染顺序 */
-	);
-
-	// 删除子节点
-	bool remove(
-		Node * child
-	);
-
-	// 获取所有名称相同的子节点
-	std::vector<Node*> get(
-		const String& name
-	) const;
-
-	// 获取名称相同的子节点
-	Node* getOne(
-		const String& name
-	) const;
-
-	// 获取所有子节点
-	const std::vector<Node*>& getAll() const;
-
-	// 获取根节点
-	Node * getRoot() const;
-
-	// 开启或关闭节点轮廓渲染
-	void showCollider(
-		bool visiable = true
-	);
-
-protected:
-	// 渲染场景画面
-	void _render();
-
-	// 更新场景内容
-	void _update();
-
-protected:
-	bool _autoUpdate;
-	bool _colliderVisiable;
-	Node * _root;
+	Left,		/* 鼠标左键 */
+	Right,		/* 鼠标右键 */
+	Middle		/* 鼠标中键 */
 };
 
 
-template<class Interface>
-inline void SafeRelease(Interface*& p)
+// 键盘键值
+enum class Key : int
 {
-	if (p != nullptr)
+	Up = 0xC8,
+	Left = 0xCB,
+	Right = 0xCD,
+	Down = 0xD0,
+	Enter = 0x1C,
+	Space = 0x39,
+	Esc = 0x01,
+	Q = 0x10,
+	W = 0x11,
+	E = 0x12,
+	R = 0x13,
+	T = 0x14,
+	Y = 0x15,
+	U = 0x16,
+	I = 0x17,
+	O = 0x18,
+	P = 0x19,
+	A = 0x1E,
+	S = 0x1F,
+	D = 0x20,
+	F = 0x21,
+	G = 0x22,
+	H = 0x23,
+	J = 0x24,
+	K = 0x25,
+	L = 0x26,
+	Z = 0x2C,
+	X = 0x2D,
+	C = 0x2E,
+	V = 0x2F,
+	B = 0x30,
+	N = 0x31,
+	M = 0x32,
+	Num1 = 0x02,
+	Num2 = 0x03,
+	Num3 = 0x04,
+	Num4 = 0x05,
+	Num5 = 0x06,
+	Num6 = 0x07,
+	Num7 = 0x08,
+	Num8 = 0x09,
+	Num9 = 0x0A,
+	Num0 = 0x0B,
+	Numpad7 = 0x47,
+	Numpad8 = 0x48,
+	Numpad9 = 0x49,
+	Numpad4 = 0x4B,
+	Numpad5 = 0x4C,
+	Numpad6 = 0x4D,
+	Numpad1 = 0x4F,
+	Numpad2 = 0x50,
+	Numpad3 = 0x51,
+	Numpad0 = 0x52
+};
+
+
+// 事件
+struct Event
+{
+	enum class Type
 	{
-		p->Release();
-		p = nullptr;
-	}
-}
+		MouseMove,
+		MouseDown,
+		MouseUp,
+		MouseWheel,
+		KeyDown,
+		KeyUp
+	} const type;
+	Object* target;
+
+	Event(Type type);
+
+	virtual ~Event();
+};
+
+struct MouseMoveEvent
+	: public Event
+{
+	MouseMoveEvent(float x, float y);
+
+	float x, y;
+};
+
+struct MouseDownEvent
+	: public Event
+{
+	MouseDownEvent(float x, float y, Mouse btn);
+
+	float x, y;
+	Mouse button;
+};
+
+struct MouseUpEvent
+	: public Event
+{
+	MouseUpEvent(float x, float y, Mouse btn);
+
+	float x, y;
+	Mouse button;
+};
+
+struct MouseWheelEvent
+	: public Event
+{
+	MouseWheelEvent(float x, float y, float delta);
+
+	float x, y;
+	float delta;
+};
+
+struct KeyDownEvent
+	: public Event
+{
+	KeyDownEvent(Key key, int count);
+
+	Key key;
+	int count;
+};
+
+struct KeyUpEvent
+	: public Event
+{
+	KeyUpEvent(Key key, int count);
+
+	Key key;
+	int count;
+};
+
+
+// 事件监听器
+class Listener
+	: public Object
+{
+	friend class Input;
+
+public:
+	using Callback = Function<void(Event*)>;
+
+	Listener();
+
+	Listener(
+		const Callback& func,
+		const String& name,
+		bool paused
+	);
+
+	// 启动监听
+	void start();
+
+	// 停止监听
+	void stop();
+
+	// 获取监听器运行状态
+	bool isRunning() const;
+
+	// 获取名称
+	String getName() const;
+
+	// 设置名称
+	void setName(
+		const String& name
+	);
+
+	// 设置监听回调函数
+	void setCallback(
+		const Callback& func
+	);
+
+	// 处理事件
+	virtual void handle(Event* evt);
+
+	void done();
+
+	bool isDone();
+
+protected:
+	bool _running;
+	bool _done;
+	String _name;
+	Callback _callback;
+};
 
 
 }

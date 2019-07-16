@@ -188,8 +188,6 @@ void easy2d::Game::destroy()
 
 	// 删除所有场景
 	SceneManager::__uninit();
-	// 删除输入监听器
-	Input::__clearListeners();
 	// 删除动作
 	ActionManager::__uninit();
 	// 回收音乐播放器资源

@@ -34,19 +34,19 @@ void easy2d::MoveTransition::_init(Scene * prev, Scene * next)
 		_startPos = Point(-width, 0);
 	}
 
-	if (_outScene) _outScene->getRoot()->setPos(0, 0);
-	_inScene->getRoot()->setPos(_startPos);
+	if (_outScene) _outScene->setPos(0, 0);
+	_inScene->setPos(_startPos);
 }
 
 void easy2d::MoveTransition::_updateCustom()
 {
 	if (_outScene)
 	{
-		_outScene->getRoot()->setPos(_posDelta * _delta);
+		_outScene->setPos(_posDelta * _delta);
 	}
 	if (_inScene)
 	{
-		_inScene->getRoot()->setPos(_startPos + _posDelta * _delta);
+		_inScene->setPos(_startPos + _posDelta * _delta);
 	}
 
 	if (_delta >= 1)
@@ -57,7 +57,6 @@ void easy2d::MoveTransition::_updateCustom()
 
 void easy2d::MoveTransition::_reset()
 {
-	if (_outScene) _outScene->getRoot()->setPos(0, 0);
-	_inScene->getRoot()->setPos(0, 0);
+	if (_outScene) _outScene->setPos(0, 0);
+	_inScene->setPos(0, 0);
 }
-

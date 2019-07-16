@@ -4,7 +4,7 @@
 namespace easy2d
 {
 
-
+class Scene;
 class SceneManager;
 
 

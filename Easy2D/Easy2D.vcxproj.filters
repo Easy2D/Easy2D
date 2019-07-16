@@ -45,9 +45,6 @@
     <ClCompile Include="src\Common\Object.cpp">
       <Filter>src\Common</Filter>
     </ClCompile>
-    <ClCompile Include="src\Common\Scene.cpp">
-      <Filter>src\Common</Filter>
-    </ClCompile>
     <ClCompile Include="src\Manager\ActionManager.cpp">
       <Filter>src\Manager</Filter>
     </ClCompile>
@@ -165,9 +162,6 @@
     <ClCompile Include="src\Base\GC.cpp">
       <Filter>src\Base</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tool\Listener.cpp">
-      <Filter>src\Tool</Filter>
-    </ClCompile>
     <ClCompile Include="src\Common\Font.cpp">
       <Filter>src\Common</Filter>
     </ClCompile>
@@ -215,6 +209,15 @@
     </ClCompile>
     <ClCompile Include="src\Math\Size.cpp">
       <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Listener.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Event.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Scene.cpp">
+      <Filter>src\Node</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

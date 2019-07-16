@@ -1,28 +1,26 @@
 #include <e2dcommon.h>
-#include <e2dtool.h>
-
 
 easy2d::Listener::Listener()
 	: _name()
 	, _callback()
 	, _running(true)
-	, _stopped(false)
+	, _done(false)
 {
 }
 
-easy2d::Listener::Listener(const Function<void()> & func, const String & name, bool paused)
+easy2d::Listener::Listener(const Callback& func, const String & name, bool paused)
 	: _name(name)
 	, _callback(func)
 	, _running(!paused)
-	, _stopped(false)
+	, _done(false)
 {
 }
 
-void easy2d::Listener::_update()
+void easy2d::Listener::handle(Event* evt)
 {
-	if (_callback)
+	if (_callback && _running)
 	{
-		_callback();
+		_callback(evt);
 	}
 }
 
@@ -41,9 +39,19 @@ void easy2d::Listener::setName(const String & name)
 	_name = name;
 }
 
-void easy2d::Listener::setFunc(const Function<void()> & func)
+void easy2d::Listener::setCallback(const Callback& func)
 {
 	_callback = func;
+}
+
+void easy2d::Listener::done()
+{
+	_done = true;
+}
+
+bool easy2d::Listener::isDone()
+{
+	return _done;
 }
 
 void easy2d::Listener::start()
