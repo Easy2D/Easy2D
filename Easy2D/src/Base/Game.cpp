@@ -144,7 +144,19 @@ void easy2d::Game::start()
 		}
 	}
 
-	s_bEndGame = true;
+	// 清除运行时产生的资源
+	{
+		// 删除动作
+		ActionManager::__uninit();
+		// 回收音乐播放器资源
+		Player::__uninit();
+		// 清空定时器
+		Timer::__uninit();
+		// 删除所有场景
+		SceneManager::__uninit();
+		// 清理对象
+		GC::clear();
+	}
 }
 
 void easy2d::Game::pause()
@@ -186,16 +198,6 @@ void easy2d::Game::destroy()
 	if (!s_bInitialized)
 		return;
 
-	// 删除所有场景
-	SceneManager::__uninit();
-	// 删除动作
-	ActionManager::__uninit();
-	// 回收音乐播放器资源
-	Player::__uninit();
-	// 清空定时器
-	Timer::__uninit();
-	// 删除所有对象
-	GC::clear();
 	// 清空图片缓存
 	Image::clearCache();
 	// 回收音乐相关资源
