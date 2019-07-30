@@ -515,12 +515,6 @@ bool easy2d::Renderer::__createDeviceIndependentResources()
 	);
 	E2D_ERROR_IF_FAILED(hr, L"Create ID2D1Factory failed");
 
-	// 工厂将返回当前的系统 DPI，这个值也将用来创建窗口
-	if (SUCCEEDED(hr))
-	{
-		s_pDirect2dFactory->GetDesktopDpi(&s_fDpiScaleX, &s_fDpiScaleY);
-	}
-
 	if (SUCCEEDED(hr))
 	{
 		hr = s_pDirect2dFactory->CreateStrokeStyle(
@@ -630,6 +624,8 @@ bool easy2d::Renderer::__createDeviceResources()
 	if (!s_pRenderTarget)
 	{
 		HWND hWnd = Window::getHWnd();
+
+		s_fDpiScaleX = s_fDpiScaleY = (float)::GetDpiForWindow(hWnd);
 
 		// 创建设备相关资源。这些资源应在 Direct3D 设备消失时重建，
 		// 比如当 isVisiable 被修改，等等

@@ -223,8 +223,8 @@ namespace easy2d
 		template <typename _Lty, typename _Rty>
 		inline Matrix32& operator= (MatrixMultiply<_Lty, _Rty> const& other)
 		{
-			for (int i = 0; i < 6; i++)
-				m[i] = other[i];
+			Matrix32 result(other);
+			(*this) = result;
 			return *this;
 		}
 

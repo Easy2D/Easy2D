@@ -15,8 +15,10 @@ class Game
 public:
 	// 初始化游戏
 	static bool init(
-		const String& name = L"",		/* 游戏英文名称 */
-		const String& mutexName = L""	/* 进程互斥体名称 */
+		const String& title = L"Easy2D",	/* 窗口标题 */
+		int width = 640,					/* 窗口宽度 */
+		int height = 480,					/* 窗口高度 */
+		const String& mutexName = L""		/* 进程互斥体名称 */
 	);
 
 	// 启动游戏
@@ -123,7 +125,11 @@ public:
 
 private:
 	// 初始化窗口
-	static bool __init();
+	static bool __init(
+		const String& title,
+		int width,
+		int height
+	);
 
 	// 重置窗口属性
 	static void __uninit();

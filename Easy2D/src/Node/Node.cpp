@@ -29,6 +29,7 @@ easy2d::Node::Node()
 	, _hashName(0)
 	, _needSort(false)
 	, _dirtyTransform(false)
+	, _dirtyInverseTransform(false)
 	, _autoUpdate(true)
 	, _positionFixed(false)
 {

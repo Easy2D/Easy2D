@@ -13,7 +13,7 @@ static bool s_bInitialized = false;
 static easy2d::String s_sGameName;
 
 
-bool easy2d::Game::init(const String& name, const String& mutexName)
+bool easy2d::Game::init(const String& title, int width, int height, const String& mutexName)
 {
 	if (s_bInitialized)
 	{
@@ -56,7 +56,7 @@ bool easy2d::Game::init(const String& name, const String& mutexName)
 	}
 
 	// 初始化窗口
-	if (!Window::__init())
+	if (!Window::__init(title, width, height))
 	{
 		E2D_ERROR(L"初始化窗口失败");
 		return false;
@@ -84,13 +84,13 @@ bool easy2d::Game::init(const String& name, const String& mutexName)
 	}
 
 	// 初始化路径
-	if (!Path::__init(name))
+	if (!Path::__init(title))
 	{
 		E2D_WARNING(L"Path::__init failed!");
 	}
 
 	// 保存游戏名称
-	s_sGameName = name;
+	s_sGameName = title;
 
 	// 初始化成功
 	s_bInitialized = true;

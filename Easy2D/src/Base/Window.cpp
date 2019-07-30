@@ -9,7 +9,7 @@
 static HWND s_HWnd = nullptr;
 
 
-bool easy2d::Window::__init()
+bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 {
 	// 注册窗口类
 	WNDCLASSEX wcex = { 0 };
@@ -27,14 +27,6 @@ bool easy2d::Window::__init()
 
 	RegisterClassEx(&wcex);
 
-	// 因为 CreateWindow 函数使用的是像素大小，获取系统的 DPI 以使它
-	// 适应窗口缩放
-	float dpiX = Renderer::getDpiScaleX();
-	float dpiY = Renderer::getDpiScaleY();
-
-	int nWidth = static_cast<int>(ceil(640 * dpiX / 96.f));
-	int nHeight = static_cast<int>(ceil(480 * dpiY / 96.f));
-
 	// 计算窗口大小
 	DWORD dwStyle = WS_OVERLAPPEDWINDOW &~ WS_MAXIMIZEBOX &~ WS_THICKFRAME;
 	RECT wr = { 0, 0, static_cast<LONG>(nWidth), static_cast<LONG>(nHeight) };
@@ -51,7 +43,7 @@ bool easy2d::Window::__init()
 	s_HWnd = ::CreateWindowEx(
 		NULL,
 		L"Easy2DApp",
-		L"Easy2D Game",
+		title.c_str(),
 		dwStyle,
 		(screenWidth - nWidth) / 2, (screenHeight - nHeight) / 2, 
 		nWidth, nHeight,

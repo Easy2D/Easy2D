@@ -3,6 +3,9 @@ x64/
 Debug/
 Release/
 
+build/
+output/
+
 # vs2010
 ipch/
 *.opensdf
