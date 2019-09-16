@@ -1,6 +1,11 @@
 #pragma once
 #include <e2dbase.h>
+
+#ifndef E2D_USE_MCI
 #include <xaudio2.h>
+#else
+#include <mmsystem.h>
+#endif
 
 namespace easy2d
 {
@@ -59,10 +64,10 @@ public:
 	Music();
 
 	explicit Music(
-		const easy2d::String& filePath	/* 音乐文件路径 */
+		const String& filePath		/* 音乐文件路径 */
 	);
 
-	explicit Music(
+	Music(
 		int resNameId,				/* 音乐资源名称 */
 		const String& resType		/* 音乐资源类型 */
 	);
@@ -71,7 +76,7 @@ public:
 
 	// 打开音乐文件
 	bool open(
-		const easy2d::String& filePath	/* 音乐文件路径 */
+		const String& filePath		/* 音乐文件路径 */
 	);
 
 	// 打开音乐资源
@@ -105,14 +110,12 @@ public:
 		float volume
 	);
 
-	// 获取 IXAudio2SourceVoice 对象
-	IXAudio2SourceVoice * getIXAudio2SourceVoice() const;
+private:
+	static bool __init();
 
-	// 获取 IXAudio2 对象
-	static IXAudio2 * getIXAudio2();
+	static void __uninit();
 
-	// 获取 IXAudio2MasteringVoice 对象
-	static IXAudio2MasteringVoice * getIXAudio2MasteringVoice();
+#ifndef E2D_USE_MCI
 
 protected:
 	bool _readMMIO();
@@ -127,13 +130,8 @@ protected:
 	bool _findMediaFileCch(
 		wchar_t* strDestPath,
 		int cchDest,
-		const wchar_t * strFilename
+		const wchar_t* strFilename
 	);
-
-private:
-	static bool __init();
-
-	static void __uninit();
 
 protected:
 	bool _opened;
@@ -146,6 +144,21 @@ protected:
 	MMCKINFO _ckRiff;
 	WAVEFORMATEX* _wfx;
 	IXAudio2SourceVoice* _voice;
+
+#else
+
+protected:
+	void _sendCommand(int nCommand, DWORD_PTR param1 = 0, DWORD_PTR parma2 = 0);
+
+	static LRESULT WINAPI _MciProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+
+protected:
+	MCIDEVICEID _dev;
+	HWND        _wnd;
+	bool        _playing;
+	int			_repeatTimes;
+
+#endif
 };
 
 

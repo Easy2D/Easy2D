@@ -45,50 +45,12 @@ bool easy2d::Player::preload(const String& filePath)
 	return false;
 }
 
-bool easy2d::Player::preload(int resNameId, const String& resType)
-{
-	if (GetMusicResList().end() != GetMusicResList().find(resNameId))
-	{
-		return true;
-	}
-	else
-	{
-		Music * music = new (std::nothrow) Music();
-
-		if (music->open(resNameId, resType))
-		{
-			music->setVolume(s_fMusicVolume);
-			GetMusicResList().insert(std::pair<size_t, Music *>(resNameId, music));
-			return true;
-		}
-		else
-		{
-			delete music;
-			music = nullptr;
-		}
-	}
-	return false;
-}
-
 bool easy2d::Player::play(const String& filePath, int nLoopCount)
 {
 	if (Player::preload(filePath))
 	{
 		size_t hash = std::hash<String>{}(filePath);
 		auto music = GetMusicFileList()[hash];
-		if (music->play(nLoopCount))
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-bool easy2d::Player::play(int resNameId, const String& resType, int nLoopCount)
-{
-	if (Player::preload(resNameId, resType))
-	{
-		auto music = GetMusicResList()[resNameId];
 		if (music->play(nLoopCount))
 		{
 			return true;
@@ -108,12 +70,6 @@ void easy2d::Player::pause(const String& filePath)
 		GetMusicFileList()[hash]->pause();
 }
 
-void easy2d::Player::pause(int resNameId, const String& resType)
-{
-	if (GetMusicResList().end() != GetMusicResList().find(resNameId))
-		GetMusicResList()[resNameId]->pause();
-}
-
 void easy2d::Player::resume(const String& filePath)
 {
 	if (filePath.empty())
@@ -123,12 +79,6 @@ void easy2d::Player::resume(const String& filePath)
 
 	if (GetMusicFileList().end() != GetMusicFileList().find(hash))
 		GetMusicFileList()[hash]->resume();
-}
-
-void easy2d::Player::resume(int resNameId, const String& resType)
-{
-	if (GetMusicResList().end() != GetMusicResList().find(resNameId))
-		GetMusicResList()[resNameId]->pause();
 }
 
 void easy2d::Player::stop(const String& filePath)
@@ -142,12 +92,6 @@ void easy2d::Player::stop(const String& filePath)
 		GetMusicFileList()[hash]->stop();
 }
 
-void easy2d::Player::stop(int resNameId, const String& resType)
-{
-	if (GetMusicResList().end() != GetMusicResList().find(resNameId))
-		GetMusicResList()[resNameId]->stop();
-}
-
 bool easy2d::Player::isPlaying(const String& filePath)
 {
 	if (filePath.empty())
@@ -159,6 +103,62 @@ bool easy2d::Player::isPlaying(const String& filePath)
 		return GetMusicFileList()[hash]->isPlaying();
 
 	return false;
+}
+
+bool easy2d::Player::preload(int resNameId, const String& resType)
+{
+	if (GetMusicResList().end() != GetMusicResList().find(resNameId))
+	{
+		return true;
+	}
+	else
+	{
+		Music* music = new (std::nothrow) Music();
+
+		if (music->open(resNameId, resType))
+		{
+			music->setVolume(s_fMusicVolume);
+			GetMusicResList().insert(std::pair<size_t, Music*>(resNameId, music));
+			return true;
+		}
+		else
+		{
+			delete music;
+			music = nullptr;
+		}
+	}
+	return false;
+}
+
+bool easy2d::Player::play(int resNameId, const String& resType, int nLoopCount)
+{
+	if (Player::preload(resNameId, resType))
+	{
+		auto music = GetMusicResList()[resNameId];
+		if (music->play(nLoopCount))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void easy2d::Player::pause(int resNameId, const String& resType)
+{
+	if (GetMusicResList().end() != GetMusicResList().find(resNameId))
+		GetMusicResList()[resNameId]->pause();
+}
+
+void easy2d::Player::resume(int resNameId, const String& resType)
+{
+	if (GetMusicResList().end() != GetMusicResList().find(resNameId))
+		GetMusicResList()[resNameId]->pause();
+}
+
+void easy2d::Player::stop(int resNameId, const String& resType)
+{
+	if (GetMusicResList().end() != GetMusicResList().find(resNameId))
+		GetMusicResList()[resNameId]->stop();
 }
 
 bool easy2d::Player::isPlaying(int resNameId, const String& resType)

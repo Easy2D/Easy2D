@@ -58,3 +58,7 @@
 #if !defined(E2D_DEBUG) && defined(_DEBUG)
 #	define E2D_DEBUG
 #endif
+
+#ifdef E2D_WIN7
+#	define E2D_USE_MCI
+#endif

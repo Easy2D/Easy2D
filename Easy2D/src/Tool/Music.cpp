@@ -1,5 +1,13 @@
 #include <e2dtool.h>
 
+#ifndef E2D_USE_MCI
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Music with XAudio2
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
 #pragma comment(lib, "xaudio2.lib")
 
 
@@ -9,6 +17,14 @@
 #ifndef SAFE_DELETE_ARRAY
 #define SAFE_DELETE_ARRAY(p) { if (p) { delete[] (p);   (p)=nullptr; } }
 #endif
+
+
+namespace
+{
+	IXAudio2* s_pXAudio2 = nullptr;
+	IXAudio2MasteringVoice* s_pMasteringVoice = nullptr;
+}
+
 
 inline bool TraceError(wchar_t* sPrompt)
 {
@@ -21,10 +37,6 @@ inline bool TraceError(wchar_t* sPrompt, HRESULT hr)
 	E2D_WARNING(L"MusicInfo error: %s (%#X)", sPrompt, hr);
 	return false;
 }
-
-
-static IXAudio2 * s_pXAudio2 = nullptr;
-static IXAudio2MasteringVoice * s_pMasteringVoice = nullptr;
 
 
 easy2d::Music::Music()
@@ -353,11 +365,6 @@ bool easy2d::Music::isPlaying() const
 	}
 }
 
-IXAudio2SourceVoice * easy2d::Music::getIXAudio2SourceVoice() const
-{
-	return _voice;
-}
-
 bool easy2d::Music::setVolume(float volume)
 {
 	if (_voice)
@@ -564,16 +571,6 @@ bool easy2d::Music::_findMediaFileCch(wchar_t* strDestPath, int cchDest, const w
 	return false;
 }
 
-IXAudio2 * easy2d::Music::getIXAudio2()
-{
-	return s_pXAudio2;
-}
-
-IXAudio2MasteringVoice * easy2d::Music::getIXAudio2MasteringVoice()
-{
-	return s_pMasteringVoice;
-}
-
 bool easy2d::Music::__init()
 {
 	HRESULT hr;
@@ -603,3 +600,228 @@ void easy2d::Music::__uninit()
 
 	easy2d::SafeRelease(s_pXAudio2);
 }
+
+
+#else
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Music with MCI
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+#pragma comment(lib , "winmm.lib")
+
+#define WIN_CLASS_NAME L"Easy2DMciCallbackWnd"
+
+namespace
+{
+	HINSTANCE s_hInstance = nullptr;
+}
+
+easy2d::Music::Music()
+	: _wnd(NULL)
+	, _dev(0L)
+	, _playing(false)
+	, _repeatTimes(0)
+{
+	_wnd = CreateWindowEx(
+		WS_EX_APPWINDOW,
+		WIN_CLASS_NAME,
+		NULL,
+		WS_POPUPWINDOW,
+		0, 0, 0, 0,
+		NULL,
+		NULL,
+		s_hInstance,
+		NULL);
+
+	if (_wnd)
+	{
+		SetWindowLongPtr(_wnd, GWLP_USERDATA, (LONG_PTR)this);
+	}
+}
+
+easy2d::Music::~Music()
+{
+	close();
+	DestroyWindow(_wnd);
+}
+
+bool easy2d::Music::open(const String& pFileName)
+{
+	if (pFileName.empty())
+		return false;
+
+	close();
+
+	MCI_OPEN_PARMS mciOpen = { 0 };
+	mciOpen.lpstrDeviceType = 0;
+	mciOpen.lpstrElementName = pFileName.c_str();
+
+	MCIERROR mciError;
+	mciError = mciSendCommand(
+		0,
+		MCI_OPEN,
+		MCI_OPEN_ELEMENT,
+		reinterpret_cast<DWORD_PTR>(&mciOpen)
+	);
+
+	if (mciError == 0)
+	{
+		_dev = mciOpen.wDeviceID;
+		_playing = false;
+		return true;
+	}
+	return false;
+}
+
+bool easy2d::Music::open(int resNameId, const String& resType)
+{
+	// NOT SUPPORTED
+	return false;
+}
+
+bool easy2d::Music::play(int nLoopCount)
+{
+	if (!_dev)
+	{
+		return false;
+	}
+
+	MCI_PLAY_PARMS mciPlay = { 0 };
+	mciPlay.dwCallback = reinterpret_cast<DWORD_PTR>(_wnd);
+
+	// 播放声音
+	MCIERROR mciError = mciSendCommand(
+		_dev,
+		MCI_PLAY,
+		MCI_FROM | MCI_NOTIFY,
+		reinterpret_cast<DWORD_PTR>(&mciPlay)
+	);
+
+	if (!mciError)
+	{
+		_playing = true;
+		_repeatTimes = nLoopCount;
+		return true;
+	}
+	return false;
+}
+
+void easy2d::Music::close()
+{
+	if (_playing)
+	{
+		stop();
+	}
+
+	if (_dev)
+	{
+		_sendCommand(MCI_CLOSE);
+	}
+
+	_dev = 0;
+	_playing = false;
+}
+
+void easy2d::Music::pause()
+{
+	_sendCommand(MCI_PAUSE);
+	_playing = false;
+}
+
+void easy2d::Music::resume()
+{
+	_sendCommand(MCI_RESUME);
+	_playing = true;
+}
+
+void easy2d::Music::stop()
+{
+	_sendCommand(MCI_STOP);
+	_playing = false;
+}
+
+bool easy2d::Music::isPlaying() const
+{
+	return _playing;
+}
+
+bool easy2d::Music::setVolume(float volume)
+{
+	// NOT SUPPORTED
+	return false;
+}
+
+void easy2d::Music::_sendCommand(int nCommand, DWORD_PTR param1, DWORD_PTR parma2)
+{
+	// 空设备时忽略这次操作
+	if (!_dev)
+	{
+		return;
+	}
+	// 向当前设备发送操作
+	mciSendCommand(_dev, nCommand, param1, parma2);
+}
+
+LRESULT WINAPI easy2d::Music::_MciProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+	easy2d::Music* pMusic = NULL;
+
+	if (Msg == MM_MCINOTIFY
+		&& wParam == MCI_NOTIFY_SUCCESSFUL
+		&& (pMusic = (easy2d::Music*)GetWindowLongPtr(hWnd, GWLP_USERDATA)))
+	{
+		if (pMusic->_repeatTimes > 0)
+		{
+			pMusic->_repeatTimes--;
+		}
+
+		if (pMusic->_repeatTimes)
+		{
+			mciSendCommand(static_cast<MCIDEVICEID>(lParam), MCI_SEEK, MCI_SEEK_TO_START, 0);
+
+			MCI_PLAY_PARMS mciPlay = { 0 };
+			mciPlay.dwCallback = reinterpret_cast<DWORD_PTR>(hWnd);
+			mciSendCommand(static_cast<MCIDEVICEID>(lParam), MCI_PLAY, MCI_NOTIFY, reinterpret_cast<DWORD_PTR>(&mciPlay));
+		}
+		else
+		{
+			pMusic->_playing = false;
+			return 0;
+		}
+	}
+	return DefWindowProc(hWnd, Msg, wParam, lParam);
+}
+
+bool easy2d::Music::__init()
+{
+	s_hInstance = HINST_THISCOMPONENT;
+
+	WNDCLASS  wc;
+	wc.style = 0;
+	wc.lpfnWndProc = _MciProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = s_hInstance;
+	wc.hIcon = 0;
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = NULL;
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = WIN_CLASS_NAME;
+
+	if (!RegisterClass(&wc) && 1410 != GetLastError())
+	{
+		return false;
+	}
+	return true;
+}
+
+void easy2d::Music::__uninit()
+{
+}
+
+
+#endif
