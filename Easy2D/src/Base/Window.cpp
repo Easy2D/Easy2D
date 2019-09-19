@@ -7,6 +7,7 @@
 
 // 窗口句柄
 static HWND s_HWnd = nullptr;
+static easy2d::Window::Cursor s_currentCursor = easy2d::Window::Cursor::Normal;
 
 
 bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
@@ -106,6 +107,42 @@ void easy2d::Window::__poll()
 	}
 }
 
+void easy2d::Window::__updateCursor()
+{
+	LPCWSTR pCursorName = nullptr;
+	switch (s_currentCursor)
+	{
+	case Cursor::Normal:
+		pCursorName = IDC_ARROW;
+		break;
+
+	case Cursor::Hand:
+		pCursorName = IDC_HAND;
+		break;
+
+	case Cursor::No:
+		pCursorName = IDC_NO;
+		break;
+
+	case Cursor::Wait:
+		pCursorName = IDC_WAIT;
+		break;
+
+	case Cursor::ArrowWait:
+		pCursorName = IDC_APPSTARTING;
+		break;
+
+	default:
+		break;
+	}
+
+	if (pCursorName)
+	{
+		HCURSOR hCursor = ::LoadCursor(nullptr, pCursorName);
+		::SetCursor(hCursor);
+	}
+}
+
 float easy2d::Window::getWidth()
 {
 	return getSize().width;
@@ -172,38 +209,7 @@ void easy2d::Window::setIcon(int iconID)
 
 void easy2d::Window::setCursor(Cursor cursor)
 {
-	LPCWSTR pCursorName = nullptr;
-	switch (cursor)
-	{
-	case Cursor::Normal:
-		pCursorName = IDC_ARROW;
-		break;
-
-	case Cursor::Hand:
-		pCursorName = IDC_HAND;
-		break;
-
-	case Cursor::No:
-		pCursorName = IDC_NO;
-		break;
-
-	case Cursor::Wait:
-		pCursorName = IDC_WAIT;
-		break;
-
-	case Cursor::ArrowWait:
-		pCursorName = IDC_APPSTARTING;
-		break;
-
-	default:
-		break;
-	}
-
-	if (pCursorName)
-	{
-		HCURSOR hCursor = ::LoadCursor(nullptr, pCursorName);
-		::SetCursor(hCursor);
-	}
+	s_currentCursor = cursor;
 }
 
 easy2d::String easy2d::Window::getTitle()
@@ -365,6 +371,12 @@ LRESULT easy2d::Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	}
 	result = 0;
 	hasHandled = true;
+	break;
+
+	case WM_SETCURSOR:
+	{
+		Window::__updateCursor();
+	}
 	break;
 
 	// 窗口关闭消息

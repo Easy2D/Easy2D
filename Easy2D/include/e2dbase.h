@@ -137,6 +137,9 @@ private:
 	// 处理窗口消息
 	static void __poll();
 
+	// 更新指针
+	static void __updateCursor();
+
 	// Win32 窗口消息回调程序
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 };
