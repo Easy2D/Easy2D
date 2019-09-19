@@ -158,7 +158,7 @@ protected:
 
 
 // ÒôÀÖ²¥·ÅÆ÷
-class Player
+class MusicPlayer
 {
 	friend class Game;
 

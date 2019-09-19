@@ -149,7 +149,7 @@ void easy2d::Game::start()
 		// 删除动作
 		ActionManager::__uninit();
 		// 回收音乐播放器资源
-		Player::__uninit();
+		MusicPlayer::__uninit();
 		// 清空定时器
 		Timer::__uninit();
 		// 删除所有场景

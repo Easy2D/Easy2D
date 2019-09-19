@@ -150,9 +150,6 @@
     <ClCompile Include="src\Action\JumpTo.cpp">
       <Filter>src\Action</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tool\Player.cpp">
-      <Filter>src\Tool</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tool\Music.cpp">
       <Filter>src\Tool</Filter>
     </ClCompile>
@@ -218,6 +215,9 @@
     </ClCompile>
     <ClCompile Include="src\Node\Scene.cpp">
       <Filter>src\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tool\MusicPlayer.cpp">
+      <Filter>src\Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

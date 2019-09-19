@@ -67,7 +67,7 @@
     <ClCompile Include="src\Tool\Data.cpp" />
     <ClCompile Include="src\Tool\Music.cpp" />
     <ClCompile Include="src\Tool\Path.cpp" />
-    <ClCompile Include="src\Tool\Player.cpp" />
+    <ClCompile Include="src\Tool\MusicPlayer.cpp" />
     <ClCompile Include="src\Tool\Random.cpp" />
     <ClCompile Include="src\Tool\Timer.cpp" />
     <ClCompile Include="src\Transition\Transition.cpp" />
