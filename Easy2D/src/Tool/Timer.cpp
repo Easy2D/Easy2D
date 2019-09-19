@@ -72,6 +72,8 @@ static std::vector<easy2d::TimerEntity*> s_vTimers;
 void easy2d::Timer::add(const Function<void()>& func, float delay, int updateTimes, bool paused, const String& name)
 {
 	auto timer = gcnew TimerEntity(func, name, delay, updateTimes, paused);
+	GC::retain(timer);
+
 	s_vTimers.push_back(timer);
 }
 

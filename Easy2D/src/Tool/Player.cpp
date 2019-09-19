@@ -26,21 +26,16 @@ bool easy2d::Player::preload(const String& filePath)
 	{
 		return true;
 	}
-	else
-	{
-		Music * music = new (std::nothrow) Music();
+	
+	Music* music = gcnew Music;
 
-		if (music->open(filePath))
-		{
-			music->setVolume(s_fMusicVolume);
-			GetMusicFileList().insert(std::pair<size_t, Music *>(hash, music));
-			return true;
-		}
-		else
-		{
-			delete music;
-			music = nullptr;
-		}
+	if (music->open(filePath))
+	{
+		GC::retain(music);
+
+		music->setVolume(s_fMusicVolume);
+		GetMusicFileList().insert(std::pair<size_t, Music*>(hash, music));
+		return true;
 	}
 	return false;
 }
@@ -111,21 +106,16 @@ bool easy2d::Player::preload(int resNameId, const String& resType)
 	{
 		return true;
 	}
-	else
-	{
-		Music* music = new (std::nothrow) Music();
+	
+	Music* music = gcnew Music;
 
-		if (music->open(resNameId, resType))
-		{
-			music->setVolume(s_fMusicVolume);
-			GetMusicResList().insert(std::pair<size_t, Music*>(resNameId, music));
-			return true;
-		}
-		else
-		{
-			delete music;
-			music = nullptr;
-		}
+	if (music->open(resNameId, resType))
+	{
+		GC::retain(music);
+
+		music->setVolume(s_fMusicVolume);
+		GetMusicResList().insert(std::pair<size_t, Music*>(resNameId, music));
+		return true;
 	}
 	return false;
 }
@@ -211,8 +201,15 @@ void easy2d::Player::__uninit()
 	for (auto pair : GetMusicFileList())
 	{
 		pair.second->close();
-		delete pair.second;
+		GC::release(pair.second);
+	}
+
+	for (auto pair : GetMusicResList())
+	{
+		pair.second->close();
+		GC::release(pair.second);
 	}
 
 	GetMusicFileList().clear();
+	GetMusicResList().clear();
 }

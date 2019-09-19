@@ -48,31 +48,19 @@ easy2d::Music::Music()
 	, _waveData(nullptr)
 	, _dwSize(0)
 	, _voice(nullptr)
+	, _ck()
+	, _ckRiff()
 {
 }
 
 easy2d::Music::Music(const easy2d::String & filePath)
-	: _opened(false)
-	, _playing(false)
-	, _wfx(nullptr)
-	, _hmmio(nullptr)
-	, _resBuffer(nullptr)
-	, _waveData(nullptr)
-	, _dwSize(0)
-	, _voice(nullptr)
+	: Music()
 {
 	this->open(filePath);
 }
 
 easy2d::Music::Music(int resNameId, const String & resType)
-	: _opened(false)
-	, _playing(false)
-	, _wfx(nullptr)
-	, _hmmio(nullptr)
-	, _resBuffer(nullptr)
-	, _waveData(nullptr)
-	, _dwSize(0)
-	, _voice(nullptr)
+	: Music()
 {
 	this->open(resNameId, resType);
 }
