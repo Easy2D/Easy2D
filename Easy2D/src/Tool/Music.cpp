@@ -8,7 +8,12 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////////////
 
+#include <shlwapi.h>
+
 #pragma comment(lib, "xaudio2.lib")
+#pragma comment(lib, "Mfplat.lib")
+#pragma comment(lib, "Mfreadwrite.lib")
+#pragma comment(lib, "Shlwapi.lib")
 
 
 #ifndef SAFE_DELETE
@@ -28,13 +33,13 @@ namespace
 
 inline bool TraceError(wchar_t* sPrompt)
 {
-	E2D_WARNING(L"MusicInfo error: %s failed!", sPrompt);
+	E2D_WARNING(L"%s!", sPrompt);
 	return false;
 }
 
 inline bool TraceError(wchar_t* sPrompt, HRESULT hr)
 {
-	E2D_WARNING(L"MusicInfo error: %s (%#X)", sPrompt, hr);
+	E2D_WARNING(L"%s (%#X)", sPrompt, hr);
 	return false;
 }
 
@@ -43,13 +48,9 @@ easy2d::Music::Music()
 	: _opened(false)
 	, _playing(false)
 	, _wfx(nullptr)
-	, _hmmio(nullptr)
-	, _resBuffer(nullptr)
 	, _waveData(nullptr)
-	, _dwSize(0)
+	, _waveDataSize(0)
 	, _voice(nullptr)
-	, _ck()
-	, _ckRiff()
 {
 }
 
@@ -97,38 +98,7 @@ bool easy2d::Music::open(const easy2d::String& filePath)
 		return false;
 	}
 
-	// 定位 wave 文件
-	wchar_t pFilePath[MAX_PATH];
-	if (!_findMediaFileCch(pFilePath, MAX_PATH, actualFilePath.c_str()))
-	{
-		E2D_WARNING(L"Failed to find media file: %s", pFilePath);
-		return false;
-	}
-
-	_hmmio = mmioOpen(pFilePath, nullptr, MMIO_ALLOCBUF | MMIO_READ);
-
-	if (nullptr == _hmmio)
-	{
-		return TraceError(L"mmioOpen");
-	}
-
-	if (!_readMMIO())
-	{
-		// 读取非 wave 文件时 ReadMMIO 调用失败
-		mmioClose(_hmmio, 0);
-		return TraceError(L"_readMMIO");
-	}
-
-	if (!_resetFile())
-		return TraceError(L"_resetFile");
-
-	// 重置文件后，wave 文件的大小是 _ck.cksize
-	_dwSize = _ck.cksize;
-
-	// 将样本数据读取到内存中
-	_waveData = new (std::nothrow) BYTE[_dwSize];
-
-	if (!_read(_waveData, _dwSize))
+	if (FAILED(_loadMediaFile(actualFilePath)))
 	{
 		TraceError(L"Failed to read WAV data");
 		SAFE_DELETE_ARRAY(_waveData);
@@ -180,34 +150,7 @@ bool easy2d::Music::open(int resNameId, const easy2d::String& resType)
 	if (nullptr == (pvRes = LockResource(hResData)))
 		return TraceError(L"LockResource");
 
-	_resBuffer = new (std::nothrow) CHAR[dwSize];
-	memcpy(_resBuffer, pvRes, dwSize);
-
-	MMIOINFO mmioInfo;
-	ZeroMemory(&mmioInfo, sizeof(mmioInfo));
-	mmioInfo.fccIOProc = FOURCC_MEM;
-	mmioInfo.cchBuffer = dwSize;
-	mmioInfo.pchBuffer = (CHAR*)_resBuffer;
-
-	_hmmio = mmioOpen(nullptr, &mmioInfo, MMIO_ALLOCBUF | MMIO_READ);
-
-	if (!_readMMIO())
-	{
-		// 读取非 wave 文件时 ReadMMIO 调用失败
-		mmioClose(_hmmio, 0);
-		return TraceError(L"ReadMMIO");
-	}
-
-	if (!_resetFile())
-		return TraceError(L"ResetFile");
-
-	// 重置文件后，wave 文件的大小是 _ck.cksize
-	_dwSize = _ck.cksize;
-
-	// 将样本数据读取到内存中
-	_waveData = new (std::nothrow) BYTE[_dwSize];
-
-	if (!_read(_waveData, _dwSize))
+	if (FAILED(_loadMediaResource(pvRes, dwSize)))
 	{
 		TraceError(L"Failed to read WAV data");
 		SAFE_DELETE_ARRAY(_waveData);
@@ -254,7 +197,7 @@ bool easy2d::Music::play(int nLoopCount)
 	XAUDIO2_BUFFER buffer = { 0 };
 	buffer.pAudioData = _waveData;
 	buffer.Flags = XAUDIO2_END_OF_STREAM;
-	buffer.AudioBytes = _dwSize;
+	buffer.AudioBytes = _waveDataSize;
 	buffer.LoopCount = nLoopCount;
 
 	HRESULT hr;
@@ -320,15 +263,13 @@ void easy2d::Music::close()
 		_voice = nullptr;
 	}
 
-	if (_hmmio != nullptr)
+	if (_wfx)
 	{
-		mmioClose(_hmmio, 0);
-		_hmmio = nullptr;
+		::CoTaskMemFree(_wfx);
+		_wfx = nullptr;
 	}
 
-	SAFE_DELETE_ARRAY(_resBuffer);
 	SAFE_DELETE_ARRAY(_waveData);
-	SAFE_DELETE_ARRAY(_wfx);
 
 	_opened = false;
 	_playing = false;
@@ -362,217 +303,254 @@ bool easy2d::Music::setVolume(float volume)
 	return false;
 }
 
-bool easy2d::Music::_readMMIO()
+HRESULT easy2d::Music::_loadMediaFile(String const& file_path)
 {
-	MMCKINFO ckIn;
-	PCMWAVEFORMAT pcmWaveFormat;
+	HRESULT hr = S_OK;
 
-	memset(&ckIn, 0, sizeof(ckIn));
+	IMFSourceReader* reader = nullptr;
 
-	_wfx = nullptr;
+	hr = MFCreateSourceReaderFromURL(
+		file_path.c_str(),
+		nullptr,
+		&reader
+	);
 
-	if ((0 != mmioDescend(_hmmio, &_ckRiff, nullptr, 0)))
-		return TraceError(L"mmioDescend");
-
-	// 确认文件是一个合法的 wave 文件
-	if ((_ckRiff.ckid != FOURCC_RIFF) ||
-		(_ckRiff.fccType != mmioFOURCC('W', 'A', 'V', 'E')))
-		return TraceError(L"mmioFOURCC");
-
-	// 在输入文件中查找 'fmt' 块
-	ckIn.ckid = mmioFOURCC('f', 'm', 't', ' ');
-	if (0 != mmioDescend(_hmmio, &ckIn, &_ckRiff, MMIO_FINDCHUNK))
-		return TraceError(L"mmioDescend");
-
-	// 'fmt' 块至少应和 PCMWAVEFORMAT 一样大
-	if (ckIn.cksize < (LONG)sizeof(PCMWAVEFORMAT))
-		return TraceError(L"sizeof(PCMWAVEFORMAT)");
-
-	// 将 'fmt' 块读取到 pcmWaveFormat 中
-	if (mmioRead(_hmmio, (HPSTR)&pcmWaveFormat,
-		sizeof(pcmWaveFormat)) != sizeof(pcmWaveFormat))
-		return TraceError(L"mmioRead");
-
-	// 分配 WAVEFORMATEX，但如果它不是 PCM 格式，再读取一个 WORD 大小
-	// 的数据，这个数据就是额外分配的大小
-	if (pcmWaveFormat.wf.wFormatTag == WAVE_FORMAT_PCM)
+	if (SUCCEEDED(hr))
 	{
-		_wfx = (WAVEFORMATEX*) new (std::nothrow) CHAR[sizeof(WAVEFORMATEX)];
-
-		// 拷贝数据
-		memcpy(_wfx, &pcmWaveFormat, sizeof(pcmWaveFormat));
-		_wfx->cbSize = 0;
-	}
-	else
-	{
-		// 读取额外数据的大小
-		WORD cbExtraBytes = 0L;
-		if (mmioRead(_hmmio, (CHAR*)&cbExtraBytes, sizeof(WORD)) != sizeof(WORD))
-			return TraceError(L"mmioRead");
-
-		_wfx = (WAVEFORMATEX*) new (std::nothrow) CHAR[sizeof(WAVEFORMATEX) + cbExtraBytes];
-
-		// 拷贝数据
-		memcpy(_wfx, &pcmWaveFormat, sizeof(pcmWaveFormat));
-		_wfx->cbSize = cbExtraBytes;
-
-		// 读取额外数据
-		if (mmioRead(_hmmio, (CHAR*)(((BYTE*)&(_wfx->cbSize)) + sizeof(WORD)),
-			cbExtraBytes) != cbExtraBytes)
-		{
-			SAFE_DELETE(_wfx);
-			return TraceError(L"mmioRead");
-		}
+		hr = _readSource(reader);
 	}
 
-	if (0 != mmioAscend(_hmmio, &ckIn, 0))
-	{
-		SAFE_DELETE(_wfx);
-		return TraceError(L"mmioAscend");
-	}
-
-	return true;
+	SafeRelease(reader);
+	return hr;
 }
 
-bool easy2d::Music::_resetFile()
+HRESULT easy2d::Music::_loadMediaResource(LPVOID buffer, DWORD bufferSize)
 {
-	// Seek to the data
-	if (-1 == mmioSeek(_hmmio, _ckRiff.dwDataOffset + sizeof(FOURCC),
-		SEEK_SET))
-		return TraceError(L"mmioSeek");
+	HRESULT	hr = S_OK;
 
-	// Search the input file for the 'data' chunk.
-	_ck.ckid = mmioFOURCC('d', 'a', 't', 'a');
-	if (0 != mmioDescend(_hmmio, &_ck, &_ckRiff, MMIO_FINDCHUNK))
-		return TraceError(L"mmioDescend");
+	IStream* stream = nullptr;
+	IMFByteStream* byte_stream = nullptr;
+	IMFSourceReader* reader = nullptr;
 
-	return true;
+	stream = SHCreateMemStream(
+		static_cast<const BYTE*>(buffer),
+		static_cast<UINT32>(bufferSize)
+	);
+
+	if (stream == nullptr)
+	{
+		E2D_WARNING(L"SHCreateMemStream failed");
+		return E_OUTOFMEMORY;
+	}
+
+	if (SUCCEEDED(hr))
+	{
+		hr = MFCreateMFByteStreamOnStream(stream, &byte_stream);
+	}
+
+	if (SUCCEEDED(hr))
+	{
+		hr = MFCreateSourceReaderFromByteStream(
+			byte_stream,
+			nullptr,
+			&reader
+		);
+	}
+
+	if (SUCCEEDED(hr))
+	{
+		hr = _readSource(reader);
+	}
+
+	SafeRelease(stream);
+	SafeRelease(byte_stream);
+	SafeRelease(reader);
+	return hr;
 }
 
-bool easy2d::Music::_read(BYTE* pBuffer, DWORD dwSizeToRead)
+HRESULT easy2d::Music::_readSource(IMFSourceReader* reader)
 {
-	MMIOINFO mmioinfoIn; // current status of _hmmio
+	HRESULT hr = S_OK;
+	DWORD max_stream_size = 0;
 
-	if (0 != mmioGetInfo(_hmmio, &mmioinfoIn, 0))
-		return TraceError(L"mmioGetInfo");
+	IMFMediaType* partial_type = nullptr;
+	IMFMediaType* uncompressed_type = nullptr;
 
-	UINT cbDataIn = dwSizeToRead;
-	if (cbDataIn > _ck.cksize)
-		cbDataIn = _ck.cksize;
+	hr = MFCreateMediaType(&partial_type);
 
-	_ck.cksize -= cbDataIn;
-
-	for (DWORD cT = 0; cT < cbDataIn; ++cT)
+	if (SUCCEEDED(hr))
 	{
-		// Copy the bytes from the io to the buffer.
-		if (mmioinfoIn.pchNext == mmioinfoIn.pchEndRead)
-		{
-			if (0 != mmioAdvance(_hmmio, &mmioinfoIn, MMIO_READ))
-				return TraceError(L"mmioAdvance");
-
-			if (mmioinfoIn.pchNext == mmioinfoIn.pchEndRead)
-				return TraceError(L"mmioinfoIn.pchNext");
-		}
-
-		// Actual copy.
-		*((BYTE*)pBuffer + cT) = *((BYTE*)mmioinfoIn.pchNext);
-		++mmioinfoIn.pchNext;
+		hr = partial_type->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
 	}
 
-	if (0 != mmioSetInfo(_hmmio, &mmioinfoIn, 0))
-		return TraceError(L"mmioSetInfo");
-
-	return true;
-}
-
-bool easy2d::Music::_findMediaFileCch(wchar_t* strDestPath, int cchDest, const wchar_t * strFilename)
-{
-	bool bFound = false;
-
-	if (nullptr == strFilename || nullptr == strDestPath || cchDest < 10)
-		return false;
-
-	// Get the exe name, and exe path
-	wchar_t strExePath[MAX_PATH] = { 0 };
-	wchar_t strExeName[MAX_PATH] = { 0 };
-	wchar_t* strLastSlash = nullptr;
-	GetModuleFileName(HINST_THISCOMPONENT, strExePath, MAX_PATH);
-	strExePath[MAX_PATH - 1] = 0;
-	strLastSlash = wcsrchr(strExePath, TEXT('\\'));
-	if (strLastSlash)
+	if (SUCCEEDED(hr))
 	{
-		wcscpy_s(strExeName, MAX_PATH, &strLastSlash[1]);
-
-		// Chop the exe name from the exe path
-		*strLastSlash = 0;
-
-		// Chop the .exe from the exe name
-		strLastSlash = wcsrchr(strExeName, TEXT('.'));
-		if (strLastSlash)
-			*strLastSlash = 0;
+		hr = partial_type->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
 	}
 
-	wcscpy_s(strDestPath, cchDest, strFilename);
-	if (GetFileAttributes(strDestPath) != 0xFFFFFFFF)
-		return true;
-
-	// Search all parent directories starting at .\ and using strFilename as the leaf name
-	wchar_t strLeafName[MAX_PATH] = { 0 };
-	wcscpy_s(strLeafName, MAX_PATH, strFilename);
-
-	wchar_t strFullPath[MAX_PATH] = { 0 };
-	wchar_t strFullFileName[MAX_PATH] = { 0 };
-	wchar_t strSearch[MAX_PATH] = { 0 };
-	wchar_t* strFilePart = nullptr;
-
-	GetFullPathName(L".", MAX_PATH, strFullPath, &strFilePart);
-	if (strFilePart == nullptr)
-		return false;
-
-	while (strFilePart != nullptr && *strFilePart != '\0')
+	// 设置 source reader 的媒体类型，它将使用合适的解码器去解码这个音频
+	if (SUCCEEDED(hr))
 	{
-		swprintf_s(strFullFileName, MAX_PATH, L"%s\\%s", strFullPath, strLeafName);
-		if (GetFileAttributes(strFullFileName) != 0xFFFFFFFF)
-		{
-			wcscpy_s(strDestPath, cchDest, strFullFileName);
-			bFound = true;
-			break;
-		}
-
-		swprintf_s(strFullFileName, MAX_PATH, L"%s\\%s\\%s", strFullPath, strExeName, strLeafName);
-		if (GetFileAttributes(strFullFileName) != 0xFFFFFFFF)
-		{
-			wcscpy_s(strDestPath, cchDest, strFullFileName);
-			bFound = true;
-			break;
-		}
-
-		swprintf_s(strSearch, MAX_PATH, L"%s\\..", strFullPath);
-		GetFullPathName(strSearch, MAX_PATH, strFullPath, &strFilePart);
+		hr = reader->SetCurrentMediaType(
+			(DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM,
+			0,
+			partial_type
+		);
 	}
-	if (bFound)
-		return true;
 
-	// 失败时，将文件作为路径返回，同时也返回错误代码
-	wcscpy_s(strDestPath, cchDest, strFilename);
+	// 从 IMFMediaType 中获取 WAVEFORMAT 结构
+	if (SUCCEEDED(hr))
+	{
+		hr = reader->GetCurrentMediaType(
+			(DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM,
+			&uncompressed_type
+		);
+	}
 
-	return false;
+	// 指定音频流
+	if (SUCCEEDED(hr))
+	{
+		hr = reader->SetStreamSelection(
+			(DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM,
+			true
+		);
+	}
+
+	// 获取 WAVEFORMAT 数据
+	if (SUCCEEDED(hr))
+	{
+		UINT32 size = 0;
+		hr = MFCreateWaveFormatExFromMFMediaType(
+			uncompressed_type,
+			&_wfx,
+			&size,
+			(DWORD)MFWaveFormatExConvertFlag_Normal
+		);
+	}
+
+	// 估算音频流大小
+	if (SUCCEEDED(hr))
+	{
+		PROPVARIANT prop;
+		PropVariantInit(&prop);
+
+		hr = reader->GetPresentationAttribute(
+			(DWORD)MF_SOURCE_READER_MEDIASOURCE,
+			MF_PD_DURATION,
+			&prop
+		);
+
+		LONGLONG duration = prop.uhVal.QuadPart;
+		max_stream_size = static_cast<DWORD>(
+			(duration * _wfx->nAvgBytesPerSec) / 10000000 + 1
+			);
+		PropVariantClear(&prop);
+	}
+
+	// 读取音频数据
+	if (SUCCEEDED(hr))
+	{
+		DWORD flags = 0;
+		DWORD position = 0;
+		BYTE* data = new (std::nothrow) BYTE[max_stream_size];
+
+		IMFSample* sample = nullptr;
+		IMFMediaBuffer* buffer = nullptr;
+
+		if (data == nullptr)
+		{
+			E2D_WARNING(L"Low memory");
+			hr = E_OUTOFMEMORY;
+		}
+		else
+		{
+			while (true)
+			{
+				hr = reader->ReadSample(
+					(DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM,
+					0,
+					nullptr,
+					&flags,
+					nullptr,
+					&sample
+				);
+
+				if (flags & MF_SOURCE_READERF_ENDOFSTREAM) { break; }
+
+				if (sample == nullptr) { continue; }
+
+				if (SUCCEEDED(hr))
+				{
+					hr = sample->ConvertToContiguousBuffer(&buffer);
+
+					if (SUCCEEDED(hr))
+					{
+						BYTE* audio_data = nullptr;
+						DWORD sample_buffer_length = 0;
+
+						hr = buffer->Lock(
+							&audio_data,
+							nullptr,
+							&sample_buffer_length
+						);
+
+						if (SUCCEEDED(hr) && sample_buffer_length <= max_stream_size)
+						{
+							for (DWORD i = 0; i < sample_buffer_length; i++)
+							{
+								data[position++] = audio_data[i];
+							}
+							hr = buffer->Unlock();
+						}
+					}
+					buffer = nullptr;
+				}
+				sample = nullptr;
+
+				if (FAILED(hr)) { break; }
+			}
+
+			if (SUCCEEDED(hr))
+			{
+				_waveData = data;
+				_waveDataSize = position;
+			}
+			else
+			{
+				delete[] data;
+				data = nullptr;
+			}
+		}
+
+		SafeRelease(sample);
+		SafeRelease(buffer);
+	}
+
+	SafeRelease(partial_type);
+	SafeRelease(uncompressed_type);
+	return hr;
 }
 
 bool easy2d::Music::__init()
 {
 	HRESULT hr;
 
+	if (FAILED(hr = MFStartup(MF_VERSION, MFSTARTUP_FULL)))
+	{
+		TraceError(L"Failed to startup MediaFoundation device", hr);
+		return false;
+	}
+
 	if (FAILED(hr = XAudio2Create(&s_pXAudio2, 0)))
 	{
-		E2D_WARNING(L"Failed to init XAudio2 engine");
+		TraceError(L"Failed to init XAudio2 engine", hr);
 		return false;
 	}
 
 	if (FAILED(hr = s_pXAudio2->CreateMasteringVoice(&s_pMasteringVoice)))
 	{
-		E2D_WARNING(L"Failed creating mastering voice");
-		easy2d::SafeRelease(s_pXAudio2);
+		TraceError(L"Failed to create mastering voice", hr);
+		SafeRelease(s_pXAudio2);
 		return false;
 	}
 
@@ -586,7 +564,9 @@ void easy2d::Music::__uninit()
 		s_pMasteringVoice->DestroyVoice();
 	}
 
-	easy2d::SafeRelease(s_pXAudio2);
+	SafeRelease(s_pXAudio2);
+
+	MFShutdown();
 }
 
 

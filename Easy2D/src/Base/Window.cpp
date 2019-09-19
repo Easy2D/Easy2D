@@ -12,18 +12,18 @@ static HWND s_HWnd = nullptr;
 bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 {
 	// ×¢²á´°¿ÚÀà
-	WNDCLASSEX wcex = { 0 };
-	wcex.cbSize = sizeof(WNDCLASSEX);
-	wcex.lpszClassName = L"Easy2DApp";
-	wcex.hIcon = nullptr;
-	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = Window::WndProc;
-	wcex.cbClsExtra = 0;
-	wcex.cbWndExtra = sizeof(LONG_PTR);
-	wcex.hInstance = HINST_THISCOMPONENT;
-	wcex.hbrBackground = nullptr;
-	wcex.lpszMenuName = nullptr;
-	wcex.hCursor = nullptr;
+	WNDCLASSEX wcex		= { 0 };
+	wcex.cbSize			= sizeof(WNDCLASSEX);
+	wcex.lpszClassName	= L"Easy2DApp";
+	wcex.hIcon			= nullptr;
+	wcex.style			= CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc	= Window::WndProc;
+	wcex.cbClsExtra		= 0;
+	wcex.cbWndExtra		= sizeof(LONG_PTR);
+	wcex.hInstance		= HINST_THISCOMPONENT;
+	wcex.hbrBackground	= nullptr;
+	wcex.lpszMenuName	= nullptr;
+	wcex.hCursor		= ::LoadCursorW(HINST_THISCOMPONENT, IDC_ARROW);
 
 	RegisterClassEx(&wcex);
 

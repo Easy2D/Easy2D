@@ -2,9 +2,12 @@
 #include <e2dbase.h>
 
 #ifndef E2D_USE_MCI
-#include <xaudio2.h>
+#	include <xaudio2.h>
+#	include <mfapi.h>
+#	include <mfidl.h>
+#	include <mfreadwrite.h>
 #else
-#include <mmsystem.h>
+#	include <mmsystem.h>
 #endif
 
 namespace easy2d
@@ -116,32 +119,24 @@ private:
 	static void __uninit();
 
 #ifndef E2D_USE_MCI
-
-protected:
-	bool _readMMIO();
-
-	bool _resetFile();
-
-	bool _read(
-		BYTE* pBuffer,
-		DWORD dwSizeToRead
+	HRESULT _loadMediaFile(
+		String const& file_path
 	);
 
-	bool _findMediaFileCch(
-		wchar_t* strDestPath,
-		int cchDest,
-		const wchar_t* strFilename
+	HRESULT _loadMediaResource(
+		LPVOID buffer,
+		DWORD bufferSize
+	);
+
+	HRESULT _readSource(
+		IMFSourceReader* reader
 	);
 
 protected:
 	bool _opened;
 	mutable bool _playing;
-	DWORD _dwSize;
-	CHAR* _resBuffer;
 	BYTE* _waveData;
-	HMMIO _hmmio;
-	MMCKINFO _ck;
-	MMCKINFO _ckRiff;
+	DWORD _waveDataSize;
 	WAVEFORMATEX* _wfx;
 	IXAudio2SourceVoice* _voice;
 
