@@ -270,6 +270,7 @@ void easy2d::Button::updateStatus(Event* evt)
 			{
 				_runCallback();
 			}
+			Window::setCursor(Window::Cursor::Normal);
 		}
 	}
 }
