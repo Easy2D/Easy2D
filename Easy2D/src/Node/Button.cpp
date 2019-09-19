@@ -70,6 +70,7 @@ void easy2d::Button::setNormal(Node * normal)
 		// 添加新的
 		if (normal)
 		{
+			normal->setAnchor(0, 0);
 			this->addChild(normal);
 			this->setSize(normal->getWidth(), normal->getHeight());
 		}
@@ -91,6 +92,7 @@ void easy2d::Button::setMouseOver(Node * mouseover)
 		// 添加新的
 		if (mouseover)
 		{
+			mouseover->setAnchor(0, 0);
 			this->addChild(mouseover);
 		}
 		_mouseover = mouseover;
@@ -110,6 +112,7 @@ void easy2d::Button::setSelected(Node * selected)
 		// 添加新的
 		if (selected)
 		{
+			selected->setAnchor(0, 0);
 			this->addChild(selected);
 		}
 		_selected = selected;
@@ -129,6 +132,7 @@ void easy2d::Button::setDisabled(Node * disabled)
 		// 添加新的
 		if (disabled)
 		{
+			disabled->setAnchor(0, 0);
 			this->addChild(disabled);
 		}
 		_disabled = disabled;
