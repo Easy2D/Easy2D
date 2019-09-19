@@ -420,9 +420,9 @@ public:
 	void removeAllListeners();
 
 	// 修改节点的默认锚点位置
-	static void setDefaultPiovt(
-		float defaultPiovtX,
-		float defaultPiovtY
+	static void setDefaultAnchor(
+		float defaultAnchorX,
+		float defaultAnchorY
 	);
 
 protected:

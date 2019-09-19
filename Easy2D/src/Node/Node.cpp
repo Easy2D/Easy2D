@@ -4,8 +4,8 @@
 #include <algorithm>
 
 // 默认中心点位置
-static float s_fDefaultPiovtX = 0;
-static float s_fDefaultPiovtY = 0;
+static float s_fDefaultAnchorX = 0;
+static float s_fDefaultAnchorY = 0;
 
 easy2d::Node::Node()
 	: _nOrder(0)
@@ -20,8 +20,8 @@ easy2d::Node::Node()
 	, _skewAngleY(0)
 	, _displayOpacity(1.0f)
 	, _realOpacity(1.0f)
-	, _anchorX(s_fDefaultPiovtX)
-	, _anchorY(s_fDefaultPiovtY)
+	, _anchorX(s_fDefaultAnchorX)
+	, _anchorY(s_fDefaultAnchorY)
 	, _transform()
 	, _visiable(true)
 	, _parent(nullptr)
@@ -765,10 +765,10 @@ void easy2d::Node::setAutoUpdate(bool bAutoUpdate)
 	_autoUpdate = bAutoUpdate;
 }
 
-void easy2d::Node::setDefaultPiovt(float defaultPiovtX, float defaultPiovtY)
+void easy2d::Node::setDefaultAnchor(float defaultAnchorX, float defaultAnchorY)
 {
-	s_fDefaultPiovtX = min(max(float(defaultPiovtX), 0), 1);
-	s_fDefaultPiovtY = min(max(float(defaultPiovtY), 0), 1);
+	s_fDefaultAnchorX = min(max(float(defaultAnchorX), 0), 1);
+	s_fDefaultAnchorY = min(max(float(defaultAnchorY), 0), 1);
 }
 
 void easy2d::Node::resumeAllActions()
