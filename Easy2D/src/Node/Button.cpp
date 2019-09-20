@@ -269,8 +269,11 @@ void easy2d::Button::updateStatus(Event* evt)
 			if (_enable)
 			{
 				_runCallback();
+
+				// ÷ÿ÷√∞¥≈•◊¥Ã¨
+				_setState(ButtonState::Normal);
+				Window::setCursor(Window::Cursor::Normal);
 			}
-			Window::setCursor(Window::Cursor::Normal);
 		}
 	}
 }
