@@ -23,7 +23,7 @@ easy2d::Node::Node()
 	, _anchorX(s_fDefaultAnchorX)
 	, _anchorY(s_fDefaultAnchorY)
 	, _transform()
-	, _visiable(true)
+	, _visible(true)
 	, _parent(nullptr)
 	, _parentScene(nullptr)
 	, _hashName(0)
@@ -94,7 +94,7 @@ void easy2d::Node::_update()
 
 void easy2d::Node::_render()
 {
-	if (!_visiable)
+	if (!_visible)
 	{
 		return;
 	}
@@ -205,9 +205,9 @@ void easy2d::Node::_updateOpacity()
 	}
 }
 
-bool easy2d::Node::isVisiable() const
+bool easy2d::Node::isVisible() const
 {
-	return _visiable;
+	return _visible;
 }
 
 easy2d::String easy2d::Node::getName() const
@@ -308,7 +308,7 @@ float easy2d::Node::getOpacity() const
 easy2d::Node::Property easy2d::Node::getProperty() const
 {
 	Property prop;
-	prop.visable = _visiable;
+	prop.visable = _visible;
 	prop.posX = _posX;
 	prop.posY = _posY;
 	prop.width = _width;
@@ -509,7 +509,7 @@ void easy2d::Node::setSize(Size size)
 
 void easy2d::Node::setProperty(Property prop)
 {
-	this->setVisiable(prop.visable);
+	this->setVisible(prop.visable);
 	this->setPos(prop.posX, prop.posY);
 	this->setSize(prop.width, prop.height);
 	this->setOpacity(prop.opacity);
@@ -708,7 +708,7 @@ void easy2d::Node::removeChildren(const String& childName)
 	}
 }
 
-void easy2d::Node::clearAllChildren()
+void easy2d::Node::removeAllChildren()
 {
 	// 所有节点的引用计数减一
 	for (auto child : _children)
@@ -796,9 +796,9 @@ void easy2d::Node::dispatch(Event* evt)
 	}
 }
 
-void easy2d::Node::setVisiable(bool value)
+void easy2d::Node::setVisible(bool value)
 {
-	_visiable = value;
+	_visible = value;
 }
 
 void easy2d::Node::setName(const String& name)

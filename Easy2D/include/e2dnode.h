@@ -47,7 +47,7 @@ public:
 	virtual void onRender() {}
 
 	// 获取节点显示状态
-	bool isVisiable() const;
+	bool isVisible() const;
 
 	// 获取节点名称
 	String getName() const;
@@ -133,40 +133,8 @@ public:
 	// 是否包含点坐标
 	bool containsPoint(Point const& point);
 
-	// 获取所有名称相同的子节点
-	std::vector<Node*> getChildren(
-		const String& name
-	) const;
-
-	// 获取名称相同的子节点
-	Node* getChild(
-		const String& name
-	) const;
-
-	// 获取所有子节点
-	const std::vector<Node*>& getAllChildren() const;
-
-	// 获取子节点数量
-	int getChildrenCount() const;
-
-	// 移除子节点
-	bool removeChild(
-		Node * child
-	);
-
-	// 移除所有名称相同的子节点
-	void removeChildren(
-		const String& childName
-	);
-
-	// 从父节点移除
-	void removeFromParent();
-
-	// 移除所有节点
-	void clearAllChildren();
-
 	// 设置节点是否显示
-	void setVisiable(
+	void setVisible(
 		bool value
 	);
 
@@ -346,6 +314,38 @@ public:
 		int order = 0						/* 渲染顺序 */
 	);
 
+	// 获取所有名称相同的子节点
+	std::vector<Node*> getChildren(
+		const String& name
+	) const;
+
+	// 获取名称相同的子节点
+	Node* getChild(
+		const String& name
+	) const;
+
+	// 获取所有子节点
+	const std::vector<Node*>& getAllChildren() const;
+
+	// 获取子节点数量
+	int getChildrenCount() const;
+
+	// 移除子节点
+	bool removeChild(
+		Node* child
+	);
+
+	// 移除所有名称相同的子节点
+	void removeChildren(
+		const String& childName
+	);
+
+	// 从父节点移除
+	void removeFromParent();
+
+	// 移除所有节点
+	void removeAllChildren();
+
 	// 分发事件
 	void dispatch(Event* evt);
 
@@ -456,7 +456,7 @@ protected:
 	void __clearListeners();
 
 protected:
-	bool		_visiable;
+	bool		_visible;
 	bool		_autoUpdate;
 	bool		_needSort;
 	bool		_positionFixed;

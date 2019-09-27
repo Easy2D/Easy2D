@@ -119,8 +119,8 @@ void easy2d::Sprite::onRender()
 			D2D1::RectF(
 				fCropX,
 				fCropY,
-				fCropX + _width,
-				fCropY + _height
+				fCropX + _image->getWidth(),
+				fCropY + _image->getHeight()
 			)
 		);
 	}

@@ -165,35 +165,35 @@ void easy2d::Button::_setState(ButtonState state)
 
 void easy2d::Button::_updateVisiable()
 {
-	SAFE_SET(_normal, setVisiable, false);
-	SAFE_SET(_mouseover, setVisiable, false);
-	SAFE_SET(_selected, setVisiable, false);
-	SAFE_SET(_disabled, setVisiable, false);
+	SAFE_SET(_normal, setVisible, false);
+	SAFE_SET(_mouseover, setVisible, false);
+	SAFE_SET(_selected, setVisible, false);
+	SAFE_SET(_disabled, setVisible, false);
 
 	if (_enable)
 	{
 		if (_state == ButtonState::Selected && _selected)
 		{
-			_selected->setVisiable(true);
+			_selected->setVisible(true);
 		}
 		else if (_state == ButtonState::Mouseover && _mouseover)
 		{
-			_mouseover->setVisiable(true);
+			_mouseover->setVisible(true);
 		}
 		else
 		{
-			if (_normal) _normal->setVisiable(true);
+			if (_normal) _normal->setVisible(true);
 		}
 	}
 	else
 	{
 		if (_disabled)
 		{
-			_disabled->setVisiable(true);
+			_disabled->setVisible(true);
 		}
 		else
 		{
-			if (_normal) _normal->setVisiable(true);
+			if (_normal) _normal->setVisible(true);
 		}
 	}
 }
@@ -211,7 +211,7 @@ void easy2d::Button::updateStatus(Event* evt)
 	if (SceneManager::isTransitioning())
 		return;
 
-	if (_visiable && _normal)
+	if (_visible && _normal)
 	{
 		if (evt->type == Event::Type::MouseMove)
 		{
