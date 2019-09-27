@@ -194,32 +194,32 @@ class Input
 public:
 	// 检测键盘某按键是否正被按下
 	static bool isDown(
-		Key key
+		KeyCode::Value key
 	);
 
 	// 检测键盘某按键是否被点击
 	static bool isPress(
-		Key key
+		KeyCode::Value key
 	);
 
 	// 检测键盘某按键是否正在松开
 	static bool isRelease(
-		Key key
+		KeyCode::Value key
 	);
 
 	// 检测鼠标按键是否正被按下
 	static bool isDown(
-		Mouse code
+		MouseCode::Value code
 	);
 
 	// 检测鼠标按键是否被点击
 	static bool isPress(
-		Mouse code
+		MouseCode::Value code
 	);
 
 	// 检测鼠标按键是否正在松开
 	static bool isRelease(
-		Mouse code
+		MouseCode::Value code
 	);
 
 	// 获得鼠标X轴坐标值

@@ -1,3 +1,4 @@
+#include <unordered_map>
 #include <e2dbase.h>
 #include <e2dmanager.h>
 
@@ -5,6 +6,8 @@
 #pragma comment(lib, "dinput8.lib")
 
 #define BUFFER_SIZE	256
+
+using namespace easy2d;
 
 namespace
 {
@@ -17,10 +20,86 @@ namespace
 	DIMOUSESTATE s_MouseState;							// 鼠标信息存储结构体
 	DIMOUSESTATE s_MouseRecordState;					// 鼠标信息二级缓冲
 	POINT s_MousePosition;								// 鼠标位置存储结构体
+
+	const std::unordered_map<int, int> s_KeyboardMapping = {
+		{ KeyCode::Unknown, 0x00 },
+		{ KeyCode::Up, DIK_UP },
+		{ KeyCode::Left, DIK_LEFT },
+		{ KeyCode::Right, DIK_RIGHT },
+		{ KeyCode::Down, DIK_DOWN },
+		{ KeyCode::Enter, DIK_RETURN },
+		{ KeyCode::Space, DIK_SPACE },
+		{ KeyCode::Esc, DIK_ESCAPE },
+		{ KeyCode::Ctrl, DIK_LCONTROL },
+		{ KeyCode::Shift, DIK_LSHIFT },
+		{ KeyCode::Alt, DIK_LMENU },
+		{ KeyCode::Tab, DIK_TAB },
+		{ KeyCode::Delete, DIK_DELETE },
+		{ KeyCode::Back, DIK_BACK },
+
+		{ KeyCode::A, DIK_A },
+		{ KeyCode::B, DIK_B },
+		{ KeyCode::C, DIK_C },
+		{ KeyCode::D, DIK_D },
+		{ KeyCode::E, DIK_E },
+		{ KeyCode::F, DIK_F },
+		{ KeyCode::G, DIK_G },
+		{ KeyCode::H, DIK_H },
+		{ KeyCode::I, DIK_I },
+		{ KeyCode::J, DIK_J },
+		{ KeyCode::K, DIK_K },
+		{ KeyCode::L, DIK_L },
+		{ KeyCode::M, DIK_M },
+		{ KeyCode::N, DIK_N },
+		{ KeyCode::O, DIK_O },
+		{ KeyCode::P, DIK_P },
+		{ KeyCode::Q, DIK_Q },
+		{ KeyCode::R, DIK_R },
+		{ KeyCode::S, DIK_S },
+		{ KeyCode::T, DIK_T },
+		{ KeyCode::U, DIK_U },
+		{ KeyCode::V, DIK_V },
+		{ KeyCode::W, DIK_W },
+		{ KeyCode::X, DIK_X },
+		{ KeyCode::Y, DIK_Y },
+		{ KeyCode::Z, DIK_Z },
+
+		{ KeyCode::Num0, DIK_0 },
+		{ KeyCode::Num1, DIK_1 },
+		{ KeyCode::Num2, DIK_2 },
+		{ KeyCode::Num3, DIK_3 },
+		{ KeyCode::Num4, DIK_4 },
+		{ KeyCode::Num5, DIK_5 },
+		{ KeyCode::Num6, DIK_6 },
+		{ KeyCode::Num7, DIK_7 },
+		{ KeyCode::Num8, DIK_8 },
+		{ KeyCode::Num9, DIK_9 },
+
+		{ KeyCode::Numpad0, DIK_NUMPAD0 },
+		{ KeyCode::Numpad1, DIK_NUMPAD1 },
+		{ KeyCode::Numpad2, DIK_NUMPAD2 },
+		{ KeyCode::Numpad3, DIK_NUMPAD3 },
+		{ KeyCode::Numpad4, DIK_NUMPAD4 },
+		{ KeyCode::Numpad5, DIK_NUMPAD5 },
+		{ KeyCode::Numpad6, DIK_NUMPAD6 },
+		{ KeyCode::Numpad7, DIK_NUMPAD7 },
+		{ KeyCode::Numpad8, DIK_NUMPAD8 },
+		{ KeyCode::Numpad9, DIK_NUMPAD9 },
+
+		{ KeyCode::F1, DIK_F1 },
+		{ KeyCode::F2, DIK_F2 },
+		{ KeyCode::F3, DIK_F3 },
+		{ KeyCode::F4, DIK_F4 },
+		{ KeyCode::F5, DIK_F5 },
+		{ KeyCode::F6, DIK_F6 },
+		{ KeyCode::F7, DIK_F7 },
+		{ KeyCode::F8, DIK_F8 },
+		{ KeyCode::F9, DIK_F9 },
+		{ KeyCode::F10, DIK_F10 },
+		{ KeyCode::F11, DIK_F11 },
+		{ KeyCode::F12, DIK_F12 },
+	};
 }
-
-using namespace easy2d;
-
 
 bool Input::__init()
 {
@@ -79,7 +158,7 @@ bool Input::__init()
 		}
 		else
 		{
-			E2D_WARNING(L"Mouse not found!");
+			E2D_WARNING(L"MouseCode not found!");
 			return false;
 		}
 	}
@@ -139,37 +218,40 @@ void easy2d::Input::__update()
 	ScreenToClient(Window::getHWnd(), &s_MousePosition);
 }
 
-bool Input::isDown(Key key)
+bool Input::isDown(KeyCode::Value key)
 {
-	if (s_KeyBuffer[static_cast<int>(key)] & 0x80)
+	int dik = s_KeyboardMapping.at(key);
+	if (s_KeyBuffer[dik] & 0x80)
 		return true;
 	return false;
 }
 
-bool Input::isPress(Key key)
+bool Input::isPress(KeyCode::Value key)
 {
-	if ((s_KeyBuffer[static_cast<int>(key)] & 0x80) && 
-		!(s_KeyRecordBuffer[static_cast<int>(key)] & 0x80))
+	int dik = s_KeyboardMapping.at(key);
+	if ((s_KeyBuffer[dik] & 0x80) &&
+		!(s_KeyRecordBuffer[dik] & 0x80))
 		return true;
 	return false;
 }
 
-bool Input::isRelease(Key key)
+bool Input::isRelease(KeyCode::Value key)
 {
-	if (!(s_KeyBuffer[static_cast<int>(key)] & 0x80) && 
-		(s_KeyRecordBuffer[static_cast<int>(key)] & 0x80))
+	int dik = s_KeyboardMapping.at(key);
+	if (!(s_KeyBuffer[dik] & 0x80) &&
+		(s_KeyRecordBuffer[dik] & 0x80))
 		return true;
 	return false;
 }
 
-bool easy2d::Input::isDown(Mouse code)
+bool easy2d::Input::isDown(MouseCode::Value code)
 {
 	if (s_MouseState.rgbButtons[static_cast<int>(code)] & 0x80)
 		return true;
 	return false;
 }
 
-bool easy2d::Input::isPress(Mouse code)
+bool easy2d::Input::isPress(MouseCode::Value code)
 {
 	if ((s_MouseState.rgbButtons[static_cast<int>(code)] & 0x80) && 
 		!(s_MouseRecordState.rgbButtons[static_cast<int>(code)] & 0x80))
@@ -177,7 +259,7 @@ bool easy2d::Input::isPress(Mouse code)
 	return false;
 }
 
-bool easy2d::Input::isRelease(Mouse code)
+bool easy2d::Input::isRelease(MouseCode::Value code)
 {
 	if (!(s_MouseState.rgbButtons[static_cast<int>(code)] & 0x80) && 
 		(s_MouseRecordState.rgbButtons[static_cast<int>(code)] & 0x80))

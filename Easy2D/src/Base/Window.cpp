@@ -270,7 +270,7 @@ LRESULT easy2d::Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	{
-		KeyDownEvent evt(Key(wParam), int(lParam & 0xFF));
+		KeyDownEvent evt(KeyCode::Value(wParam), int(lParam & 0xFF));
 		SceneManager::dispatch(&evt);
 	}
 	break;
@@ -278,7 +278,7 @@ LRESULT easy2d::Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 	{
-		KeyUpEvent evt(Key(wParam), int(lParam & 0xFF));
+		KeyUpEvent evt(KeyCode::Value(wParam), int(lParam & 0xFF));
 		SceneManager::dispatch(&evt);
 	}
 	break;
@@ -287,10 +287,10 @@ LRESULT easy2d::Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
 	{
-		Mouse btn = Mouse::Left;
-		if (message == WM_LBUTTONUP) { btn = Mouse::Left; }
-		else if (message == WM_RBUTTONUP) { btn = Mouse::Right; }
-		else if (message == WM_MBUTTONUP) { btn = Mouse::Middle; }
+		MouseCode::Value btn = MouseCode::Left;
+		if (message == WM_LBUTTONUP) { btn = MouseCode::Left; }
+		else if (message == WM_RBUTTONUP) { btn = MouseCode::Right; }
+		else if (message == WM_MBUTTONUP) { btn = MouseCode::Middle; }
 
 		MouseUpEvent evt(
 			static_cast<float>(GET_X_LPARAM(lParam)),
@@ -305,10 +305,10 @@ LRESULT easy2d::Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 	{
-		Mouse btn = Mouse::Left;
-		if (message == WM_LBUTTONDOWN) { btn = Mouse::Left; }
-		else if (message == WM_RBUTTONDOWN) { btn = Mouse::Right; }
-		else if (message == WM_MBUTTONDOWN) { btn = Mouse::Middle; }
+		MouseCode::Value btn = MouseCode::Left;
+		if (message == WM_LBUTTONDOWN) { btn = MouseCode::Left; }
+		else if (message == WM_RBUTTONDOWN) { btn = MouseCode::Right; }
+		else if (message == WM_MBUTTONDOWN) { btn = MouseCode::Middle; }
 
 		MouseDownEvent evt(
 			static_cast<float>(GET_X_LPARAM(lParam)),

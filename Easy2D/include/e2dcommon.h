@@ -296,70 +296,99 @@ protected:
 
 
 // Êó±ê¼üÖµ
-enum class Mouse : int
+struct MouseCode
 {
-	Left,		/* Êó±ê×ó¼ü */
-	Right,		/* Êó±êÓÒ¼ü */
-	Middle		/* Êó±êÖÐ¼ü */
+	enum Value : int
+	{
+		Left,		/* Êó±ê×ó¼ü */
+		Right,		/* Êó±êÓÒ¼ü */
+		Middle		/* Êó±êÖÐ¼ü */
+	};
 };
 
 
 // ¼üÅÌ¼üÖµ
-enum class Key : int
+struct KeyCode
 {
-	Up = 0xC8,
-	Left = 0xCB,
-	Right = 0xCD,
-	Down = 0xD0,
-	Enter = 0x1C,
-	Space = 0x39,
-	Esc = 0x01,
-	Q = 0x10,
-	W = 0x11,
-	E = 0x12,
-	R = 0x13,
-	T = 0x14,
-	Y = 0x15,
-	U = 0x16,
-	I = 0x17,
-	O = 0x18,
-	P = 0x19,
-	A = 0x1E,
-	S = 0x1F,
-	D = 0x20,
-	F = 0x21,
-	G = 0x22,
-	H = 0x23,
-	J = 0x24,
-	K = 0x25,
-	L = 0x26,
-	Z = 0x2C,
-	X = 0x2D,
-	C = 0x2E,
-	V = 0x2F,
-	B = 0x30,
-	N = 0x31,
-	M = 0x32,
-	Num1 = 0x02,
-	Num2 = 0x03,
-	Num3 = 0x04,
-	Num4 = 0x05,
-	Num5 = 0x06,
-	Num6 = 0x07,
-	Num7 = 0x08,
-	Num8 = 0x09,
-	Num9 = 0x0A,
-	Num0 = 0x0B,
-	Numpad7 = 0x47,
-	Numpad8 = 0x48,
-	Numpad9 = 0x49,
-	Numpad4 = 0x4B,
-	Numpad5 = 0x4C,
-	Numpad6 = 0x4D,
-	Numpad1 = 0x4F,
-	Numpad2 = 0x50,
-	Numpad3 = 0x51,
-	Numpad0 = 0x52
+	enum Value : int
+	{
+		Unknown = 0,
+		Up = VK_UP,
+		Left = VK_LEFT,
+		Right = VK_RIGHT,
+		Down = VK_DOWN,
+		Enter = VK_RETURN,
+		Space = VK_SPACE,
+		Esc = VK_ESCAPE,
+		Ctrl = VK_CONTROL,
+		Shift = VK_SHIFT,
+		Alt = VK_MENU,
+		Tab = VK_TAB,
+		Delete = VK_DELETE,
+		Back = VK_BACK,
+
+		A = 0x41,
+		B,
+		C,
+		D,
+		E,
+		F,
+		G,
+		H,
+		I,
+		J,
+		K,
+		L,
+		M,
+		N,
+		O,
+		P,
+		Q,
+		R,
+		S,
+		T,
+		U,
+		V,
+		W,
+		X,
+		Y,
+		Z,
+
+		Num0 = 0x30,
+		Num1,
+		Num2,
+		Num3,
+		Num4,
+		Num5,
+		Num6,
+		Num7,
+		Num8,
+		Num9,
+
+		Numpad0 = VK_NUMPAD0,
+		Numpad1,
+		Numpad2,
+		Numpad3,
+		Numpad4,
+		Numpad5,
+		Numpad6,
+		Numpad7,
+		Numpad8,
+		Numpad9,
+
+		F1 = VK_F1,
+		F2,
+		F3,
+		F4,
+		F5,
+		F6,
+		F7,
+		F8,
+		F9,
+		F10,
+		F11,
+		F12,
+	};
 };
 
 
@@ -393,19 +422,19 @@ struct MouseMoveEvent
 struct MouseDownEvent
 	: public Event
 {
-	MouseDownEvent(float x, float y, Mouse btn);
+	MouseDownEvent(float x, float y, MouseCode::Value btn);
 
 	float x, y;
-	Mouse button;
+	MouseCode::Value button;
 };
 
 struct MouseUpEvent
 	: public Event
 {
-	MouseUpEvent(float x, float y, Mouse btn);
+	MouseUpEvent(float x, float y, MouseCode::Value btn);
 
 	float x, y;
-	Mouse button;
+	MouseCode::Value button;
 };
 
 struct MouseWheelEvent
@@ -420,18 +449,18 @@ struct MouseWheelEvent
 struct KeyDownEvent
 	: public Event
 {
-	KeyDownEvent(Key key, int count);
+	KeyDownEvent(KeyCode::Value key, int count);
 
-	Key key;
+	KeyCode::Value key;
 	int count;
 };
 
 struct KeyUpEvent
 	: public Event
 {
-	KeyUpEvent(Key key, int count);
+	KeyUpEvent(KeyCode::Value key, int count);
 
-	Key key;
+	KeyCode::Value key;
 	int count;
 };
 
