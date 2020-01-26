@@ -1,0 +1,117 @@
+version: 0.9.{build}
+
+skip_tags: true
+
+# fetch repository as zip archive
+shallow_clone: true
+
+pull_requests:
+  do_not_increment_build_number: true
+
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
+
+# image:
+# - Visual Studio 2019
+# - Visual Studio 2017
+# - Visual Studio 2015
+
+environment:
+  global:
+    time_out_mins: 5
+    flag_to_deploy: false
+    appveyor_api_token:
+      secure: UJFCbRNHMOqQg3e3Kv/ZnaIqqwXAt+5HDldetaZsZ5E=
+
+matrix:
+  fast_finish: true # set this flag to immediately finish build once one of the jobs fails
+  # allow_failures:
+  #   - platform: x86
+  #     configuration: Debug
+
+skip_commits:
+  message: /\[chore\]/
+
+only_commits:
+  files:
+    - Easy2D/
+    - scripts/
+    - appveyor.yml
+
+for:
+-
+  branches:
+    only:
+      - master
+  environment:
+    matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      VS_PLATFORM_TOOLSET: v120
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      VS_PLATFORM_TOOLSET: v140
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      VS_PLATFORM_TOOLSET: v141
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      VS_PLATFORM_TOOLSET: v142
+    global:
+      job_to_deploy: 16 # 4(images) * 2(platform) * 2(configuration)
+-
+  branches:
+    except:
+      - master
+  # only_commits:
+  #   message: /\[build\]/
+  environment:
+    matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      VS_PLATFORM_TOOLSET: v120
+    global:
+      job_to_deploy: 4 # 1(images) * 2(platform) * 2(configuration)
+
+configuration:
+- Debug
+- Release
+
+platform:
+- x86
+- x64
+
+# cache: packages/
+
+before_build:
+- ps: .\scripts\appveyor\clear_project_configuration.ps1
+
+build:
+  project: Easy2D.sln
+  verbosity: minimal
+  parallel: true
+
+after_build:
+- ps: .\scripts\appveyor\package_artifacts.ps1
+
+artifacts:
+- path: Easy2D/output/**/*.lib
+  name: libeasy2d-$(VS_PLATFORM_TOOLSET)-$(PLATFORM)-$(CONFIGURATION)
+
+deploy:
+- provider: GitHub
+  repository: Easy2D/Easy2D
+  tag: v$(APPVEYOR_BUILD_VERSION)
+  release: v$(APPVEYOR_BUILD_VERSION)
+  description: Easy2D-v$(APPVEYOR_BUILD_VERSION) releases.
+  auth_token:
+    secure: 8u4p+GFzlf/lR26bvU+h/GCfmFT34MLdSyNQNjhj5xYzObAJRLqg77aOVl8J/fuf
+  artifact: /.*\.(exe|7z|zip)/
+  draft: true
+  on:
+    # branch: master
+    # APPVEYOR_REPO_TAG: true
+    flag_to_deploy: true
+
+notifications:
+- provider: Email
+  to:
+  - 569629550@qq.com
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false

@@ -1,0 +1,7 @@
+;!@Install@!UTF-8!
+
+Title="Easy2D Installer"
+
+ExecuteFile="install.bat"
+
+;!@InstallEnd@!
