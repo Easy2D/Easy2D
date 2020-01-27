@@ -166,26 +166,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>libeasy2dd</TargetName>
-    <OutDir>output\$(Configuration).$(Platform)\</OutDir>
-    <IntDir>build\$(Configuration).$(Platform)\</IntDir>
+    <OutDir>output\$(PlatformToolset)\x86\$(Configuration)\</OutDir>
+    <IntDir>build\$(PlatformToolset)\x86\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>libeasy2dd</TargetName>
-    <OutDir>output\$(Configuration).$(Platform)\</OutDir>
-    <IntDir>build\$(Configuration).$(Platform)\</IntDir>
+    <OutDir>output\$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>libeasy2d</TargetName>
-    <OutDir>output\$(Configuration).$(Platform)\</OutDir>
-    <IntDir>build\$(Configuration).$(Platform)\</IntDir>
+    <OutDir>output\$(PlatformToolset)\x86\$(Configuration)\</OutDir>
+    <IntDir>build\$(PlatformToolset)\x86\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>libeasy2d</TargetName>
-    <OutDir>output\$(Configuration).$(Platform)\</OutDir>
-    <IntDir>build\$(Configuration).$(Platform)\</IntDir>
+    <OutDir>output\$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -193,6 +193,7 @@
       <Optimization>Disabled</Optimization>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -205,6 +206,7 @@
       <Optimization>Disabled</Optimization>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -220,6 +222,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -237,6 +240,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
