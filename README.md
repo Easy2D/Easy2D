@@ -22,7 +22,7 @@ Easy2D 是一个为 C++ 设计的 2D 游戏引擎，目前仅支持 Windows 平�
 * 数据持久化工具
 * ...
 
-## 安装
+## 快速上手
 
 #### 运行 Hello World
 
@@ -34,7 +34,9 @@ git clone https://github.com/nomango/easy2d.git
 
 第二步，使用 Visual Studio 2013 或更高版本，打开目录下的 sln 文件。
 
-第三步，直接点击运行，在几分钟编译后就会自动打开 Hello World 程序。
+第三步，直接运行，在几分钟编译后就会自动打开 Hello World 程序。
+
+## 安装
 
 #### 使用简易安装器安装
 

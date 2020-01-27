@@ -64,7 +64,7 @@ New-Item -ItemType "directory" -Path "published"
 Copy-Item -Path $publishedFiles -Destination '.\published' -Recurse
 
 # Packaging
-7z.exe a -t7z -mmt -mx9 install.7z .\published*
+7z.exe a -t7z -mmt -mx9 install.7z .\published\*
 cmd /c copy /b scripts\7z\7zS2.sfx + scripts\7z\7z-config.txt + install.7z installer.exe
 
 # Upload artifacts

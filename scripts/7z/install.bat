@@ -45,13 +45,13 @@ set vs2019x64lib=0
 
 :: 查询操作系统是32位还是64位
 2>nul reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v "PROCESSOR_ARCHITECTURE" | findstr "AMD64">nul
-if %errorlevel% EQU 0 (set vsregpath=WOW6432Node\)
+if %errorlevel% EQU 0 ( set vsregpath=WOW6432Node\ )
 set vsregpath=HKLM\Software\%vsregpath%Microsoft\VisualStudio\SxS\VS7
 
 :: 查询VS安装路径
-for /f "tokens=1,2*" %%a in ('2^>nul reg query "%vsregpath%" /v "11.0"') do (set vs2012path=%%cVC\)
-for /f "tokens=1,2*" %%a in ('2^>nul reg query "%vsregpath%" /v "12.0"') do (set vs2013path=%%cVC\)
-for /f "tokens=1,2*" %%a in ('2^>nul reg query "%vsregpath%" /v "14.0"') do (set vs2015path=%%cVC\)
+for /f "tokens=1,2*" %%a in ('2^>nul reg query "%vsregpath%" /v "11.0"') do ( set vs2012path=%%cVC\ )
+for /f "tokens=1,2*" %%a in ('2^>nul reg query "%vsregpath%" /v "12.0"') do ( set vs2013path=%%cVC\ )
+for /f "tokens=1,2*" %%a in ('2^>nul reg query "%vsregpath%" /v "14.0"') do ( set vs2015path=%%cVC\ )
 
 for /f "tokens=1" %%a in ('2^>nul reg query "HKLM\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"') do (
     for /f "tokens=1,2*" %%b in ('2^>nul reg query %%a /v "DisplayName"') do (
@@ -131,11 +131,11 @@ echo [2] 安装在指定的 Visual Studio 版本上
 choice /c 12 /n /m 请输入选项：
 set userchoice=%errorlevel%
 
-if %userchoice%==1 goto ONE
-if %userchoice%==2 goto TWO
+if %userchoice%==1 goto AUTOINSTALL
+if %userchoice%==2 goto CUSTOMINSTALL
 exit
 
-:ONE
+:AUTOINSTALL
 :: 检测所有VS版本并安装
 if %existvs2013% == 1 (
     echo.
@@ -176,7 +176,7 @@ if %existvs2019% == 1 (
 echo 按任意键退出 & pause>nul
 exit
 
-:TWO
+:CUSTOMINSTALL
 echo.
 echo 请选择安装版本：
 echo [1] Visual Studio 2013
