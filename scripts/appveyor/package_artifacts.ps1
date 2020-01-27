@@ -58,6 +58,10 @@ Write-Host "Start to download artifacts from other jobs"
 
 Write-Host "Start to package artifacts"
 
+# Fix CRLF (.BAT file cannot work without CRLF)
+$fileToFix = '.\scripts\7z\install.bat'
+(Get-Content $fileToFix -Raw).Replace("`n", "`r`n") | Set-Content $fileToFix -Force
+
 # Copy published files
 $publishedFiles = ('.\Easy2D\include', '.\Easy2D\output', '.\scripts\7z\install.bat')
 New-Item -ItemType "directory" -Path "published"
