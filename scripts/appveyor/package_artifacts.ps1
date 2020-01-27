@@ -60,7 +60,9 @@ Write-Host "Start to package artifacts"
 
 # Fix CRLF (.BAT file cannot work without CRLF)
 $fileToFix = '.\scripts\7z\install.bat'
-(Get-Content $fileToFix -Raw).Replace("`n", "`r`n") | Set-Content $fileToFix -Force
+$fileContent = (Get-Content $fileToFix -Raw -Encoding UTF8).Replace("`n", "`r`n")
+$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+[System.IO.File]::WriteAllLines(($fileToFix | Resolve-Path), $fileContent, $Utf8NoBomEncoding)
 
 # Copy published files
 $publishedFiles = ('.\Easy2D\include', '.\Easy2D\output', '.\scripts\7z\install.bat')
