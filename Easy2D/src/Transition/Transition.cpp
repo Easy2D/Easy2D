@@ -1,6 +1,6 @@
-#include <e2dbase.h>
-#include <e2dtransition.h>
-#include <e2dnode.h>
+#include <easy2d/e2dbase.h>
+#include <easy2d/e2dtransition.h>
+#include <easy2d/e2dnode.h>
 
 easy2d::Transition::Transition(float duration)
 	: _end(false)

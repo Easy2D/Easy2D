@@ -1,4 +1,4 @@
-#include <e2dtool.h>
+#include <easy2d/e2dtool.h>
 
 #ifndef E2D_USE_MCI
 

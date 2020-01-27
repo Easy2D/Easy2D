@@ -1,5 +1,5 @@
 #pragma once
-#include <e2dnode.h>
+#include <easy2d/e2dnode.h>
 
 namespace easy2d
 {

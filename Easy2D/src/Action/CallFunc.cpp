@@ -1,4 +1,4 @@
-#include <e2daction.h>
+#include <easy2d/e2daction.h>
 
 easy2d::CallFunc::CallFunc(const Function<void()>& func) :
 	_func(func)

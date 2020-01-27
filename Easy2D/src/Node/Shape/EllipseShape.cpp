@@ -1,4 +1,4 @@
-#include <e2dshape.h>
+#include <easy2d/e2dshape.h>
 
 easy2d::EllipseShape::EllipseShape()
 	: _radiusX(0)

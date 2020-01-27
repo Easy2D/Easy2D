@@ -1,6 +1,6 @@
-#include <e2dbase.h>
-#include <e2dmanager.h>
-#include <e2dtool.h>
+#include <easy2d/e2dbase.h>
+#include <easy2d/e2dmanager.h>
+#include <easy2d/e2dtool.h>
 
 
 // ©ьжфсно╥жуж╧

@@ -1,4 +1,4 @@
-#include <e2dshape.h>
+#include <easy2d/e2dshape.h>
 
 easy2d::CircleShape::CircleShape()
 	: _radius(0)

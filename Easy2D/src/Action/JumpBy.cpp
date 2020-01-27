@@ -1,5 +1,5 @@
-#include <e2daction.h>
-#include <e2dnode.h>
+#include <easy2d/e2daction.h>
+#include <easy2d/e2dnode.h>
 
 easy2d::JumpBy::JumpBy(float duration, const Vector2 & vec, float height, int jumps)
 	: FiniteTimeAction(duration)

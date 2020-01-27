@@ -1,4 +1,4 @@
-#include <e2dbase.h>
+#include <easy2d/e2dbase.h>
 
 //
 // gcnew helper

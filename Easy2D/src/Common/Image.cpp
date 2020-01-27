@@ -1,6 +1,6 @@
-#include <e2dcommon.h>
-#include <e2dbase.h>
-#include <e2dtool.h>
+#include <easy2d/e2dcommon.h>
+#include <easy2d/e2dbase.h>
+#include <easy2d/e2dtool.h>
 #include <map>
 
 namespace

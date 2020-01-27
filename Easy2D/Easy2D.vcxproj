@@ -1,19 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="include\e2daction.h" />
-    <ClInclude Include="include\e2dmath.h" />
-    <ClInclude Include="include\easy2d.h" />
-    <ClInclude Include="include\e2dbase.h" />
-    <ClInclude Include="include\e2dcommon.h" />
-    <ClInclude Include="include\e2dmacros.h" />
-    <ClInclude Include="include\e2dmanager.h" />
-    <ClInclude Include="include\e2dnode.h" />
-    <ClInclude Include="include\e2dshape.h" />
-    <ClInclude Include="include\e2dtool.h" />
-    <ClInclude Include="include\e2dtransition.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\Action\Action.cpp" />
     <ClCompile Include="src\Action\Animation.cpp" />
     <ClCompile Include="src\Action\CallFunc.cpp" />
@@ -94,6 +81,19 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\easy2d\e2daction.h" />
+    <ClInclude Include="include\easy2d\e2dbase.h" />
+    <ClInclude Include="include\easy2d\e2dcommon.h" />
+    <ClInclude Include="include\easy2d\e2dmacros.h" />
+    <ClInclude Include="include\easy2d\e2dmanager.h" />
+    <ClInclude Include="include\easy2d\e2dmath.h" />
+    <ClInclude Include="include\easy2d\e2dnode.h" />
+    <ClInclude Include="include\easy2d\e2dshape.h" />
+    <ClInclude Include="include\easy2d\e2dtool.h" />
+    <ClInclude Include="include\easy2d\e2dtransition.h" />
+    <ClInclude Include="include\easy2d\easy2d.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FF7F943D-A89C-4E6C-97CF-84F7D8FF8EDF}</ProjectGuid>
     <RootNamespace>Easy2D</RootNamespace>
@@ -166,25 +166,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>libeasy2dd</TargetName>
-    <OutDir>output\$(PlatformToolset)\x86\$(Configuration)\</OutDir>
+    <OutDir>output\$(PlatformToolset)\x86\</OutDir>
     <IntDir>build\$(PlatformToolset)\x86\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>libeasy2dd</TargetName>
-    <OutDir>output\$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>output\$(PlatformToolset)\$(Platform)\</OutDir>
     <IntDir>build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>libeasy2d</TargetName>
-    <OutDir>output\$(PlatformToolset)\x86\$(Configuration)\</OutDir>
+    <OutDir>output\$(PlatformToolset)\x86\</OutDir>
     <IntDir>build\$(PlatformToolset)\x86\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>libeasy2d</TargetName>
-    <OutDir>output\$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>output\$(PlatformToolset)\$(Platform)\</OutDir>
     <IntDir>build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

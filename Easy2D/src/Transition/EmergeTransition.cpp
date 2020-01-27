@@ -1,5 +1,5 @@
-#include <e2dtransition.h>
-#include <e2dnode.h>
+#include <easy2d/e2dtransition.h>
+#include <easy2d/e2dnode.h>
 
 easy2d::EmergeTransition::EmergeTransition(float duration)
 	: Transition(duration)

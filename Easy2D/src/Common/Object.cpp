@@ -1,5 +1,5 @@
-#include <e2dbase.h>
-#include <e2dmanager.h>
+#include <easy2d/e2dbase.h>
+#include <easy2d/e2dmanager.h>
 
 
 easy2d::Object::Object()

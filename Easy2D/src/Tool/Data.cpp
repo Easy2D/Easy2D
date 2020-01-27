@@ -1,4 +1,4 @@
-#include <e2dtool.h>
+#include <easy2d/e2dtool.h>
 
 
 void easy2d::Data::saveInt(const String& key, int value, const String& field)

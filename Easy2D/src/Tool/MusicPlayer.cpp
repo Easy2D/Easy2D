@@ -1,4 +1,4 @@
-#include <e2dtool.h>
+#include <easy2d/e2dtool.h>
 #include <map>
 
 typedef std::map<size_t, easy2d::Music *> MusicMap;

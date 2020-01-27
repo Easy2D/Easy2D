@@ -1,6 +1,6 @@
-#include <e2dnode.h>
-#include <e2dmanager.h>
-#include <e2daction.h>
+#include <easy2d/e2dnode.h>
+#include <easy2d/e2dmanager.h>
+#include <easy2d/e2daction.h>
 #include <algorithm>
 
 // 默认中心点位置

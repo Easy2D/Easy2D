@@ -1,5 +1,5 @@
-#include <e2daction.h>
-#include <e2dnode.h>
+#include <easy2d/e2daction.h>
+#include <easy2d/e2dnode.h>
 
 easy2d::ScaleTo::ScaleTo(float duration, float scale)
 	: ScaleBy(duration, 0, 0)

@@ -1,5 +1,5 @@
-#include <e2dtransition.h>
-#include <e2dnode.h>
+#include <easy2d/e2dtransition.h>
+#include <easy2d/e2dnode.h>
 
 easy2d::MoveTransition::MoveTransition(float duration, Direction direction)
 	: Transition(duration)

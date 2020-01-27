@@ -1,6 +1,6 @@
 #pragma once
-#include <e2dmacros.h>
-#include <e2dcommon.h>
+#include <easy2d/e2dmacros.h>
+#include <easy2d/e2dcommon.h>
 
 
 // Base Classes

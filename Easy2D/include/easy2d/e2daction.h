@@ -1,6 +1,6 @@
 #pragma once
-#include <e2dcommon.h>
-#include <e2dbase.h>
+#include <easy2d/e2dcommon.h>
+#include <easy2d/e2dbase.h>
 
 namespace easy2d
 {

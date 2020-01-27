@@ -1,6 +1,6 @@
-#include <e2dmanager.h>
-#include <e2daction.h>
-#include <e2dnode.h>
+#include <easy2d/e2dmanager.h>
+#include <easy2d/e2daction.h>
+#include <easy2d/e2dnode.h>
 
 static std::vector<easy2d::Action*> s_vActions;
 

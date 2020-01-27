@@ -1,7 +1,7 @@
-#include <e2dmanager.h>
-#include <e2dbase.h>
-#include <e2dnode.h>
-#include <e2dtransition.h>
+#include <easy2d/e2dmanager.h>
+#include <easy2d/e2dbase.h>
+#include <easy2d/e2dnode.h>
+#include <easy2d/e2dtransition.h>
 
 static bool s_bSaveCurrScene = true;
 static easy2d::Scene * s_pCurrScene = nullptr;

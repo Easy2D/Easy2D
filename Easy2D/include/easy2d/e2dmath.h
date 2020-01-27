@@ -1,5 +1,5 @@
 #pragma once
-#include <e2dmacros.h>
+#include <easy2d/e2dmacros.h>
 
 namespace easy2d
 {

@@ -1,5 +1,5 @@
-#include <e2dtool.h>
-#include <e2dnode.h>
+#include <easy2d/e2dtool.h>
+#include <easy2d/e2dnode.h>
 
 namespace easy2d
 {

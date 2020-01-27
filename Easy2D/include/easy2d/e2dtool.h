@@ -1,5 +1,5 @@
 #pragma once
-#include <e2dbase.h>
+#include <easy2d/e2dbase.h>
 
 #ifndef E2D_USE_MCI
 #	include <xaudio2.h>

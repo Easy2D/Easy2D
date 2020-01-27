@@ -1,5 +1,5 @@
-#include <e2dnode.h>
-#include <e2dmanager.h>
+#include <easy2d/e2dnode.h>
+#include <easy2d/e2dmanager.h>
 
 #define SAFE_SET(pointer, func, ...) if (pointer) { pointer->##func(__VA_ARGS__); }
 

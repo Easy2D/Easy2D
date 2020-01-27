@@ -143,6 +143,7 @@ if %existvs2013% == 1 (
     xcopy include "!vs2013include!" /e /c /f /y
     xcopy output\v120\x86 "!vs2013x86lib!" /e /c /f /y
     xcopy output\v120\x64 "!vs2013x64lib!" /e /c /f /y
+    echo.
     echo VS2013 版本库安装完成
 )
 if %existvs2015% == 1 (
@@ -151,6 +152,7 @@ if %existvs2015% == 1 (
     xcopy include "!vs2015include!" /e /c /f /y
     xcopy output\v140\x86 "!vs2015x86lib!" /e /c /f /y
     xcopy output\v140\x64 "!vs2015x64lib!" /e /c /f /y
+    echo.
     echo VS2015 版本库安装完成
 )
 if %existvs2017% == 1 (
@@ -159,6 +161,7 @@ if %existvs2017% == 1 (
     xcopy include "!vs2017include!" /e /c /f /y
     xcopy output\v141\x86 "!vs2017x86lib!" /e /c /f /y
     xcopy output\v141\x64 "!vs2017x64lib!" /e /c /f /y
+    echo.
     echo VS2017 版本库安装完成
 )
 if %existvs2019% == 1 (
@@ -167,9 +170,9 @@ if %existvs2019% == 1 (
     xcopy include "!vs2019include!" /e /c /f /y
     xcopy output\v142\x86 "!vs2019x86lib!" /e /c /f /y
     xcopy output\v142\x64 "!vs2019x64lib!" /e /c /f /y
+    echo.
     echo VS2019 版本库安装完成
 )
-echo.
 echo 按任意键退出 & pause>nul
 exit
 
@@ -179,7 +182,7 @@ echo 请选择安装版本：
 echo [1] Visual Studio 2013
 echo [2] Visual Studio 2015
 echo [3] Visual Studio 2017
-echo [3] Visual Studio 2019
+echo [4] Visual Studio 2019
 
 choice /c 1234 /n /m 请输入选项：
 
@@ -195,12 +198,12 @@ if %existvs2013% == 1 (
     xcopy include "!vs2013include!" /e /c /f /y
     xcopy output\v120\x86 "!vs2013x86lib!" /e /c /f /y
     xcopy output\v120\x64 "!vs2013x64lib!" /e /c /f /y
+    echo.
     echo VS2013 版本库安装完成
 ) else (
     echo.
     echo 在您电脑上找不到 Visual Studio 2013
 )
-echo.
 echo 按任意键退出 & pause>nul
 exit
 
@@ -211,12 +214,12 @@ if %existvs2015% == 1 (
     xcopy include "!vs2015include!" /e /c /f /y
     xcopy output\v140\x86 "!vs2015x86lib!" /e /c /f /y
     xcopy output\v140\x64 "!vs2015x64lib!" /e /c /f /y
+    echo.
     echo VS2015 版本库安装完成
 ) else (
     echo.
     echo 在您电脑上找不到 Visual Studio 2015
 )
-echo.
 echo 按任意键退出 & pause>nul
 exit
 
@@ -227,12 +230,12 @@ if %existvs2017% == 1 (
     xcopy include "!vs2017include!" /e /c /f /y
     xcopy output\v141\x86 "!vs2017x86lib!" /e /c /f /y
     xcopy output\v141\x64 "!vs2017x64lib!" /e /c /f /y
+    echo.
     echo VS2017 版本库安装完成
 ) else (
     echo.
     echo 在您电脑上找不到 Visual Studio 2017
 )
-echo.
 echo 按任意键退出 & pause>nul
 exit
 
@@ -243,11 +246,11 @@ if %existvs2019% == 1 (
     xcopy include "!vs2019include!" /e /c /f /y
     xcopy output\v142\x86 "!vs2019x86lib!" /e /c /f /y
     xcopy output\v142\x64 "!vs2019x64lib!" /e /c /f /y
+    echo.
     echo VS2019 版本库安装完成
 ) else (
     echo.
     echo 在您电脑上找不到 Visual Studio 2019
 )
-echo.
 echo 按任意键退出 & pause>nul
 exit

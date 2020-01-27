@@ -1,6 +1,6 @@
 #pragma once
-#include <e2dmacros.h>
-#include <e2dmath.h>
+#include <easy2d/e2dmacros.h>
+#include <easy2d/e2dmath.h>
 
 namespace easy2d
 {

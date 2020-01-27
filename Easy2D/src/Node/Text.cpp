@@ -1,4 +1,4 @@
-#include <e2dnode.h>
+#include <easy2d/e2dnode.h>
 
 //-------------------------------------------------------
 // Style

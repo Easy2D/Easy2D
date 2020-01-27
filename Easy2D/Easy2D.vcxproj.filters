@@ -34,6 +34,9 @@
     <Filter Include="src\Math">
       <UniqueIdentifier>{fbde03ff-4555-4630-b96c-24085ef12c56}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\easy2d">
+      <UniqueIdentifier>{ea6ff341-f5bc-4b2e-b82c-1134390c36c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base\Input.cpp">
@@ -221,38 +224,38 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\e2daction.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\e2daction.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
-    <ClInclude Include="include\e2dbase.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\e2dbase.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
-    <ClInclude Include="include\e2dcommon.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\e2dcommon.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
-    <ClInclude Include="include\e2dmacros.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\e2dmacros.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
-    <ClInclude Include="include\e2dmanager.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\e2dmanager.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
-    <ClInclude Include="include\e2dnode.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\e2dmath.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
-    <ClInclude Include="include\e2dshape.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\e2dnode.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
-    <ClInclude Include="include\e2dtool.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\e2dshape.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
-    <ClInclude Include="include\e2dtransition.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\e2dtool.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
-    <ClInclude Include="include\easy2d.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\e2dtransition.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
-    <ClInclude Include="include\e2dmath.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\easy2d\easy2d.h">
+      <Filter>include\easy2d</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
