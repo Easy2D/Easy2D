@@ -62,7 +62,7 @@ easy2d::Resource::Data easy2d::Resource::loadData() const
         }
 
         _data.buffer = static_cast<void*>(buffer);
-        _data.size = static_cast<uint32_t>(size);
+        _data.size = static_cast<int>(size);
     } while (0);
 
     return _data;
