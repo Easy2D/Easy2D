@@ -222,6 +222,12 @@
     <ClCompile Include="src\Tool\MusicPlayer.cpp">
       <Filter>src\Tool</Filter>
     </ClCompile>
+    <ClCompile Include="src\Common\Resource.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\String.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\easy2d\e2daction.h">

@@ -33,6 +33,8 @@
     <ClCompile Include="src\Common\Listener.cpp" />
     <ClCompile Include="src\Common\Object.cpp" />
     <ClCompile Include="src\Common\Image.cpp" />
+    <ClCompile Include="src\Common\Resource.cpp" />
+    <ClCompile Include="src\Common\String.cpp" />
     <ClCompile Include="src\Manager\ActionManager.cpp" />
     <ClCompile Include="src\Manager\SceneManager.cpp" />
     <ClCompile Include="src\Math\Matrix.cpp" />

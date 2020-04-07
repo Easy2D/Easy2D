@@ -1,4 +1,5 @@
 #pragma once
+#include <ostream>
 #include <easy2d/e2dmacros.h>
 #include <easy2d/e2dmath.h>
 
@@ -28,6 +29,9 @@ enum class LineJoin : int
 // 字符串
 using String = std::wstring;
 
+// 窄字符串
+using ByteString = std::string;
+
 
 // 函数对象
 template <typename _Fty>
@@ -43,6 +47,19 @@ inline void SafeRelease(Interface*& p)
 		p = nullptr;
 	}
 }
+
+
+// 格式化字符串
+ByteString FormatString(const char* format, ...);
+
+// 格式化字符串
+String FormatString(const wchar_t* format, ...);
+
+// 宽字符串转窄字符串
+ByteString WideToNarrow(const String& str);
+
+// 窄字符串转宽字符串
+String NarrowToWide(const ByteString& str);
 
 
 // 颜色
@@ -516,6 +533,70 @@ protected:
 	bool _done;
 	String _name;
 	Callback _callback;
+};
+
+// 资源
+class Resource
+{
+public:
+	// 资源的二进制数据
+	struct Data
+	{
+		void* buffer;	// 资源数据
+		int size;	// 资源数据大小
+
+		Data();
+
+		bool isValid() const;
+
+		template <typename Elem>
+		friend std::basic_ostream<Elem>& operator<<(std::basic_ostream<Elem>& out, const Resource::Data& data)
+		{
+			using OStreamType = std::basic_ostream<Elem>;
+
+			typename OStreamType::iostate state = OStreamType::goodbit;
+			const typename OStreamType::sentry ok(out);
+			if (!ok)
+			{
+				state |= OStreamType::badbit;
+			}
+			else
+			{
+				if (data.buffer && data.size)
+				{
+					out.write(reinterpret_cast<const Elem*>(data.buffer), static_cast<std::streamsize>(data.size));
+				}
+				else
+				{
+					state |= OStreamType::badbit;
+				}
+			}
+			out.setstate(state);
+			return out;
+		}
+	};
+
+	Resource();
+
+	Resource(
+		int id,				/* 资源 ID */
+		const String& type	/* 资源类型 */
+	);
+
+	// 加载资源的二进制数据
+	Resource::Data loadData() const;
+
+	// 获取资源 ID
+	int getId() const;
+
+	// 获取资源类型
+	String getType() const;
+
+private:
+	int		_id;
+	String	_type;
+
+	mutable Resource::Data _data;
 };
 
 
