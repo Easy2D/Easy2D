@@ -18,13 +18,14 @@ static MusicMap& GetMusicResList()
 static float s_fMusicVolume = 1.0;
 
 
-bool easy2d::MusicPlayer::preload(const String& filePath)
+easy2d::Music* easy2d::MusicPlayer::preload(const String& filePath)
 {
 	size_t hash = std::hash<String>{}(filePath);
 
-	if (GetMusicFileList().end() != GetMusicFileList().find(hash))
+	auto iter = GetMusicFileList().find(hash);
+	if (GetMusicFileList().end() != iter)
 	{
-		return true;
+		return iter->second;
 	}
 	
 	Music* music = gcnew Music;
@@ -35,9 +36,9 @@ bool easy2d::MusicPlayer::preload(const String& filePath)
 
 		music->setVolume(s_fMusicVolume);
 		GetMusicFileList().insert(std::pair<size_t, Music*>(hash, music));
-		return true;
+		return music;
 	}
-	return false;
+	return nullptr;
 }
 
 bool easy2d::MusicPlayer::play(const String& filePath, int nLoopCount)
@@ -100,11 +101,12 @@ bool easy2d::MusicPlayer::isPlaying(const String& filePath)
 	return false;
 }
 
-bool easy2d::MusicPlayer::preload(int resNameId, const String& resType)
+easy2d::Music* easy2d::MusicPlayer::preload(int resNameId, const String& resType)
 {
-	if (GetMusicResList().end() != GetMusicResList().find(resNameId))
+	auto iter = GetMusicResList().find(resNameId);
+	if (GetMusicResList().end() != iter)
 	{
-		return true;
+		return iter->second;
 	}
 	
 	Music* music = gcnew Music;
@@ -115,9 +117,9 @@ bool easy2d::MusicPlayer::preload(int resNameId, const String& resType)
 
 		music->setVolume(s_fMusicVolume);
 		GetMusicResList().insert(std::pair<size_t, Music*>(resNameId, music));
-		return true;
+		return music;
 	}
-	return false;
+	return nullptr;
 }
 
 bool easy2d::MusicPlayer::play(int resNameId, const String& resType, int nLoopCount)

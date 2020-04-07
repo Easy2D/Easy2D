@@ -164,7 +164,7 @@ class MusicPlayer
 
 public:
 	// 预加载音乐资源
-	static bool preload(
+	static Music* preload(
 		const String& filePath	/* 音乐文件路径 */
 	);
 
@@ -195,7 +195,7 @@ public:
 	);
 
 	// 预加载音乐资源
-	static bool preload(
+	static Music* preload(
 		int resNameId,			/* 音乐资源名称 */
 		const String& resType	/* 音乐资源类型 */
 	);
