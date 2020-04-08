@@ -9,11 +9,11 @@
 #pragma once
 
 #ifndef __cplusplus
-#	error 仅能在 C++ 环境下使用 Easy2D
+#	error 锟斤拷锟斤拷锟斤拷 C++ 锟斤拷锟斤拷锟斤拷使锟斤拷 Easy2D
 #endif
 
 #if _MSC_VER < 1700
-#	error Easy2D 不支持 Visual Studio 2012 以下版本
+#	error Easy2D 锟斤拷支锟斤拷 Visual Studio 2012 锟斤拷锟铰版本
 #endif
 
 
@@ -39,9 +39,9 @@
 #else
 
 #if defined(DEBUG) || defined(_DEBUG)
-#	pragma comment(lib, "libeasy2ddmci.lib")
+#	pragma comment(lib, "libeasy2ddwin7.lib")
 #else
-#	pragma comment(lib, "libeasy2dmci.lib")
+#	pragma comment(lib, "libeasy2dwin7.lib")
 #endif
 
 #endif
