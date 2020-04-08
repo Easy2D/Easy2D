@@ -54,7 +54,7 @@ for:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       VS_PLATFORM_TOOLSET: v142
     global:
-      job_to_deploy: 16 # 4(images) * 2(platform) * 2(configuration)
+      job_to_deploy: 32 # 4(images) * 2(platform) * 4(configuration)
 -
   branches:
     except:
@@ -71,6 +71,8 @@ for:
 configuration:
 - Debug
 - Release
+- DebugWin7
+- ReleaseWin7
 
 platform:
 - x86
