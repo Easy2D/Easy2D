@@ -65,13 +65,21 @@ $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
 [System.IO.File]::WriteAllLines(($fileToFix | Resolve-Path), $fileContent, $Utf8NoBomEncoding)
 
 # Copy published files
-$publishedFiles = ('.\Easy2D\include', '.\Easy2D\output', '.\scripts\7z\install.bat')
+$publishedFiles = ('.\Easy2D\include', '.\scripts\7z\install.bat')
 New-Item -ItemType "directory" -Path "published"
 Copy-Item -Path $publishedFiles -Destination '.\published' -Recurse
+Copy-Item -Path '.\Easy2D\output' -Filter '*d.lib' -Destination '.\published' -Recurse
+
+New-Item -ItemType "directory" -Path "published-win7"
+Copy-Item -Path $publishedFiles -Destination '.\published-win7' -Recurse
+Copy-Item -Path '.\Easy2D\output' -Filter '*win7.lib' -Destination '.\published-win7' -Recurse
 
 # Packaging
 7z.exe a -t7z -mmt -mx9 install.7z .\published\*
 cmd /c copy /b scripts\7z\7zS2.sfx + scripts\7z\7z-config.txt + install.7z installer.exe
+
+7z.exe a -t7z -mmt -mx9 install-win7.7z .\published-win7\*
+cmd /c copy /b scripts\7z\7zS2.sfx + scripts\7z\7z-config.txt + install-win7.7z installer-win7.exe
 
 # Upload artifacts
 $artifactVersion = "easy2d-v$($env:APPVEYOR_BUILD_VERSION)"
@@ -81,6 +89,14 @@ Push-AppveyorArtifact $artifactName -FileName $artifactName
 
 $artifactName = $artifactVersion + '-installer.exe'
 Rename-Item 'installer.exe' -NewName $artifactName
+Push-AppveyorArtifact $artifactName -FileName $artifactName
+
+$artifactName = $artifactVersion + '-win7.7z'
+Rename-Item 'install-win7.7z' -NewName $artifactName
+Push-AppveyorArtifact $artifactName -FileName $artifactName
+
+$artifactName = $artifactVersion + '-win7-installer.exe'
+Rename-Item 'installer-win7.exe' -NewName $artifactName
 Push-AppveyorArtifact $artifactName -FileName $artifactName
 
 # Delete redundant artifacts
