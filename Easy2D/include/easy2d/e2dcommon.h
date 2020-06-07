@@ -417,12 +417,16 @@ struct Event
 {
 	enum Type : UINT
 	{
-		MouseMove,
-		MouseDown,
-		MouseUp,
-		MouseWheel,
-		KeyDown,
-		KeyUp
+		Unknown = 0,
+
+		MouseMove,		// 鼠标移动
+		MouseDown,		// 鼠标按下
+		MouseUp,		// 鼠标抬起
+		MouseWheel,		// 鼠标滚轮滑动
+		KeyDown,		// 按键按下
+		KeyUp,			// 按键抬起
+
+		Last = KeyUp,
 	};
 
 	const UINT type;
