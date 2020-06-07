@@ -105,23 +105,8 @@ easy2d::Image * easy2d::Sprite::getImage() const
 
 void easy2d::Sprite::onRender()
 {
-	if (_image && _image->getBitmap())
+	if (_image)
 	{
-		// »ñÈ¡Í¼Æ¬²Ã¼ôÎ»ÖÃ
-		float fCropX = float(_image->getCropX());
-		float fCropY = float(_image->getCropY());
-		// äÖÈ¾Í¼Æ¬
-		Renderer::getRenderTarget()->DrawBitmap(
-			_image->getBitmap(),
-			D2D1::RectF(0, 0, _width, _height),
-			_displayOpacity,
-			D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
-			D2D1::RectF(
-				fCropX,
-				fCropY,
-				fCropX + _image->getWidth(),
-				fCropY + _image->getHeight()
-			)
-		);
+		_image->draw(Rect(0, 0, _width, _height), _displayOpacity);
 	}
 }

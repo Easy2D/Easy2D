@@ -283,6 +283,9 @@ public:
 	// 获取裁剪位置
 	virtual Point getCropPos() const;
 
+	// 在指定位置渲染图片
+	void draw(const Rect& destRect, float opacity) const;
+
 	// 获取 ID2D1Bitmap 对象
 	ID2D1Bitmap * getBitmap();
 

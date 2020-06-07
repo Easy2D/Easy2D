@@ -155,6 +155,24 @@ easy2d::Point easy2d::Image::getCropPos() const
 	return _cropRect.origin;
 }
 
+void easy2d::Image::draw(const Rect& destRect, float opacity) const
+{
+	if (_bitmap)
+	{
+		// 目标矩形和源矩形
+		auto dest = D2D1::RectF(destRect.getLeft(), destRect.getTop(), destRect.getRight(), destRect.getBottom());
+		auto src = D2D1::RectF(_cropRect.getLeft(), _cropRect.getTop(), _cropRect.getRight(), _cropRect.getBottom());
+		// 渲染图片
+		Renderer::getRenderTarget()->DrawBitmap(
+			_bitmap,
+			dest,
+			opacity,
+			D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+			src
+		);
+	}
+}
+
 bool easy2d::Image::preload(const String& filePath)
 {
 	if (s_mBitmapsFromFile.find(std::hash<String>{}(filePath)) != s_mBitmapsFromFile.end())
