@@ -1,6 +1,6 @@
 #include <easy2d/e2dcommon.h>
 
-easy2d::Event::Event(Type type)
+easy2d::Event::Event(UINT type)
 	: type(type)
 	, target(nullptr)
 {

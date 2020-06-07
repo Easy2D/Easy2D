@@ -133,7 +133,7 @@ public:
 		WhiteSmoke = 0xF5F5F5,
 		Wood = 0xDEB887,
 		Yellow = 0xFFFF00,
-		Yellow_Green = 0x9ACD32
+		YellowGreen = 0x9ACD32
 	};
 
 private:
@@ -412,7 +412,7 @@ struct KeyCode
 // ÊÂ¼þ
 struct Event
 {
-	enum class Type
+	enum Type : UINT
 	{
 		MouseMove,
 		MouseDown,
@@ -420,10 +420,12 @@ struct Event
 		MouseWheel,
 		KeyDown,
 		KeyUp
-	} const type;
+	};
+
+	const UINT type;
 	Object* target;
 
-	Event(Type type);
+	Event(UINT type);
 
 	virtual ~Event();
 };
