@@ -149,9 +149,9 @@ protected:
 
 protected:
 	MCIDEVICEID _dev;
-	HWND        _wnd;
-	bool        _playing;
-	int			_repeatTimes;
+	HWND _wnd;
+	bool _playing;
+	int _repeatTimes;
 
 #endif
 };

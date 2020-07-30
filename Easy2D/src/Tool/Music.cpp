@@ -586,6 +586,8 @@ void easy2d::Music::__uninit()
 namespace
 {
 	HINSTANCE s_hInstance = nullptr;
+
+	void TraceMCIError(LPCTSTR info, MCIERROR error);
 }
 
 easy2d::Music::Music()
@@ -628,8 +630,7 @@ bool easy2d::Music::open(const String& pFileName)
 	mciOpen.lpstrDeviceType = 0;
 	mciOpen.lpstrElementName = pFileName.c_str();
 
-	MCIERROR mciError;
-	mciError = mciSendCommand(
+	MCIERROR mciError = mciSendCommand(
 		0,
 		MCI_OPEN,
 		MCI_OPEN_ELEMENT,
@@ -642,12 +643,14 @@ bool easy2d::Music::open(const String& pFileName)
 		_playing = false;
 		return true;
 	}
+
+	TraceMCIError(L"Music::open failed!", mciError);
 	return false;
 }
 
 bool easy2d::Music::open(int resNameId, const String& resType)
 {
-	// NOT SUPPORTED
+	E2D_ERROR(L"Music::open failed! Play sound from memory is not supported when use E2D_WIN7 macro");
 	return false;
 }
 
@@ -791,5 +794,20 @@ void easy2d::Music::__uninit()
 {
 }
 
+namespace
+{
+	void TraceMCIError(LPCTSTR info, MCIERROR error)
+	{
+		TCHAR errorStr[128] = { 0 };
+		if (mciGetErrorString(error, errorStr, 128))
+		{
+			E2D_ERROR(L"%s: %s (%d)", info, errorStr, error);
+		}
+		else
+		{
+			E2D_ERROR(L"%s: Unknown error (%d)", info, error);
+		}
+	}
+}
 
 #endif
