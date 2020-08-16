@@ -3,6 +3,10 @@
 easy2d::ToggleButton::ToggleButton()
 	: Button()
 	, _toggle(true)
+	, _normalOn(nullptr)
+	, _mouseoverOn(nullptr)
+	, _selectedOn(nullptr)
+	, _disabledOn(nullptr)
 	, _normalOff(nullptr)
 	, _mouseoverOff(nullptr)
 	, _selectedOff(nullptr)
@@ -10,9 +14,13 @@ easy2d::ToggleButton::ToggleButton()
 {
 }
 
-easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, const Function<void()>& func)
+easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, const Callback& func)
 	: Button()
 	, _toggle(true)
+	, _normalOn(nullptr)
+	, _mouseoverOn(nullptr)
+	, _selectedOn(nullptr)
+	, _disabledOn(nullptr)
 	, _normalOff(nullptr)
 	, _mouseoverOff(nullptr)
 	, _selectedOff(nullptr)
@@ -23,7 +31,7 @@ easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal
 	this->setClickFunc(func);
 }
 
-easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, Node * toggleOnSelected, Node * toggleOffSelected, const Function<void()>& func)
+easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, Node * toggleOnSelected, Node * toggleOffSelected, const Callback& func)
 	: Button()
 	, _toggle(true)
 	, _normalOff(nullptr)
@@ -38,7 +46,7 @@ easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal
 	this->setClickFunc(func);
 }
 
-easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, Node * toggleOnMouseOver, Node * toggleOffMouseOver, Node * toggleOnSelected, Node * toggleOffSelected, const Function<void()>& func)
+easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, Node * toggleOnMouseOver, Node * toggleOffMouseOver, Node * toggleOnSelected, Node * toggleOffSelected, const Callback& func)
 	: Button()
 	, _toggle(true)
 	, _normalOff(nullptr)
@@ -55,7 +63,7 @@ easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal
 	this->setClickFunc(func);
 }
 
-easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, Node * toggleOnMouseOver, Node * toggleOffMouseOver, Node * toggleOnSelected, Node * toggleOffSelected, Node * toggleOnDisabled, Node * toggleOffDisabled, const Function<void()>& func)
+easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, Node * toggleOnMouseOver, Node * toggleOffMouseOver, Node * toggleOnSelected, Node * toggleOffSelected, Node * toggleOnDisabled, Node * toggleOffDisabled, const Callback& func)
 	: Button()
 	, _toggle(true)
 	, _normalOff(nullptr)
@@ -91,20 +99,21 @@ void easy2d::ToggleButton::setState(bool bState)
 
 void easy2d::ToggleButton::setNormal(Node * normal)
 {
-	if (normal != _normal)
+	if (normal != _normalOn)
 	{
 		// 移除旧的
-		if (_normal)
+		if (_normalOn)
 		{
-			this->removeChild(_normal);
+			this->removeChild(_normalOn);
 		}
 		// 添加新的
 		if (normal)
 		{
+			normal->setAnchor(0, 0);
 			this->addChild(normal);
 			this->setSize(normal->getWidth(), normal->getHeight());
 		}
-		_normal = normal;
+		_normalOn = normal;
 
 		_updateState();
 		_updateVisiable();
@@ -113,19 +122,20 @@ void easy2d::ToggleButton::setNormal(Node * normal)
 
 void easy2d::ToggleButton::setMouseOver(Node * mouseover)
 {
-	if (mouseover != _mouseover)
+	if (mouseover != _mouseoverOn)
 	{
 		// 移除旧的
-		if (_mouseover)
+		if (_mouseoverOn)
 		{
-			this->removeChild(_mouseover);
+			this->removeChild(_mouseoverOn);
 		}
 		// 添加新的
 		if (mouseover)
 		{
+			mouseover->setAnchor(0, 0);
 			this->addChild(mouseover);
 		}
-		_mouseover = mouseover;
+		_mouseoverOn = mouseover;
 
 		_updateState();
 		_updateVisiable();
@@ -134,19 +144,20 @@ void easy2d::ToggleButton::setMouseOver(Node * mouseover)
 
 void easy2d::ToggleButton::setSelected(Node * selected)
 {
-	if (selected != _selected)
+	if (selected != _selectedOn)
 	{
 		// 移除旧的
-		if (_selected)
+		if (_selectedOn)
 		{
-			this->removeChild(_selected);
+			this->removeChild(_selectedOn);
 		}
 		// 添加新的
 		if (selected)
 		{
+			selected->setAnchor(0, 0);
 			this->addChild(selected);
 		}
-		_selected = selected;
+		_selectedOn = selected;
 
 		_updateState();
 		_updateVisiable();
@@ -155,19 +166,20 @@ void easy2d::ToggleButton::setSelected(Node * selected)
 
 void easy2d::ToggleButton::setDisabled(Node * disabled)
 {
-	if (disabled != _disabled)
+	if (disabled != _disabledOn)
 	{
 		// 移除旧的
-		if (_disabled)
+		if (_disabledOn)
 		{
-			this->removeChild(_disabled);
+			this->removeChild(_disabledOn);
 		}
 		// 添加新的
 		if (disabled)
 		{
+			disabled->setAnchor(0, 0);
 			this->addChild(disabled);
 		}
-		_disabled = disabled;
+		_disabledOn = disabled;
 
 		_updateState();
 		_updateVisiable();
@@ -186,6 +198,7 @@ void easy2d::ToggleButton::setNormalOff(Node * normal)
 		// 添加新的
 		if (normal)
 		{
+			normal->setAnchor(0, 0);
 			this->addChild(normal);
 		}
 		_normalOff = normal;
@@ -207,6 +220,7 @@ void easy2d::ToggleButton::setMouseOverOff(Node * mouseover)
 		// 添加新的
 		if (mouseover)
 		{
+			mouseover->setAnchor(0, 0);
 			this->addChild(mouseover);
 		}
 		_mouseoverOff = mouseover;
@@ -228,6 +242,7 @@ void easy2d::ToggleButton::setSelectedOff(Node * selected)
 		// 添加新的
 		if (selected)
 		{
+			selected->setAnchor(0, 0);
 			this->addChild(selected);
 		}
 		_selectedOff = selected;
@@ -249,6 +264,7 @@ void easy2d::ToggleButton::setDisabledOff(Node * disabled)
 		// 添加新的
 		if (disabled)
 		{
+			disabled->setAnchor(0, 0);
 			this->addChild(disabled);
 		}
 		_disabledOff = disabled;
@@ -262,10 +278,10 @@ void easy2d::ToggleButton::_updateState()
 {
 	if (_toggle)
 	{
-		_normal = _normal;
-		_mouseover = _mouseover;
-		_selected = _selected;
-		_disabled = _disabled;
+		_normal = _normalOn;
+		_mouseover = _mouseoverOn;
+		_selected = _selectedOn;
+		_disabled = _disabledOn;
 
 		if (_normalOff) _normalOff->setVisible(false);
 		if (_mouseoverOff) _mouseoverOff->setVisible(false);
@@ -279,10 +295,10 @@ void easy2d::ToggleButton::_updateState()
 		_selected = _selectedOff;
 		_disabled = _disabledOff;
 
-		if (_normal) _normal->setVisible(false);
-		if (_mouseover) _mouseover->setVisible(false);
-		if (_selected) _selected->setVisible(false);
-		if (_disabled) _disabled->setVisible(false);
+		if (_normalOn) _normalOn->setVisible(false);
+		if (_mouseoverOn) _mouseoverOn->setVisible(false);
+		if (_selectedOn) _selectedOn->setVisible(false);
+		if (_disabledOn) _disabledOn->setVisible(false);
 	}
 }
 

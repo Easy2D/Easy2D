@@ -789,6 +789,7 @@ protected:
 };
 
 
+// 按钮
 class Button :
 	public Node
 {
@@ -885,6 +886,7 @@ protected:
 };
 
 
+// 开关按钮
 class ToggleButton :
 	public Button
 {
@@ -894,7 +896,7 @@ public:
 	explicit ToggleButton(
 		Node * onNormal,				/* 按钮打开时，普通状态 */
 		Node * offNormal,				/* 按钮关闭时，普通状态 */
-		const Function<void()>& func = nullptr	/* 按钮点击后的执行函数 */
+		const Callback& func = nullptr	/* 按钮点击后的执行函数 */
 	);
 
 	explicit ToggleButton(
@@ -902,7 +904,7 @@ public:
 		Node * offNormal,				/* 按钮关闭时，普通状态 */
 		Node * onSelected,				/* 按钮打开时，鼠标按下状态 */
 		Node * offSelected,				/* 按钮关闭时，鼠标按下状态 */
-		const Function<void()>& func = nullptr	/* 按钮点击后的执行函数 */
+		const Callback& func = nullptr	/* 按钮点击后的执行函数 */
 	);
 
 	explicit ToggleButton(
@@ -912,7 +914,7 @@ public:
 		Node * offMouseOver,			/* 按钮关闭时，鼠标移入状态 */
 		Node * onSelected,				/* 按钮打开时，鼠标按下状态 */
 		Node * offSelected,				/* 按钮关闭时，鼠标按下状态 */
-		const Function<void()>& func = nullptr	/* 按钮点击后的执行函数 */
+		const Callback& func = nullptr	/* 按钮点击后的执行函数 */
 	);
 
 	explicit ToggleButton(
@@ -924,7 +926,7 @@ public:
 		Node * offSelected,				/* 按钮关闭时，鼠标按下状态 */
 		Node * onDisabled,				/* 按钮打开时，禁用状态 */
 		Node * offDisabled,				/* 按钮关闭时，禁用状态 */
-		const Function<void()>& func = nullptr	/* 按钮点击后的执行函数 */
+		const Callback& func = nullptr	/* 按钮点击后的执行函数 */
 	);
 
 	// 获取开关状态（打开或关闭）
@@ -977,20 +979,25 @@ public:
 
 protected:
 	// 刷新按钮开关
-	virtual void _updateState();
+	void _updateState();
 
 	// 执行按钮函数对象
-	virtual void _runCallback() override;
+	void _runCallback() override;
 
 protected:
-	Node *	_normalOff;
-	Node *	_mouseoverOff;
-	Node *	_selectedOff;
-	Node *	_disabledOff;
+	Node*	_normalOn;
+	Node*	_mouseoverOn;
+	Node*	_selectedOn;
+	Node*	_disabledOn;
+	Node*	_normalOff;
+	Node*	_mouseoverOff;
+	Node*	_selectedOff;
+	Node*	_disabledOff;
 	bool	_toggle;
 };
 
 
+// 菜单
 class Menu :
 	public Node
 {
