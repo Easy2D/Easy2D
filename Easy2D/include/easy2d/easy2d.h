@@ -28,20 +28,8 @@
 #include <easy2d/e2daction.h>
 #include <easy2d/e2dtransition.h>
 
-#if !defined(E2D_WIN7)
-
 #if defined(DEBUG) || defined(_DEBUG)
 #	pragma comment(lib, "libeasy2dd.lib")
 #else
 #	pragma comment(lib, "libeasy2d.lib")
-#endif
-
-#else
-
-#if defined(DEBUG) || defined(_DEBUG)
-#	pragma comment(lib, "libeasy2ddwin7.lib")
-#else
-#	pragma comment(lib, "libeasy2dwin7.lib")
-#endif
-
 #endif

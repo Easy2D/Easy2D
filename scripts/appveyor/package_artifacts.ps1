@@ -68,18 +68,20 @@ $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
 $publishedFiles = ('.\Easy2D\include', '.\scripts\7z\install.bat')
 New-Item -ItemType "directory" -Path "published"
 Copy-Item -Path $publishedFiles -Destination '.\published' -Recurse
-Copy-Item -Path '.\Easy2D\output' -Filter '*d.lib' -Destination '.\published' -Recurse
+Copy-Item -Path '.\Easy2D\output' -Destination '.\published' -Recurse
 
+$publishedFilesWin7 = ('.\Easy2D\include', '.\scripts\7z\install-win7.bat')
 New-Item -ItemType "directory" -Path "published-win7"
-Copy-Item -Path $publishedFiles -Destination '.\published-win7' -Recurse
-Copy-Item -Path '.\Easy2D\output' -Filter '*win7.lib' -Destination '.\published-win7' -Recurse
+Copy-Item -Path $publishedFilesWin7 -Destination '.\published-win7' -Recurse
+Copy-Item -Path '.\Easy2D\output-win7' -Destination '.\published-win7' -Recurse
+Rename-Item -Path '.\published-win7\output-win7' -NewName 'output'
 
 # Packaging
 7z.exe a -t7z -mmt -mx9 install.7z .\published\*
 cmd /c copy /b scripts\7z\7zS2.sfx + scripts\7z\7z-config.txt + install.7z installer.exe
 
 7z.exe a -t7z -mmt -mx9 install-win7.7z .\published-win7\*
-cmd /c copy /b scripts\7z\7zS2.sfx + scripts\7z\7z-config.txt + install-win7.7z installer-win7.exe
+cmd /c copy /b scripts\7z\7zS2.sfx + scripts\7z\7z-config-win7.txt + install-win7.7z installer-win7.exe
 
 # Upload artifacts
 $artifactVersion = "easy2d-v$($env:APPVEYOR_BUILD_VERSION)"

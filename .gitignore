@@ -5,6 +5,8 @@ Release/
 
 build/
 output/
+build-win7/
+output-win7/
 
 # vs2010
 ipch/
@@ -15,5 +17,3 @@ ipch/
 *.user
 *.lnk
 .vs
-
-output/

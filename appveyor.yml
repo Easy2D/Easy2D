@@ -94,6 +94,8 @@ after_build:
 artifacts:
 - path: Easy2D/output/**/*.lib
   name: libeasy2d-$(VS_PLATFORM_TOOLSET)-$(PLATFORM)-$(CONFIGURATION)
+- path: Easy2D/output-win7/**/*.lib
+  name: libeasy2d-win7-$(VS_PLATFORM_TOOLSET)-$(PLATFORM)-$(CONFIGURATION)
 
 deploy:
 - provider: GitHub
