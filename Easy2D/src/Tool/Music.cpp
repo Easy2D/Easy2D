@@ -1,6 +1,6 @@
 #include <easy2d/e2dtool.h>
 
-#ifndef E2D_USE_MCI
+#if !defined(E2D_USE_MCI)
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -8,6 +8,10 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////////////
 
+#include <xaudio2.h>
+#include <mfapi.h>
+#include <mfidl.h>
+#include <mfreadwrite.h>
 #include <shlwapi.h>
 
 #pragma comment(lib, "xaudio2.lib")
@@ -43,8 +47,64 @@ inline bool TraceError(wchar_t* sPrompt, HRESULT hr)
 	return false;
 }
 
+class easy2d::Music::Media
+{
+public:
+	Media();
 
-easy2d::Music::Music()
+	~Media();
+
+	bool open(
+		const String& filePath
+	);
+
+	bool open(
+		int resNameId,
+		const String& resType
+	);
+
+	bool play(
+		int nLoopCount = 0
+	);
+
+	void pause();
+
+	void resume();
+
+	void stop();
+
+	void close();
+
+	bool isPlaying() const;
+
+	bool setVolume(
+		float volume
+	);
+
+private:
+	HRESULT _loadMediaFile(
+		String const& file_path
+	);
+
+	HRESULT _loadMediaResource(
+		LPVOID buffer,
+		DWORD bufferSize
+	);
+
+	HRESULT _readSource(
+		IMFSourceReader* reader
+	);
+
+private:
+	bool _opened;
+	mutable bool _playing;
+	BYTE* _waveData;
+	DWORD _waveDataSize;
+	WAVEFORMATEX* _wfx;
+	IXAudio2SourceVoice* _voice;
+};
+
+easy2d::Music::Media::Media()
 	: _opened(false)
 	, _playing(false)
 	, _wfx(nullptr)
@@ -54,24 +114,12 @@ easy2d::Music::Music()
 {
 }
 
-easy2d::Music::Music(const easy2d::String & filePath)
-	: Music()
-{
-	this->open(filePath);
-}
-
-easy2d::Music::Music(int resNameId, const String & resType)
-	: Music()
-{
-	this->open(resNameId, resType);
-}
-
-easy2d::Music::~Music()
+easy2d::Music::Media::~Media()
 {
 	close();
 }
 
-bool easy2d::Music::open(const easy2d::String& filePath)
+bool easy2d::Music::Media::open(const easy2d::String& filePath)
 {
 	if (_opened)
 	{
@@ -119,7 +167,7 @@ bool easy2d::Music::open(const easy2d::String& filePath)
 	return true;
 }
 
-bool easy2d::Music::open(int resNameId, const easy2d::String& resType)
+bool easy2d::Music::Media::open(int resNameId, const easy2d::String& resType)
 {
 	HRSRC hResInfo;
 	HGLOBAL hResData;
@@ -171,7 +219,7 @@ bool easy2d::Music::open(int resNameId, const easy2d::String& resType)
 	return true;
 }
 
-bool easy2d::Music::play(int nLoopCount)
+bool easy2d::Music::Media::play(int nLoopCount)
 {
 	if (!_opened)
 	{
@@ -218,7 +266,7 @@ bool easy2d::Music::play(int nLoopCount)
 	return SUCCEEDED(hr);
 }
 
-void easy2d::Music::pause()
+void easy2d::Music::Media::pause()
 {
 	if (_voice)
 	{
@@ -229,7 +277,7 @@ void easy2d::Music::pause()
 	}
 }
 
-void easy2d::Music::resume()
+void easy2d::Music::Media::resume()
 {
 	if (_voice)
 	{
@@ -240,7 +288,7 @@ void easy2d::Music::resume()
 	}
 }
 
-void easy2d::Music::stop()
+void easy2d::Music::Media::stop()
 {
 	if (_voice)
 	{
@@ -253,7 +301,7 @@ void easy2d::Music::stop()
 	}
 }
 
-void easy2d::Music::close()
+void easy2d::Music::Media::close()
 {
 	if (_voice)
 	{
@@ -275,7 +323,7 @@ void easy2d::Music::close()
 	_playing = false;
 }
 
-bool easy2d::Music::isPlaying() const
+bool easy2d::Music::Media::isPlaying() const
 {
 	if (_opened && _voice)
 	{
@@ -294,7 +342,7 @@ bool easy2d::Music::isPlaying() const
 	}
 }
 
-bool easy2d::Music::setVolume(float volume)
+bool easy2d::Music::Media::setVolume(float volume)
 {
 	if (_voice)
 	{
@@ -303,7 +351,7 @@ bool easy2d::Music::setVolume(float volume)
 	return false;
 }
 
-HRESULT easy2d::Music::_loadMediaFile(String const& file_path)
+HRESULT easy2d::Music::Media::_loadMediaFile(String const& file_path)
 {
 	HRESULT hr = S_OK;
 
@@ -324,7 +372,7 @@ HRESULT easy2d::Music::_loadMediaFile(String const& file_path)
 	return hr;
 }
 
-HRESULT easy2d::Music::_loadMediaResource(LPVOID buffer, DWORD bufferSize)
+HRESULT easy2d::Music::Media::_loadMediaResource(LPVOID buffer, DWORD bufferSize)
 {
 	HRESULT	hr = S_OK;
 
@@ -368,7 +416,7 @@ HRESULT easy2d::Music::_loadMediaResource(LPVOID buffer, DWORD bufferSize)
 	return hr;
 }
 
-HRESULT easy2d::Music::_readSource(IMFSourceReader* reader)
+HRESULT easy2d::Music::Media::_readSource(IMFSourceReader* reader)
 {
 	HRESULT hr = S_OK;
 	DWORD max_stream_size = 0;
@@ -569,15 +617,15 @@ void easy2d::Music::__uninit()
 	MFShutdown();
 }
 
-
 #else
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //
 // Music with MCI
 //
 ///////////////////////////////////////////////////////////////////////////////////////////
+
+#include <mmsystem.h>
 
 #pragma comment(lib , "winmm.lib")
 
@@ -590,7 +638,53 @@ namespace
 	void TraceMCIError(LPCTSTR info, MCIERROR error);
 }
 
-easy2d::Music::Music()
+class easy2d::Music::Media
+{
+public:
+	Media();
+
+	~Media();
+
+	bool open(
+		const String& filePath
+	);
+
+	bool open(
+		int resNameId,
+		const String& resType
+	);
+
+	bool play(
+		int nLoopCount = 0
+	);
+
+	void pause();
+
+	void resume();
+
+	void stop();
+
+	void close();
+
+	bool isPlaying() const;
+
+	bool setVolume(
+		float volume
+	);
+
+	static LRESULT WINAPI MciProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+
+protected:
+	void _sendCommand(int nCommand, DWORD_PTR param1 = 0, DWORD_PTR parma2 = 0);
+
+protected:
+	MCIDEVICEID _dev;
+	HWND _wnd;
+	bool _playing;
+	int _repeatTimes;
+};
+
+easy2d::Music::Media::Media()
 	: _wnd(NULL)
 	, _dev(0L)
 	, _playing(false)
@@ -613,13 +707,13 @@ easy2d::Music::Music()
 	}
 }
 
-easy2d::Music::~Music()
+easy2d::Music::Media::~Media()
 {
 	close();
 	DestroyWindow(_wnd);
 }
 
-bool easy2d::Music::open(const String& pFileName)
+bool easy2d::Music::Media::open(const String& pFileName)
 {
 	if (pFileName.empty())
 		return false;
@@ -648,13 +742,13 @@ bool easy2d::Music::open(const String& pFileName)
 	return false;
 }
 
-bool easy2d::Music::open(int resNameId, const String& resType)
+bool easy2d::Music::Media::open(int resNameId, const String& resType)
 {
 	E2D_ERROR(L"Music::open failed! Play sound from memory is not supported when use E2D_WIN7 macro");
 	return false;
 }
 
-bool easy2d::Music::play(int nLoopCount)
+bool easy2d::Music::Media::play(int nLoopCount)
 {
 	if (!_dev)
 	{
@@ -681,7 +775,7 @@ bool easy2d::Music::play(int nLoopCount)
 	return false;
 }
 
-void easy2d::Music::close()
+void easy2d::Music::Media::close()
 {
 	if (_playing)
 	{
@@ -697,36 +791,36 @@ void easy2d::Music::close()
 	_playing = false;
 }
 
-void easy2d::Music::pause()
+void easy2d::Music::Media::pause()
 {
 	_sendCommand(MCI_PAUSE);
 	_playing = false;
 }
 
-void easy2d::Music::resume()
+void easy2d::Music::Media::resume()
 {
 	_sendCommand(MCI_RESUME);
 	_playing = true;
 }
 
-void easy2d::Music::stop()
+void easy2d::Music::Media::stop()
 {
 	_sendCommand(MCI_STOP);
 	_playing = false;
 }
 
-bool easy2d::Music::isPlaying() const
+bool easy2d::Music::Media::isPlaying() const
 {
 	return _playing;
 }
 
-bool easy2d::Music::setVolume(float volume)
+bool easy2d::Music::Media::setVolume(float volume)
 {
 	// NOT SUPPORTED
 	return false;
 }
 
-void easy2d::Music::_sendCommand(int nCommand, DWORD_PTR param1, DWORD_PTR parma2)
+void easy2d::Music::Media::_sendCommand(int nCommand, DWORD_PTR param1, DWORD_PTR parma2)
 {
 	// 空设备时忽略这次操作
 	if (!_dev)
@@ -737,13 +831,13 @@ void easy2d::Music::_sendCommand(int nCommand, DWORD_PTR param1, DWORD_PTR parma
 	mciSendCommand(_dev, nCommand, param1, parma2);
 }
 
-LRESULT WINAPI easy2d::Music::_MciProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI easy2d::Music::Media::MciProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-	easy2d::Music* pMusic = NULL;
+	easy2d::Music::Media* pMusic = NULL;
 
 	if (Msg == MM_MCINOTIFY
 		&& wParam == MCI_NOTIFY_SUCCESSFUL
-		&& (pMusic = (easy2d::Music*)GetWindowLongPtr(hWnd, GWLP_USERDATA)))
+		&& (pMusic = (easy2d::Music::Media*)GetWindowLongPtr(hWnd, GWLP_USERDATA)))
 	{
 		if (pMusic->_repeatTimes > 0)
 		{
@@ -773,7 +867,7 @@ bool easy2d::Music::__init()
 
 	WNDCLASS  wc;
 	wc.style = 0;
-	wc.lpfnWndProc = _MciProc;
+	wc.lpfnWndProc = Media::MciProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = s_hInstance;
@@ -811,3 +905,71 @@ namespace
 }
 
 #endif
+
+easy2d::Music::Music()
+	: _media(new Music::Media())
+{
+}
+
+easy2d::Music::Music(const easy2d::String & filePath)
+	: Music()
+{
+	this->open(filePath);
+}
+
+easy2d::Music::Music(int resNameId, const String & resType)
+	: Music()
+{
+	this->open(resNameId, resType);
+}
+
+easy2d::Music::~Music()
+{
+	delete _media;
+	_media = nullptr;
+}
+
+bool easy2d::Music::open(const easy2d::String& filePath)
+{
+	return _media->open(filePath);
+}
+
+bool easy2d::Music::open(int resNameId, const easy2d::String& resType)
+{
+	return _media->open(resNameId, resType);
+}
+
+bool easy2d::Music::play(int nLoopCount)
+{
+	return _media->play(nLoopCount);
+}
+
+void easy2d::Music::pause()
+{
+	_media->pause();
+}
+
+void easy2d::Music::resume()
+{
+	_media->resume();
+}
+
+void easy2d::Music::stop()
+{
+	_media->stop();
+}
+
+void easy2d::Music::close()
+{
+	_media->close();
+}
+
+bool easy2d::Music::isPlaying() const
+{
+	return _media->isPlaying();
+}
+
+bool easy2d::Music::setVolume(float volume)
+{
+	return _media->setVolume(volume);
+}

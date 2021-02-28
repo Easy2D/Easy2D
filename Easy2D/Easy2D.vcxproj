@@ -247,9 +247,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWin7|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>libeasy2ddwin7</TargetName>
-    <OutDir>output\$(PlatformToolset)\x86\</OutDir>
-    <IntDir>build\$(PlatformToolset)\x86\$(Configuration)\</IntDir>
+    <TargetName>libeasy2dd</TargetName>
+    <OutDir>output-win7\$(PlatformToolset)\x86\</OutDir>
+    <IntDir>build-win7\$(PlatformToolset)\x86\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -259,9 +259,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWin7|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>libeasy2ddwin7</TargetName>
-    <OutDir>output\$(PlatformToolset)\$(Platform)\</OutDir>
-    <IntDir>build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>libeasy2dd</TargetName>
+    <OutDir>output-win7\$(PlatformToolset)\$(Platform)\</OutDir>
+    <IntDir>build-win7\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -271,9 +271,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWin7|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>libeasy2dwin7</TargetName>
-    <OutDir>output\$(PlatformToolset)\x86\</OutDir>
-    <IntDir>build\$(PlatformToolset)\x86\$(Configuration)\</IntDir>
+    <TargetName>libeasy2d</TargetName>
+    <OutDir>output-win7\$(PlatformToolset)\x86\</OutDir>
+    <IntDir>build-win7\$(PlatformToolset)\x86\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -283,9 +283,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWin7|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>libeasy2dwin7</TargetName>
-    <OutDir>output\$(PlatformToolset)\$(Platform)\</OutDir>
-    <IntDir>build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>libeasy2d</TargetName>
+    <OutDir>output-win7\$(PlatformToolset)\$(Platform)\</OutDir>
+    <IntDir>build-win7\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -307,7 +307,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;E2D_WIN7;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;E2D_USE_MCI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -334,7 +334,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;E2D_WIN7;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;E2D_USE_MCI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -369,7 +369,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;E2D_WIN7;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;E2D_USE_MCI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -406,7 +406,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;E2D_WIN7;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;E2D_USE_MCI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

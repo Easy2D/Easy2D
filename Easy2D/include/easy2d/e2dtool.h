@@ -1,15 +1,6 @@
 #pragma once
 #include <easy2d/e2dbase.h>
 
-#ifndef E2D_USE_MCI
-#	include <xaudio2.h>
-#	include <mfapi.h>
-#	include <mfidl.h>
-#	include <mfreadwrite.h>
-#else
-#	include <mmsystem.h>
-#endif
-
 namespace easy2d
 {
 
@@ -118,42 +109,9 @@ private:
 
 	static void __uninit();
 
-#ifndef E2D_USE_MCI
-	HRESULT _loadMediaFile(
-		String const& file_path
-	);
-
-	HRESULT _loadMediaResource(
-		LPVOID buffer,
-		DWORD bufferSize
-	);
-
-	HRESULT _readSource(
-		IMFSourceReader* reader
-	);
-
-protected:
-	bool _opened;
-	mutable bool _playing;
-	BYTE* _waveData;
-	DWORD _waveDataSize;
-	WAVEFORMATEX* _wfx;
-	IXAudio2SourceVoice* _voice;
-
-#else
-
-protected:
-	void _sendCommand(int nCommand, DWORD_PTR param1 = 0, DWORD_PTR parma2 = 0);
-
-	static LRESULT WINAPI _MciProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-
-protected:
-	MCIDEVICEID _dev;
-	HWND _wnd;
-	bool _playing;
-	int _repeatTimes;
-
-#endif
+private:
+	class Media;
+	Media* _media;
 };
 
 
