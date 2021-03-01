@@ -64,6 +64,11 @@ $fileContent = (Get-Content $fileToFix -Raw -Encoding UTF8).Replace("`n", "`r`n"
 $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
 [System.IO.File]::WriteAllLines(($fileToFix | Resolve-Path), $fileContent, $Utf8NoBomEncoding)
 
+$fileToFix = '.\scripts\7z\install-win7.bat'
+$gb2312Encoding = [System.Text.Encoding]::GetEncoding(936)
+$fileContent = ([System.IO.File]::ReadAllText(($fileToFix | Resolve-Path), $gb2312Encoding)).Replace("`n", "`r`n")
+[System.IO.File]::WriteAllLines(($fileToFix | Resolve-Path), $fileContent, $gb2312Encoding)
+
 # Copy published files
 $publishedFiles = ('.\Easy2D\include', '.\scripts\7z\install.bat')
 New-Item -ItemType "directory" -Path "published"
