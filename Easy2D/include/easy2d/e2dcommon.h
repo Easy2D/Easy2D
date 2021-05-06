@@ -26,6 +26,15 @@ enum class LineJoin : int
 };
 
 
+// 插值模式
+// 指定位图在缩放和旋转时像素颜色的计算方式
+enum class InterpolationMode
+{
+    Linear,  // 双线性插值，对周围四个像素进行两次线性插值计算，在图像放大时可能会模糊
+    Nearest  // 最邻近插值，取最邻近的像素点的颜色值
+};
+
+
 // 字符串
 using String = std::wstring;
 
@@ -283,6 +292,12 @@ public:
 	// 获取裁剪位置
 	virtual Point getCropPos() const;
 
+	// 获取像素插值方式
+    InterpolationMode getInterpolationMode() const;
+
+    // 设置像素插值方式
+    void setInterpolationMode(InterpolationMode mode);
+
 	// 在指定位置渲染图片
 	void draw(const Rect& destRect, float opacity) const;
 
@@ -312,6 +327,7 @@ protected:
 protected:
 	Rect _cropRect;
 	ID2D1Bitmap * _bitmap;
+	InterpolationMode _interpolationMode;
 };
 
 

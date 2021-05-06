@@ -12,6 +12,7 @@ namespace
 easy2d::Image::Image()
 	: _bitmap(nullptr)
 	, _cropRect()
+	, _interpolationMode(InterpolationMode::Linear)
 {
 }
 
@@ -155,6 +156,16 @@ easy2d::Point easy2d::Image::getCropPos() const
 	return _cropRect.origin;
 }
 
+easy2d::InterpolationMode easy2d::Image::getInterpolationMode() const
+{
+	return _interpolationMode;
+}
+
+void easy2d::Image::setInterpolationMode(InterpolationMode mode)
+{
+	_interpolationMode = mode;
+}
+
 void easy2d::Image::draw(const Rect& destRect, float opacity) const
 {
 	if (_bitmap)
@@ -162,12 +173,13 @@ void easy2d::Image::draw(const Rect& destRect, float opacity) const
 		// 目标矩形和源矩形
 		auto dest = D2D1::RectF(destRect.getLeft(), destRect.getTop(), destRect.getRight(), destRect.getBottom());
 		auto src = D2D1::RectF(_cropRect.getLeft(), _cropRect.getTop(), _cropRect.getRight(), _cropRect.getBottom());
+		auto mode = (_interpolationMode == InterpolationMode::Nearest) ? D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR : D2D1_BITMAP_INTERPOLATION_MODE_LINEAR;
 		// 渲染图片
 		Renderer::getRenderTarget()->DrawBitmap(
 			_bitmap,
 			dest,
 			opacity,
-			D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+			mode,
 			src
 		);
 	}
