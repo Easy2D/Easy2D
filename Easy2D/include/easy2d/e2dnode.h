@@ -347,7 +347,7 @@ public:
 	void removeAllChildren();
 
 	// 分发事件
-	void dispatch(Event* evt);
+	virtual void dispatch(Event* evt);
 
 	// 执行动作
 	void runAction(
@@ -856,6 +856,9 @@ public:
 	void setClickFunc(
 		const Callback& func
 	);
+
+	// 分发事件
+	virtual void dispatch(Event* evt) override;
 
 protected:
 	// 按钮状态枚举

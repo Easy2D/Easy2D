@@ -16,7 +16,6 @@ easy2d::Button::Button()
 	, _selected(nullptr)
 	, _disabled(nullptr)
 {
-	addListener(std::bind(&Button::updateStatus, this, std::placeholders::_1), L"按钮功能监听器");
 }
 
 easy2d::Button::Button(Node * normal, const Callback& func)
@@ -152,6 +151,14 @@ void easy2d::Button::setEnable(bool enable)
 void easy2d::Button::setClickFunc(const Callback& func)
 {
 	_func = func;
+}
+
+void easy2d::Button::dispatch(Event* evt)
+{
+	// 优先更新按钮状态
+	this->updateStatus(evt);
+	// 继续分发事件
+	Node::dispatch(evt);
 }
 
 void easy2d::Button::_setState(ButtonState state)

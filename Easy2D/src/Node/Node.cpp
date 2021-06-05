@@ -788,7 +788,10 @@ void easy2d::Node::stopAllActions()
 
 void easy2d::Node::dispatch(Event* evt)
 {
-	__updateListeners(evt);
+	if (!Game::isPaused())
+	{
+		__updateListeners(evt);
+	}
 
 	for (const auto& child : _children)
 	{
@@ -925,7 +928,7 @@ void easy2d::Node::removeAllListeners()
 
 void easy2d::Node::__updateListeners(Event* evt)
 {
-	if (_listeners.empty() || Game::isPaused())
+	if (_listeners.empty())
 		return;
 
 	for (size_t i = 0; i < _listeners.size(); ++i)
