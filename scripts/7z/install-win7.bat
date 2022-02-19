@@ -26,10 +26,12 @@ set existvs2013=0
 set existvs2015=0
 set existvs2017=0
 set existvs2019=0
+set existvs2022=0
 set vs2013path=0
 set vs2015path=0
 set vs2017path=0
 set vs2019path=0
+set vs2022path=0
 set vs2013include=0
 set vs2013x86lib=0
 set vs2013x64lib=0
@@ -42,6 +44,9 @@ set vs2017x64lib=0
 set vs2019include=0
 set vs2019x86lib=0
 set vs2019x64lib=0
+set vs2022include=0
+set vs2022x86lib=0
+set vs2022x64lib=0
 
 :: 查询操作系统是32位还是64位
 2>nul reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v "PROCESSOR_ARCHITECTURE" | findstr "AMD64">nul
@@ -64,6 +69,10 @@ for /f "tokens=1" %%a in ('2^>nul reg query "HKLM\Software\WOW6432Node\Microsoft
         if not "x!temp!"=="x!temp:Visual Studio Community 2019=!" ( set vs2019regitem=%%a )
         if not "x!temp!"=="x!temp:Visual Studio Professional 2019=!" ( set vs2019regitem=%%a )
         if not "x!temp!"=="x!temp:Visual Studio Enterprise 2019=!" ( set vs2019regitem=%%a )
+
+        if not "x!temp!"=="x!temp:Visual Studio Community 2022=!" ( set vs2022regitem=%%a )
+        if not "x!temp!"=="x!temp:Visual Studio Professional 2022=!" ( set vs2022regitem=%%a )
+        if not "x!temp!"=="x!temp:Visual Studio Enterprise 2022=!" ( set vs2022regitem=%%a )
     )
 )
 
@@ -76,6 +85,12 @@ if defined vs2017regitem (
 if defined vs2019regitem (
     for /f "tokens=1,2*" %%a in ('2^>nul reg query !vs2019regitem! /v "InstallLocation"') do (
         set vs2019path=%%c
+    )
+)
+
+if defined vs2022regitem (
+    for /f "tokens=1,2*" %%a in ('2^>nul reg query !vs2022regitem! /v "InstallLocation"') do (
+        set vs2022path=%%c
     )
 )
 
@@ -116,6 +131,19 @@ if exist "%vs2019path%" (
         set vs2019include=!vs2019path!include\
         set vs2019x86lib=!vs2019path!lib\x86\
         set vs2019x64lib=!vs2019path!lib\x64\
+    )
+)
+if exist "%vs2022path%" (
+    :: 读取VS2022工具集版本号
+    set vs2022toolver=!vs2022path!\VC\Auxiliary\Build\Microsoft.VCToolsVersion.default.txt
+    if exist !vs2022toolver! (
+        for /f "usebackq" %%a in ("!vs2022toolver!") do (
+            set vs2022path=!vs2022path!\VC\Tools\MSVC\%%a\
+        )
+        set existvs2022=1
+        set vs2022include=!vs2022path!include\
+        set vs2022x86lib=!vs2022path!lib\x86\
+        set vs2022x64lib=!vs2022path!lib\x64\
     )
 )
 
@@ -174,6 +202,15 @@ if %existvs2019% == 1 (
     echo.
     echo VS2019 版本库安装完成
 )
+if %existvs2022% == 1 (
+    echo.
+    echo 正在安装 VS2022 版本库
+    xcopy include "!vs2022include!" /e /c /f /y
+    xcopy output\v143\x86 "!vs2022x86lib!" /e /c /f /y
+    xcopy output\v143\x64 "!vs2022x64lib!" /e /c /f /y
+    echo.
+    echo VS2022 版本库安装完成
+)
 echo 按任意键退出 & pause>nul
 exit
 
@@ -184,13 +221,15 @@ echo [1] Visual Studio 2013
 echo [2] Visual Studio 2015
 echo [3] Visual Studio 2017
 echo [4] Visual Studio 2019
+echo [5] Visual Studio 2022
 
-choice /c 1234 /n /m 请输入选项：
+choice /c 12345 /n /m 请输入选项：
 
 if %errorlevel%==1 goto SETUP2013
 if %errorlevel%==2 goto SETUP2015
 if %errorlevel%==3 goto SETUP2017
 if %errorlevel%==4 goto SETUP2019
+if %errorlevel%==5 goto SETUP2022
 
 :SETUP2013
 if %existvs2013% == 1 (
@@ -252,6 +291,20 @@ if %existvs2019% == 1 (
 ) else (
     echo.
     echo 在您电脑上找不到 Visual Studio 2019
+)
+
+:SETUP2022
+if %existvs2022% == 1 (
+    echo.
+    echo 正在安装 VS2022 版本库
+    xcopy include "!vs2022include!" /e /c /f /y
+    xcopy output\v143\x86 "!vs2022x86lib!" /e /c /f /y
+    xcopy output\v143\x64 "!vs2022x64lib!" /e /c /f /y
+    echo.
+    echo VS2022 版本库安装完成
+) else (
+    echo.
+    echo 在您电脑上找不到 Visual Studio 2022
 )
 echo 按任意键退出 & pause>nul
 exit

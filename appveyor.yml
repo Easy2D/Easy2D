@@ -45,6 +45,8 @@ for:
       - master
   environment:
     matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+      VS_PLATFORM_TOOLSET: v143
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       VS_PLATFORM_TOOLSET: v120
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
@@ -54,7 +56,7 @@ for:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       VS_PLATFORM_TOOLSET: v142
     global:
-      job_to_deploy: 32 # 4(images) * 2(platform) * 4(configuration)
+      job_to_deploy: 40 # 5(images) * 2(platform) * 4(configuration)
 -
   branches:
     except:
