@@ -520,8 +520,8 @@ public:
 
 	Listener(
 		const Callback& func,
-		const String& name,
-		bool paused
+		const String& name = String{},
+		bool paused = false
 	);
 
 	// Æô¶¯¼àÌý
