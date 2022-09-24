@@ -87,6 +87,7 @@ void easy2d::Node::_update()
 		}
 
 		// 访问其他节点
+		size = _children.size();
 		for (; i < size; ++i)
 			_children[i]->_update();
 	}
