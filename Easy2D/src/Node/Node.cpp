@@ -593,7 +593,7 @@ easy2d::Scene * easy2d::Node::getParentScene() const
 	return _parentScene;
 }
 
-bool easy2d::Node::containsPoint(Point const& point)
+bool easy2d::Node::containsPoint(Point const& point) const
 {
 	if (_width == 0.f || _height == 0.f)
 		return false;

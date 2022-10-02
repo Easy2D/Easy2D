@@ -131,7 +131,7 @@ public:
 	Scene * getParentScene() const;
 
 	// 是否包含点坐标
-	bool containsPoint(Point const& point);
+	bool containsPoint(Point const& point) const;
 
 	// 设置节点是否显示
 	void setVisible(
@@ -859,6 +859,9 @@ public:
 
 	// 分发事件
 	virtual void dispatch(Event* evt) override;
+
+	// 是否包含点坐标
+	virtual bool containsPoint(const Point& p) const;
 
 protected:
 	// 按钮状态枚举
