@@ -83,26 +83,26 @@ void easy2d::Image::crop(const Rect& cropRect)
 {
 	if (_bitmap)
 	{
-		_cropRect.origin.x = min(max(cropRect.origin.x, 0), this->getSourceWidth());
-		_cropRect.origin.y = min(max(cropRect.origin.y, 0), this->getSourceHeight());
-		_cropRect.size.width = min(max(cropRect.size.width, 0), this->getSourceWidth() - cropRect.origin.x);
-		_cropRect.size.height = min(max(cropRect.size.height, 0), this->getSourceHeight() - cropRect.origin.y);
+		_cropRect.leftTop.x = min(max(cropRect.leftTop.x, 0), this->getSourceWidth());
+		_cropRect.leftTop.y = min(max(cropRect.leftTop.y, 0), this->getSourceHeight());
+		_cropRect.rightBottom.x = min(max(cropRect.rightBottom.x, 0), this->getSourceWidth());
+		_cropRect.rightBottom.y = min(max(cropRect.rightBottom.y, 0), this->getSourceHeight());
 	}
 }
 
 float easy2d::Image::getWidth() const
 {
-	return _cropRect.size.width;
+	return _cropRect.getWidth();
 }
 
 float easy2d::Image::getHeight() const
 {
-	return _cropRect.size.height;
+	return _cropRect.getHeight();
 }
 
 easy2d::Size easy2d::Image::getSize() const
 {
-	return _cropRect.size;
+	return _cropRect.getSize();
 }
 
 float easy2d::Image::getSourceWidth() const
@@ -143,17 +143,17 @@ easy2d::Size easy2d::Image::getSourceSize() const
 
 float easy2d::Image::getCropX() const
 {
-	return _cropRect.origin.x;
+	return _cropRect.leftTop.x;
 }
 
 float easy2d::Image::getCropY() const
 {
-	return _cropRect.origin.y;
+	return _cropRect.leftTop.y;
 }
 
 easy2d::Point easy2d::Image::getCropPos() const
 {
-	return _cropRect.origin;
+	return _cropRect.leftTop;
 }
 
 easy2d::InterpolationMode easy2d::Image::getInterpolationMode() const
@@ -170,17 +170,14 @@ void easy2d::Image::draw(const Rect& destRect, float opacity) const
 {
 	if (_bitmap)
 	{
-		// 目标矩形和源矩形
-		auto dest = D2D1::RectF(destRect.getLeft(), destRect.getTop(), destRect.getRight(), destRect.getBottom());
-		auto src = D2D1::RectF(_cropRect.getLeft(), _cropRect.getTop(), _cropRect.getRight(), _cropRect.getBottom());
 		auto mode = (_interpolationMode == InterpolationMode::Nearest) ? D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR : D2D1_BITMAP_INTERPOLATION_MODE_LINEAR;
 		// 渲染图片
 		Renderer::getRenderTarget()->DrawBitmap(
 			_bitmap,
-			dest,
+			reinterpret_cast<const D2D1_RECT_F&>(destRect),
 			opacity,
 			mode,
-			src
+			reinterpret_cast<const D2D1_RECT_F&>(_cropRect)
 		);
 	}
 }
@@ -417,9 +414,7 @@ void easy2d::Image::_setBitmap(ID2D1Bitmap * bitmap)
 	if (bitmap)
 	{
 		_bitmap = bitmap;
-		_cropRect.origin.x = _cropRect.origin.y = 0;
-		_cropRect.size.width = _bitmap->GetSize().width;
-		_cropRect.size.height = _bitmap->GetSize().height;
+		_cropRect.setRect(Point{}, Size{ _bitmap->GetSize().width, _bitmap->GetSize().height });
 	}
 }
 

@@ -51,7 +51,7 @@ easy2d::Rect easy2d::Matrix32::transform(const Rect& rect) const
 	float top = min(min(top_left.y, top_right.y), min(bottom_left.y, bottom_right.y));
 	float bottom = max(max(top_left.y, top_right.y), max(bottom_left.y, bottom_right.y));
 
-	return Rect{ left, top, (right - left), (bottom - top) };
+	return Rect{ Point{left, top}, Point{right, bottom} };
 }
 
 void easy2d::Matrix32::translate(float x, float y)

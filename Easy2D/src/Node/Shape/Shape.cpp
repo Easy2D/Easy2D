@@ -1,109 +1,78 @@
 #include <easy2d/e2dshape.h>
 
-easy2d::Shape::Shape()
-	: _style(Style::Solid)
-	, _fillColor(0x6090A0U)
-	, _lineColor(0x78B7D0U)
-	, _strokeWidth(2)
-	, _strokeStyle(nullptr)
-{
-}
-
 easy2d::Shape::~Shape()
 {
+    SafeRelease(geo_);
 }
 
-void easy2d::Shape::onRender()
+easy2d::Shape* easy2d::Shape::NewLine(Point begin, Point end)
 {
-	auto pBrush = Renderer::getSolidColorBrush();
-	pBrush->SetOpacity(_displayOpacity);
-
-	switch (_style)
-	{
-	case Style::Fill:
-	{
-		pBrush->SetColor(_fillColor.toD2DColorF());
-		this->_renderFill();
-
-		pBrush->SetColor(_lineColor.toD2DColorF());
-		this->_renderLine();
-		break;
-	}
-
-	case Style::Round:
-	{
-		pBrush->SetColor(_lineColor.toD2DColorF());
-		this->_renderLine();
-		break;
-	}
-
-	case Style::Solid:
-	{
-		pBrush->SetColor(_fillColor.toD2DColorF());
-		this->_renderFill();
-		break;
-	}
-
-	default:
-		break;
-	}
+    return nullptr;
 }
 
-easy2d::Color easy2d::Shape::getFillColor() const
+easy2d::Rect easy2d::Shape::getBoundingBox(const Matrix32* transform) const
 {
-	return _fillColor;
+    Rect bounds;
+    if (geo_)
+    {
+        // no matter it failed or not
+        geo_->GetBounds(
+             reinterpret_cast<const D2D1_MATRIX_3X2_F*>(transform),
+            reinterpret_cast<D2D1_RECT_F*>(&bounds)
+        );
+    }
+    return bounds;
 }
 
-easy2d::Color easy2d::Shape::getLineColor() const
+bool easy2d::Shape::containsPoint(const Point& point, const Matrix32* transform) const
 {
-	return _lineColor;
+    if (geo_)
+    {
+        BOOL ret = 0;
+        // no matter it failed or not
+        geo_->FillContainsPoint(
+            reinterpret_cast<const D2D_POINT_2F&>(point),
+            reinterpret_cast<const D2D1_MATRIX_3X2_F*>(transform),
+            D2D1_DEFAULT_FLATTENING_TOLERANCE,
+            &ret
+        );
+        return !!ret;
+    }
+	return false;
 }
 
-float easy2d::Shape::getStrokeWidth() const
+float easy2d::Shape::getLength() const
 {
-	return _strokeWidth;
+    float length = 0.f;
+    if (geo_)
+    {
+        // no matter it failed or not
+        geo_->ComputeLength(D2D1::Matrix3x2F::Identity(), &length);
+    }
+    return length;
 }
 
-easy2d::Shape::Style easy2d::Shape::getStyle() const
+float easy2d::Shape::computeArea() const
 {
-	return _style;
+    if (geo_)
+    {
+        float area = 0.f;
+        // no matter it failed or not
+        geo_->ComputeArea(D2D1::Matrix3x2F::Identity(), &area);
+    }
+    return 0.f;
 }
 
-void easy2d::Shape::setFillColor(Color fillColor)
+bool easy2d::Shape::computePointAtLength(float length, Point& point, Vector2& tangent) const
 {
-	_fillColor = fillColor;
-}
-
-void easy2d::Shape::setLineColor(Color lineColor)
-{
-	_lineColor = lineColor;
-}
-
-void easy2d::Shape::setStrokeWidth(float strokeWidth)
-{
-	_strokeWidth = float(strokeWidth) * 2;
-}
-
-void easy2d::Shape::setStyle(Style style)
-{
-	_style = style;
-}
-
-void easy2d::Shape::setLineJoin(LineJoin lineJoin)
-{
-	switch (lineJoin)
-	{
-	case LineJoin::Miter:
-		_strokeStyle = Renderer::getMiterID2D1StrokeStyle();
-		break;
-	case LineJoin::Bevel:
-		_strokeStyle = Renderer::getBevelID2D1StrokeStyle();
-		break;
-	case LineJoin::Round:
-		_strokeStyle = Renderer::getRoundID2D1StrokeStyle();
-		break;
-	default:
-		_strokeStyle = nullptr;
-		break;
-	}
+    if (geo_)
+    {
+        HRESULT hr = geo_->ComputePointAtLength(
+            length,
+            D2D1::Matrix3x2F::Identity(),
+            reinterpret_cast<D2D_POINT_2F*>(&point),
+            reinterpret_cast<D2D_POINT_2F*>(&tangent));
+        return SUCCEEDED(hr);
+    }
+    return false;
 }

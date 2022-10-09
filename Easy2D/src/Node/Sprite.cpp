@@ -93,8 +93,8 @@ void easy2d::Sprite::crop(const Rect& cropRect)
 {
 	_image->crop(cropRect);
 	Node::setSize(
-		min(max(cropRect.size.width, 0), _image->getSourceWidth() - _image->getCropX()),
-		min(max(cropRect.size.height, 0), _image->getSourceHeight() - _image->getCropY())
+		min(max(cropRect.getWidth(), 0), _image->getSourceWidth() - _image->getCropX()),
+		min(max(cropRect.getHeight(), 0), _image->getSourceHeight() - _image->getCropY())
 	);
 }
 
@@ -107,6 +107,6 @@ void easy2d::Sprite::onRender()
 {
 	if (_image)
 	{
-		_image->draw(Rect(0, 0, _width, _height), _displayOpacity);
+		_image->draw(getBounds(), _displayOpacity);
 	}
 }
