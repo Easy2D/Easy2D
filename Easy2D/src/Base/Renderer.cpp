@@ -779,7 +779,7 @@ easy2d::Color easy2d::Renderer::getBackgroundColor()
 
 void easy2d::Renderer::setBackgroundColor(Color color)
 {
-	s_nClearColor = color.toD2DColorF();
+	s_nClearColor = reinterpret_cast<const D2D1_COLOR_F&>(color);
 }
 
 void easy2d::Renderer::showFps(bool show)
@@ -825,9 +825,9 @@ IDWriteFactory * easy2d::Renderer::getIDWriteFactory()
 void easy2d::Renderer::SetTextStyle(const Color& fillColor, bool hasOutline, const Color& outlineColor, float outlineWidth, LineJoin outlineJoin)
 {
 	s_pTextRenderer->SetTextStyle(
-		fillColor.toD2DColorF(),
+		reinterpret_cast<const D2D1_COLOR_F&>(fillColor),
 		hasOutline,
-		outlineColor.toD2DColorF(),
+		reinterpret_cast<const D2D1_COLOR_F&>(outlineColor),
 		outlineWidth,
 		D2D1_LINE_JOIN(outlineJoin)
 	);

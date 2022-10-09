@@ -131,13 +131,12 @@ namespace easy2d
 	class Rect
 	{
 	public:
-		Point origin;	// 原点坐标
-		Size  size;		// 宽度和高度
+		Point leftTop, rightBottom;
 
 	public:
 		Rect();
 
-		Rect(float x, float y, float width, float height);
+		Rect(const Point& lt, const Point& rb);
 
 		Rect(const Point& pos, const Size& size);
 
@@ -149,10 +148,8 @@ namespace easy2d
 
 		// 设置矩形
 		void setRect(
-			float x,
-			float y,
-			float width,
-			float height
+			const Point& pos,
+			const Size& size
 		);
 
 		// 判断点是否在矩形内
@@ -165,23 +162,30 @@ namespace easy2d
 			const Rect& rect
 		) const;
 
-		inline Vector2 getCenter() const { return Vector2{ origin.x + size.width / 2, origin.y + size.height / 2 }; }
+		inline float getWidth() const
+		{
+			return rightBottom.x - leftTop.x;
+		}
 
-		inline Vector2 getLeftTop() const { return origin; }
+		inline float getHeight() const { return rightBottom.y - leftTop.y; }
 
-		inline Vector2 getRightBottom() const { return Vector2{ getRight(), getBottom() }; }
+		inline Size getSize() const { return Size{ getWidth(), getHeight() }; }
+
+		inline Vector2 getLeftTop() const { return leftTop; }
+
+		inline Vector2 getRightBottom() const { return rightBottom; }
 
 		inline Vector2 getRightTop() const { return Vector2{ getRight(), getTop() }; }
 
 		inline Vector2 getLeftBottom() const { return Vector2{ getLeft(), getBottom() }; }
 
-		inline float getLeft() const { return origin.x; }
+		inline float getLeft() const { return leftTop.x; }
 
-		inline float getTop() const { return origin.y; }
+		inline float getTop() const { return leftTop.y; }
 
-		inline float getRight() const { return origin.x + size.width; }
+		inline float getRight() const { return rightBottom.x; }
 
-		inline float getBottom() const { return origin.y + size.height; }
+		inline float getBottom() const { return rightBottom.y; }
 	};
 
 

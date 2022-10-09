@@ -161,11 +161,6 @@ void easy2d::Button::dispatch(Event* evt)
 	Node::dispatch(evt);
 }
 
-bool easy2d::Button::containsPoint(const Point& p) const
-{
-	return Node::containsPoint(p);
-}
-
 void easy2d::Button::_setState(ButtonState state)
 {
 	if (_state != state)

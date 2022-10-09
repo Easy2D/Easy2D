@@ -1,109 +1,166 @@
 #include <easy2d/e2dshape.h>
 
-easy2d::Shape::Shape()
-	: _style(Style::Solid)
-	, _fillColor(0x6090A0U)
-	, _lineColor(0x78B7D0U)
-	, _strokeWidth(2)
-	, _strokeStyle(nullptr)
+easy2d::Shape::Shape(ID2D1Geometry* geo)
+    : _geo(geo)
 {
+    if (_geo)
+    {
+        _geo->AddRef();
+    }
 }
 
 easy2d::Shape::~Shape()
 {
+    SafeRelease(_geo);
 }
 
-void easy2d::Shape::onRender()
+void easy2d::Shape::resetGeometry(ID2D1Geometry* geo)
 {
-	auto pBrush = Renderer::getSolidColorBrush();
-	pBrush->SetOpacity(_displayOpacity);
-
-	switch (_style)
-	{
-	case Style::Fill:
-	{
-		pBrush->SetColor(_fillColor.toD2DColorF());
-		this->_renderFill();
-
-		pBrush->SetColor(_lineColor.toD2DColorF());
-		this->_renderLine();
-		break;
-	}
-
-	case Style::Round:
-	{
-		pBrush->SetColor(_lineColor.toD2DColorF());
-		this->_renderLine();
-		break;
-	}
-
-	case Style::Solid:
-	{
-		pBrush->SetColor(_fillColor.toD2DColorF());
-		this->_renderFill();
-		break;
-	}
-
-	default:
-		break;
-	}
+    SafeRelease(_geo);
+    _geo = geo;
+    if (_geo)
+    {
+        _geo->AddRef();
+    }
 }
 
-easy2d::Color easy2d::Shape::getFillColor() const
+easy2d::Shape* easy2d::Shape::createLine(Point begin, Point end)
 {
-	return _fillColor;
+    ShapeMaker maker;
+    maker.beginPath(begin);
+    maker.addLine(end);
+    maker.endPath(false);
+    return maker.getShape();
 }
 
-easy2d::Color easy2d::Shape::getLineColor() const
+easy2d::Shape* easy2d::Shape::createRect(const Rect& rect)
 {
-	return _lineColor;
+    ID2D1RectangleGeometry* geo = nullptr;
+    HRESULT hr = Renderer::getID2D1Factory()->CreateRectangleGeometry(reinterpret_cast<const D2D1_RECT_F&>(rect), &geo);
+    if (SUCCEEDED(hr))
+    {
+        Shape* shape = gcnew Shape(geo);
+        SafeRelease(geo);
+        return shape;
+    }
+    SafeRelease(geo);
+    return nullptr;
 }
 
-float easy2d::Shape::getStrokeWidth() const
+easy2d::Shape* easy2d::Shape::createRoundedRect(const Rect& rect, const Vector2& radius)
 {
-	return _strokeWidth;
+    ID2D1RoundedRectangleGeometry* geo = nullptr;
+    HRESULT hr = Renderer::getID2D1Factory()->CreateRoundedRectangleGeometry(D2D1::RoundedRect(reinterpret_cast<const D2D1_RECT_F&>(rect), radius.x, radius.y), &geo);
+    if (SUCCEEDED(hr))
+    {
+        Shape* shape = gcnew Shape(geo);
+        SafeRelease(geo);
+        return shape;
+    }
+    SafeRelease(geo);
+    return nullptr;
 }
 
-easy2d::Shape::Style easy2d::Shape::getStyle() const
+easy2d::Shape* easy2d::Shape::createCircle(const Point& center, float radius)
 {
-	return _style;
+    return createEllipse(center, Vector2{ radius, radius });
 }
 
-void easy2d::Shape::setFillColor(Color fillColor)
+easy2d::Shape* easy2d::Shape::createEllipse(const Point& center, const Vector2& radius)
 {
-	_fillColor = fillColor;
+    ID2D1EllipseGeometry* geo = nullptr;
+    HRESULT hr = Renderer::getID2D1Factory()->CreateEllipseGeometry(D2D1::Ellipse(reinterpret_cast<const D2D1_POINT_2F&>(center), radius.x, radius.y), &geo);
+    if (SUCCEEDED(hr))
+    {
+        Shape* shape = gcnew Shape(geo);
+        SafeRelease(geo);
+        return shape;
+    }
+    SafeRelease(geo);
+    return nullptr;
 }
 
-void easy2d::Shape::setLineColor(Color lineColor)
+easy2d::Shape* easy2d::Shape::createPolygon(std::initializer_list<Point> vertices)
 {
-	_lineColor = lineColor;
+    return createPolygon(vertices.begin(), static_cast<int>(vertices.size()));
 }
 
-void easy2d::Shape::setStrokeWidth(float strokeWidth)
+easy2d::Shape* easy2d::Shape::createPolygon(const Point* vertices, int count)
 {
-	_strokeWidth = float(strokeWidth) * 2;
+    if (count > 1)
+    {
+        ShapeMaker maker;
+        maker.beginPath(vertices[0]);
+        maker.addLines(&vertices[1], count - 1);
+        maker.endPath(true);
+        return maker.getShape();
+    }
+    return nullptr;
 }
 
-void easy2d::Shape::setStyle(Style style)
+easy2d::Rect easy2d::Shape::getBoundingBox(const Matrix32* transform) const
 {
-	_style = style;
+    Rect bounds;
+    if (_geo)
+    {
+        // no matter it failed or not
+        _geo->GetBounds(
+             reinterpret_cast<const D2D1_MATRIX_3X2_F*>(transform),
+            reinterpret_cast<D2D1_RECT_F*>(&bounds)
+        );
+    }
+    return bounds;
 }
 
-void easy2d::Shape::setLineJoin(LineJoin lineJoin)
+bool easy2d::Shape::containsPoint(const Point& point, const Matrix32* transform) const
 {
-	switch (lineJoin)
-	{
-	case LineJoin::Miter:
-		_strokeStyle = Renderer::getMiterID2D1StrokeStyle();
-		break;
-	case LineJoin::Bevel:
-		_strokeStyle = Renderer::getBevelID2D1StrokeStyle();
-		break;
-	case LineJoin::Round:
-		_strokeStyle = Renderer::getRoundID2D1StrokeStyle();
-		break;
-	default:
-		_strokeStyle = nullptr;
-		break;
-	}
+    if (_geo)
+    {
+        BOOL ret = 0;
+        // no matter it failed or not
+        _geo->FillContainsPoint(
+            reinterpret_cast<const D2D_POINT_2F&>(point),
+            reinterpret_cast<const D2D1_MATRIX_3X2_F*>(transform),
+            D2D1_DEFAULT_FLATTENING_TOLERANCE,
+            &ret
+        );
+        return !!ret;
+    }
+	return false;
+}
+
+float easy2d::Shape::getLength() const
+{
+    float length = 0.f;
+    if (_geo)
+    {
+        // no matter it failed or not
+        _geo->ComputeLength(D2D1::Matrix3x2F::Identity(), &length);
+    }
+    return length;
+}
+
+float easy2d::Shape::computeArea() const
+{
+    if (_geo)
+    {
+        float area = 0.f;
+        // no matter it failed or not
+        _geo->ComputeArea(D2D1::Matrix3x2F::Identity(), &area);
+    }
+    return 0.f;
+}
+
+bool easy2d::Shape::computePointAtLength(float length, Point& point, Vector2& tangent) const
+{
+    if (_geo)
+    {
+        HRESULT hr = _geo->ComputePointAtLength(
+            length,
+            D2D1::Matrix3x2F::Identity(),
+            reinterpret_cast<D2D_POINT_2F*>(&point),
+            reinterpret_cast<D2D_POINT_2F*>(&tangent));
+        return SUCCEEDED(hr);
+    }
+    return false;
 }

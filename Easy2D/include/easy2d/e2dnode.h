@@ -1,5 +1,6 @@
 #pragma once
 #include <easy2d/e2dbase.h>
+#include <easy2d/e2dshape.h>
 
 namespace easy2d 
 {
@@ -113,10 +114,10 @@ public:
 	Property getProperty() const;
 
 	// 获取边框
-	Rect getBounds() const;
+	virtual Rect getBounds() const;
 
 	// 获取外切包围盒
-	Rect getBoundingBox() const;
+	virtual Rect getBoundingBox() const;
 
 	// 获取二维变换矩阵
 	Matrix32 getTransform() const;
@@ -131,7 +132,7 @@ public:
 	Scene * getParentScene() const;
 
 	// 是否包含点坐标
-	bool containsPoint(Point const& point) const;
+	virtual bool containsPoint(Point const& point) const;
 
 	// 设置节点是否显示
 	void setVisible(
@@ -788,6 +789,81 @@ protected:
 	IDWriteTextLayout * _textLayout;
 };
 
+// 形状
+class ShapeNode :
+	public Node
+{
+public:
+	// 形状样式
+	enum class Style
+	{
+		Solid,		/* 填充 */
+		Round,		/* 轮廓 */
+		Fill,		/* 轮廓 + 填充 */
+	};
+
+public:
+	ShapeNode(Shape* shape = nullptr);
+
+	virtual ~ShapeNode();
+
+	Shape* getShape() const;
+
+	void setShape(Shape* shape);
+
+	// 获取样式
+	Style getStyle() const;
+
+	// 获取填充颜色
+	Color getFillColor() const;
+
+	// 获取线条颜色
+	Color getStrokeColor() const;
+
+	// 获取线条宽度
+	float getStrokeWidth() const;
+
+	// 设置填充颜色
+	void setFillColor(
+		Color fillColor
+	);
+
+	// 设置线条颜色
+	void setStrokeColor(
+		Color strokeColor
+	);
+
+	// 设置线条宽度
+	void setStrokeWidth(
+		float strokeWidth
+	);
+
+	// 设置样式
+	void setStyle(Style style);
+
+	// 设置线条相交样式
+	void setLineJoin(
+		LineJoin lineJoin
+	);
+
+	virtual Rect getBounds() const override;
+
+	virtual Rect getBoundingBox() const override;
+
+	virtual bool containsPoint(Point const& point) const override;
+
+	virtual void onRender() override;
+
+protected:
+	Style	_style;
+	float	_strokeWidth;
+	Color	_strokeColor;
+	Color	_fillColor;
+	Rect	_bounds;
+	Shape*	_shape;
+	ID2D1StrokeStyle* _strokeStyle;
+};
+
 
 // 按钮
 class Button :
@@ -859,9 +935,6 @@ public:
 
 	// 分发事件
 	virtual void dispatch(Event* evt) override;
-
-	// 是否包含点坐标
-	virtual bool containsPoint(const Point& p) const;
 
 protected:
 	// 按钮状态枚举

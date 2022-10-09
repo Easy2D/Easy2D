@@ -99,8 +99,6 @@ public:
 		float alpha
 	);
 
-	D2D1_COLOR_F toD2DColorF() const;
-
 public:
 	enum Value : UINT
 	{
@@ -145,13 +143,7 @@ public:
 		YellowGreen = 0x9ACD32
 	};
 
-private:
-	void _init(
-		UINT rgb,
-		float alpha
-	);
-
-private:
+public:
 	float r;
 	float g;
 	float b;
