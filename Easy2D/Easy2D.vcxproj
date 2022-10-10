@@ -43,8 +43,8 @@
     <ClCompile Include="src\Math\Size.cpp" />
     <ClCompile Include="src\Node\Button.cpp" />
     <ClCompile Include="src\Node\Scene.cpp" />
-    <ClCompile Include="src\Node\ShapeNode.cpp" />
     <ClCompile Include="src\Node\Shape\ShapeMaker.cpp" />
+    <ClCompile Include="src\Node\Shape\ShapeNode.cpp" />
     <ClCompile Include="src\Node\ToggleButton.cpp" />
     <ClCompile Include="src\Node\Menu.cpp" />
     <ClCompile Include="src\Node\Node.cpp" />

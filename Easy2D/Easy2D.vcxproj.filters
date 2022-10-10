@@ -219,8 +219,8 @@
     <ClCompile Include="src\Node\Shape\ShapeMaker.cpp">
       <Filter>src\Node\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="src\Node\ShapeNode.cpp">
-      <Filter>src\Node</Filter>
+    <ClCompile Include="src\Node\Shape\ShapeNode.cpp">
+      <Filter>src\Node\Shape</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
