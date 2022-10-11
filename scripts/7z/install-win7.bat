@@ -22,19 +22,14 @@ exit
 :: 创建路径变量
 setlocal enabledelayedexpansion
 set vsregpath=
-set existvs2013=0
 set existvs2015=0
 set existvs2017=0
 set existvs2019=0
 set existvs2022=0
-set vs2013path=0
 set vs2015path=0
 set vs2017path=0
 set vs2019path=0
 set vs2022path=0
-set vs2013include=0
-set vs2013x86lib=0
-set vs2013x64lib=0
 set vs2015include=0
 set vs2015x86lib=0
 set vs2015x64lib=0
@@ -56,7 +51,6 @@ if %errorlevel% EQU 0 (
 set vsregpath=HKLM\Software\%vsregpath%Microsoft\VisualStudio\SxS\VS7
 
 :: 查询VS安装路径
-for /f "tokens=1,2*" %%a in ('2^>nul reg query "%vsregpath%" /v "12.0"') do ( set vs2013path=%%cVC\ )
 for /f "tokens=1,2*" %%a in ('2^>nul reg query "%vsregpath%" /v "14.0"') do ( set vs2015path=%%cVC\ )
 
 for /f "tokens=1" %%a in ('2^>nul reg query "HKLM\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"') do (
@@ -95,12 +89,6 @@ if defined vs2022regitem (
 )
 
 :: 设置VS包含目录和库目录
-if exist "%vs2013path%" (
-    set existvs2013=1
-    set vs2013include=!vs2013path!include\
-    set vs2013x86lib=!vs2013path!lib\
-    set vs2013x64lib=!vs2013path!lib\amd64\
-)
 if exist "%vs2015path%" (
     set existvs2015=1
     set vs2015include=!vs2015path!include\
@@ -166,15 +154,6 @@ exit
 
 :AUTOINSTALL
 :: 检测所有VS版本并安装
-if %existvs2013% == 1 (
-    echo.
-    echo 正在安装 VS2013 版本库
-    xcopy include "!vs2013include!" /e /c /f /y
-    xcopy output\v120\x86 "!vs2013x86lib!" /e /c /f /y
-    xcopy output\v120\x64 "!vs2013x64lib!" /e /c /f /y
-    echo.
-    echo VS2013 版本库安装完成
-)
 if %existvs2015% == 1 (
     echo.
     echo 正在安装 VS2015 版本库
@@ -217,35 +196,17 @@ exit
 :CUSTOMINSTALL
 echo.
 echo 请选择安装版本：
-echo [1] Visual Studio 2013
-echo [2] Visual Studio 2015
-echo [3] Visual Studio 2017
-echo [4] Visual Studio 2019
-echo [5] Visual Studio 2022
+echo [1] Visual Studio 2015
+echo [2] Visual Studio 2017
+echo [3] Visual Studio 2019
+echo [4] Visual Studio 2022
 
 choice /c 12345 /n /m 请输入选项：
 
-if %errorlevel%==1 goto SETUP2013
-if %errorlevel%==2 goto SETUP2015
-if %errorlevel%==3 goto SETUP2017
-if %errorlevel%==4 goto SETUP2019
-if %errorlevel%==5 goto SETUP2022
-
-:SETUP2013
-if %existvs2013% == 1 (
-    echo.
-    echo 正在安装 VS2013 版本库
-    xcopy include "!vs2013include!" /e /c /f /y
-    xcopy output\v120\x86 "!vs2013x86lib!" /e /c /f /y
-    xcopy output\v120\x64 "!vs2013x64lib!" /e /c /f /y
-    echo.
-    echo VS2013 版本库安装完成
-) else (
-    echo.
-    echo 在您电脑上找不到 Visual Studio 2013
-)
-echo 按任意键退出 & pause>nul
-exit
+if %errorlevel%==1 goto SETUP2015
+if %errorlevel%==2 goto SETUP2017
+if %errorlevel%==3 goto SETUP2019
+if %errorlevel%==4 goto SETUP2022
 
 :SETUP2015
 if %existvs2015% == 1 (
