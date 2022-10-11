@@ -144,7 +144,7 @@
     <ClCompile Include="src\Transition\Transition.cpp">
       <Filter>src\Transition</Filter>
     </ClCompile>
-    <ClCompile Include="src\Action\Animate.cpp">
+    <ClCompile Include="src\Action\Animation.cpp">
       <Filter>src\Action</Filter>
     </ClCompile>
     <ClCompile Include="src\Action\JumpBy.cpp">
@@ -156,7 +156,7 @@
     <ClCompile Include="src\Tool\Music.cpp">
       <Filter>src\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="src\Action\Animation.cpp">
+    <ClCompile Include="src\Action\FrameSequence.cpp">
       <Filter>src\Action</Filter>
     </ClCompile>
     <ClCompile Include="src\Base\GC.cpp">
@@ -221,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="src\Node\Shape\ShapeNode.cpp">
       <Filter>src\Node\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Action\KeyFrame.cpp">
+      <Filter>src\Action</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

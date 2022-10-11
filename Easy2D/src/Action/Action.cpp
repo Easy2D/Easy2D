@@ -1,10 +1,12 @@
 #include <easy2d/e2daction.h>
 #include <easy2d/e2dmanager.h>
+#include <easy2d/e2dnode.h>
 
 easy2d::Action::Action() 
 	: _running(false)
 	, _done(false)
 	, _initialized(false)
+	, _removeTarget(false)
 	, _target(nullptr)
 	, _last(0)
 {
@@ -33,6 +35,11 @@ void easy2d::Action::pause()
 void easy2d::Action::stop()
 {
 	_done = true;
+	if (_removeTarget)
+	{
+		_target->removeFromParent();
+		_target = nullptr;
+	}
 }
 
 easy2d::String easy2d::Action::getName() const
@@ -45,9 +52,14 @@ void easy2d::Action::setName(const String& name)
 	_name = name;
 }
 
-easy2d::Node * easy2d::Action::getTarget()
+easy2d::Node * easy2d::Action::getTarget() const
 {
 	return _target;
+}
+
+void easy2d::Action::removeTargetWhenDone()
+{
+	_removeTarget = true;
 }
 
 void easy2d::Action::reset()

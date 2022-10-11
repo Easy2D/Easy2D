@@ -6,6 +6,7 @@ namespace easy2d
 
 
 class Action;
+class KeyFrame;
 class Transition;
 class SceneManager;
 
@@ -525,16 +526,29 @@ public:
 	);
 
 	explicit Sprite(
+		const Resource& res		/* 图片资源 */
+	);
+
+	explicit Sprite(
+		KeyFrame* frame			/* 关键帧 */
+	);
+
+	Sprite(
 		int resNameId,			/* 图片资源名称 */
 		const String& resType	/* 图片资源类型 */
 	);
 
-	explicit Sprite(
+	Sprite(
 		const String& filePath,	/* 图片文件路径 */
 		const Rect& cropRect	/* 裁剪矩形 */
 	);
 
-	explicit Sprite(
+	Sprite(
+		const Resource& res,	/* 图片资源 */
+		const Rect& cropRect	/* 裁剪矩形 */
+	);
+
+	Sprite(
 		int resNameId,			/* 图片资源名称 */
 		const String& resType,	/* 图片资源类型 */
 		const Rect& cropRect	/* 裁剪矩形 */
@@ -549,28 +563,49 @@ public:
 
 	// 加载图片资源
 	bool open(
+		const Resource& res		/* 图片资源 */
+	);
+
+	// 加载图片资源
+	bool open(
 		int resNameId,			/* 图片资源名称 */
 		const String& resType	/* 图片资源类型 */
 	);
-	
-	// 加载图片
-	bool open(
-		Image * image
-	);
+
+	// 获取裁剪矩形
+	Rect getCropRect() const;
 
 	// 将图片裁剪为矩形
 	void crop(
 		const Rect& cropRect	/* 裁剪矩形 */
 	);
 
-	// 获取 Image 对象
-	virtual Image * getImage() const;
+	// 获取图片
+	Image* getImage() const;
+
+	// 设置图片
+	void setImage(
+		Image* image
+	);
+
+	// 设置关键帧
+	void setKeyFrame(
+		KeyFrame* frame
+	);
+
+	// 获取像素插值方式
+	InterpolationMode getInterpolationMode() const;
+
+	// 设置像素插值方式
+	void setInterpolationMode(InterpolationMode mode);
 
 	// 渲染精灵
 	virtual void onRender() override;
 
 protected:
-	Image * _image;
+	Image*	_image;
+	Rect	_cropRect;
+	InterpolationMode _interpolationMode;
 };
 
 

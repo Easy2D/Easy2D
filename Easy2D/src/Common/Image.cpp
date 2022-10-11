@@ -1,111 +1,50 @@
 #include <easy2d/e2dcommon.h>
 #include <easy2d/e2dbase.h>
 #include <easy2d/e2dtool.h>
-#include <map>
+#include <unordered_map>
 
 namespace
 {
-	std::map<size_t, ID2D1Bitmap*> s_mBitmapsFromFile;
-	std::map<int, ID2D1Bitmap*> s_mBitmapsFromResource;
+	std::unordered_map<easy2d::String, easy2d::Image*> s_mImagesFromFile;
+	std::unordered_map<easy2d::Resource, easy2d::Image*> s_mImagesFromResource;
 }
 
-easy2d::Image::Image()
-	: _bitmap(nullptr)
-	, _cropRect()
-	, _interpolationMode(InterpolationMode::Linear)
+namespace easy2d
 {
+	HRESULT LoadBitmapFromFile(ID2D1Bitmap** ppBitmap, const String& filePath);
+	HRESULT LoadBitmapFromResource(ID2D1Bitmap** ppBitmap, const Resource& res);
 }
 
-easy2d::Image::Image(const String& filePath)
-	: _bitmap(nullptr)
-	, _cropRect()
+easy2d::Image::Image(ID2D1Bitmap* bitmap)
+	: _bitmap(bitmap)
 {
-	this->open(filePath);
-}
-
-easy2d::Image::Image(int resNameId, const String& resType)
-	: _bitmap(nullptr)
-	, _cropRect()
-{
-	this->open(resNameId, resType);
-}
-
-easy2d::Image::Image(const String& filePath, const Rect& cropRect)
-	: _bitmap(nullptr)
-	, _cropRect()
-{
-	this->open(filePath);
-	this->crop(cropRect);
-}
-
-easy2d::Image::Image(int resNameId, const String& resType, const Rect& cropRect)
-	: _bitmap(nullptr)
-	, _cropRect()
-{
-	this->open(resNameId, resType);
-	this->crop(cropRect);
+	if (_bitmap)
+	{
+		_bitmap->AddRef();
+	}
 }
 
 easy2d::Image::~Image()
 {
+	SafeRelease(_bitmap);
 }
 
-bool easy2d::Image::open(const String& filePath)
+ID2D1Bitmap* easy2d::Image::getBitmap()
 {
-	if (filePath.empty()) E2D_WARNING(L"Image open failed! Invalid file name.");
-
-	if (filePath.empty())
-		return false;
-
-	if (!Image::preload(filePath))
-	{
-		E2D_WARNING(L"Load Image from file failed!");
-		return false;
-	}
-
-	this->_setBitmap(s_mBitmapsFromFile.at(std::hash<String>{}(filePath)));
-	return true;
+	return _bitmap;
 }
 
-bool easy2d::Image::open(int resNameId, const String& resType)
+void easy2d::Image::resetBitmap(ID2D1Bitmap* bitmap)
 {
-	if (!Image::preload(resNameId, resType))
-	{
-		E2D_WARNING(L"Load Image from file failed!");
-		return false;
-	}
-
-	this->_setBitmap(s_mBitmapsFromResource.at(resNameId));
-	return true;
-}
-
-void easy2d::Image::crop(const Rect& cropRect)
-{
+	SafeRelease(_bitmap);
+	_bitmap = bitmap;
 	if (_bitmap)
 	{
-		_cropRect.leftTop.x = min(max(cropRect.leftTop.x, 0), this->getSourceWidth());
-		_cropRect.leftTop.y = min(max(cropRect.leftTop.y, 0), this->getSourceHeight());
-		_cropRect.rightBottom.x = min(max(cropRect.rightBottom.x, 0), this->getSourceWidth());
-		_cropRect.rightBottom.y = min(max(cropRect.rightBottom.y, 0), this->getSourceHeight());
+		_bitmap->AddRef();
 	}
 }
 
 float easy2d::Image::getWidth() const
-{
-	return _cropRect.getWidth();
-}
-
-float easy2d::Image::getHeight() const
-{
-	return _cropRect.getHeight();
-}
-
-easy2d::Size easy2d::Image::getSize() const
-{
-	return _cropRect.getSize();
-}
-
-float easy2d::Image::getSourceWidth() const
 {
 	if (_bitmap)
 	{
@@ -117,7 +56,7 @@ float easy2d::Image::getSourceWidth() const
 	}
 }
 
-float easy2d::Image::getSourceHeight() const
+float easy2d::Image::getHeight() const
 {
 	if (_bitmap)
 	{
@@ -129,11 +68,11 @@ float easy2d::Image::getSourceHeight() const
 	}
 }
 
-easy2d::Size easy2d::Image::getSourceSize() const
+easy2d::Size easy2d::Image::getSize() const
 {
 	if (_bitmap)
 	{
-		return Size(getSourceWidth(), getSourceHeight());
+		return Size(getWidth(), getHeight());
 	}
 	else
 	{
@@ -141,69 +80,137 @@ easy2d::Size easy2d::Image::getSourceSize() const
 	}
 }
 
-float easy2d::Image::getCropX() const
+easy2d::Image* easy2d::Image::preload(const String& filePath)
 {
-	return _cropRect.leftTop.x;
-}
-
-float easy2d::Image::getCropY() const
-{
-	return _cropRect.leftTop.y;
-}
-
-easy2d::Point easy2d::Image::getCropPos() const
-{
-	return _cropRect.leftTop;
-}
-
-easy2d::InterpolationMode easy2d::Image::getInterpolationMode() const
-{
-	return _interpolationMode;
-}
-
-void easy2d::Image::setInterpolationMode(InterpolationMode mode)
-{
-	_interpolationMode = mode;
-}
-
-void easy2d::Image::draw(const Rect& destRect, float opacity) const
-{
-	if (_bitmap)
+	auto iter = s_mImagesFromFile.find(filePath);
+	if (iter != s_mImagesFromFile.end())
 	{
-		auto mode = (_interpolationMode == InterpolationMode::Nearest) ? D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR : D2D1_BITMAP_INTERPOLATION_MODE_LINEAR;
-		// 渲染图片
-		Renderer::getRenderTarget()->DrawBitmap(
-			_bitmap,
-			reinterpret_cast<const D2D1_RECT_F&>(destRect),
-			opacity,
-			mode,
-			reinterpret_cast<const D2D1_RECT_F&>(_cropRect)
-		);
+		return iter->second;
+	}
+
+	ID2D1Bitmap* pBitmap = nullptr;
+	HRESULT hr = LoadBitmapFromFile(&pBitmap, filePath);
+
+	Image* image = nullptr;
+	if (SUCCEEDED(hr))
+	{
+		image = gcnew Image(pBitmap);
+		image->retain();
+		s_mImagesFromFile.insert(std::make_pair(filePath, image));
+	}
+
+	SafeRelease(pBitmap);
+	if (SUCCEEDED(hr))
+	{
+		return image;
+	}
+
+	E2D_ERROR(L"Load image failed! ERROR_CODE = %#X", hr);
+	return nullptr;
+}
+
+easy2d::Image* easy2d::Image::preload(const Resource& res)
+{
+	auto iter = s_mImagesFromResource.find(res);
+	if (iter != s_mImagesFromResource.end())
+	{
+		return iter->second;
+	}
+
+	ID2D1Bitmap* pBitmap = nullptr;
+	HRESULT hr = LoadBitmapFromResource(&pBitmap, res);
+
+	Image* image = nullptr;
+	if (SUCCEEDED(hr))
+	{
+		image = gcnew Image(pBitmap);
+		image->retain();
+		s_mImagesFromResource.insert(std::make_pair(res, image));
+	}
+
+	SafeRelease(pBitmap);
+	if (SUCCEEDED(hr))
+	{
+		return image;
+	}
+
+	E2D_ERROR(L"Load image failed! ERROR_CODE = %#X", hr);
+	return nullptr;
+}
+
+easy2d::Image* easy2d::Image::preload(int resNameId, const String& resType)
+{
+	return preload(Resource{ resNameId, resType });
+}
+
+namespace
+{
+}
+
+void easy2d::Image::clearCache()
+{
+	for (auto pair : s_mImagesFromFile)
+	{
+		GC::release(pair.second);
+	}
+	s_mImagesFromFile.clear();
+
+	for (auto pair : s_mImagesFromResource)
+	{
+		GC::release(pair.second);
+	}
+	s_mImagesFromResource.clear();
+}
+
+void easy2d::Image::reloadCache()
+{
+	for (auto pair : s_mImagesFromFile)
+	{
+		ID2D1Bitmap* pBitmap = nullptr;
+		HRESULT hr = LoadBitmapFromFile(&pBitmap, pair.first);
+
+		if (SUCCEEDED(hr))
+		{
+			pair.second->resetBitmap(pBitmap);
+		}
+		else
+		{
+			E2D_ERROR(L"Reload image failed! ERROR_CODE = %#X", hr);
+		}
+		SafeRelease(pBitmap);
+	}
+	for (auto pair : s_mImagesFromResource)
+	{
+		ID2D1Bitmap* pBitmap = nullptr;
+		HRESULT hr = LoadBitmapFromResource(&pBitmap, pair.first);
+
+		if (SUCCEEDED(hr))
+		{
+			pair.second->resetBitmap(pBitmap);
+		}
+		else
+		{
+			E2D_ERROR(L"Reload image failed! ERROR_CODE = %#X", hr);
+		}
+		SafeRelease(pBitmap);
 	}
 }
 
-bool easy2d::Image::preload(const String& filePath)
+namespace easy2d
 {
-	if (s_mBitmapsFromFile.find(std::hash<String>{}(filePath)) != s_mBitmapsFromFile.end())
-	{
-		return true;
-	}
 
+HRESULT LoadBitmapFromFile(ID2D1Bitmap** ppBitmap, const easy2d::String& filePath)
+{
 	String actualFilePath = Path::searchForFile(filePath);
 	if (actualFilePath.empty())
 	{
-		return false;
+		return S_FALSE;
 	}
 
 	HRESULT hr = S_OK;
 
-	IWICBitmapDecoder *pDecoder = nullptr;
-	IWICBitmapFrameDecode *pSource = nullptr;
-	IWICStream *pStream = nullptr;
-	IWICFormatConverter *pConverter = nullptr;
-	ID2D1Bitmap *pBitmap = nullptr;
-
 	// 创建解码器
+	IWICBitmapDecoder* pDecoder = nullptr;
 	hr = Renderer::getIWICImagingFactory()->CreateDecoderFromFilename(
 		actualFilePath.c_str(),
 		nullptr,
@@ -212,12 +219,14 @@ bool easy2d::Image::preload(const String& filePath)
 		&pDecoder
 	);
 
+	IWICBitmapFrameDecode* pSource = nullptr;
 	if (SUCCEEDED(hr))
 	{
 		// 创建初始化框架
 		hr = pDecoder->GetFrame(0, &pSource);
 	}
 
+	IWICFormatConverter* pConverter = nullptr;
 	if (SUCCEEDED(hr))
 	{
 		// 创建图片格式转换器
@@ -240,82 +249,26 @@ bool easy2d::Image::preload(const String& filePath)
 
 	if (SUCCEEDED(hr))
 	{
-		// 从 WIC 位图创建一个 Direct2D 位图
 		hr = Renderer::getRenderTarget()->CreateBitmapFromWicBitmap(
 			pConverter,
 			nullptr,
-			&pBitmap
-		);
-	}
-
-	if (SUCCEEDED(hr))
-	{
-		// 保存图片指针和图片的 Hash 名
-		s_mBitmapsFromFile.insert(
-			std::map<size_t, ID2D1Bitmap*>::value_type(
-				std::hash<String>{}(filePath),
-				pBitmap)
+			ppBitmap
 		);
 	}
 
 	// 释放相关资源
 	SafeRelease(pDecoder);
 	SafeRelease(pSource);
-	SafeRelease(pStream);
 	SafeRelease(pConverter);
-
-	return SUCCEEDED(hr);
+	return hr;
 }
 
-bool easy2d::Image::preload(int resNameId, const String& resType)
+HRESULT LoadBitmapFromResource(ID2D1Bitmap** ppBitmap, const easy2d::Resource& res)
 {
-	if (s_mBitmapsFromResource.find(resNameId) != s_mBitmapsFromResource.end())
-	{
-		return true;
-	}
+	auto resData = res.loadData();
+	HRESULT hr = resData.isValid() ? S_OK : E_FAIL;
 
-	HRESULT hr = S_OK;
-
-	IWICBitmapDecoder *pDecoder = nullptr;
-	IWICBitmapFrameDecode *pSource = nullptr;
-	IWICStream *pStream = nullptr;
-	IWICFormatConverter *pConverter = nullptr;
-	IWICBitmapScaler *pScaler = nullptr;
-	ID2D1Bitmap *pBitmap = nullptr;
-
-	HRSRC imageResHandle = nullptr;
-	HGLOBAL imageResDataHandle = nullptr;
-	void *pImageFile = nullptr;
-	DWORD imageFileSize = 0;
-
-	// 定位资源
-	imageResHandle = ::FindResourceW(HINST_THISCOMPONENT, MAKEINTRESOURCE(resNameId), resType.c_str());
-
-	hr = imageResHandle ? S_OK : E_FAIL;
-	if (SUCCEEDED(hr))
-	{
-		// 加载资源
-		imageResDataHandle = ::LoadResource(HINST_THISCOMPONENT, imageResHandle);
-
-		hr = imageResDataHandle ? S_OK : E_FAIL;
-	}
-
-	if (SUCCEEDED(hr))
-	{
-		// 获取文件指针，并锁定资源
-		pImageFile = ::LockResource(imageResDataHandle);
-
-		hr = pImageFile ? S_OK : E_FAIL;
-	}
-
-	if (SUCCEEDED(hr))
-	{
-		// 计算大小
-		imageFileSize = ::SizeofResource(HINST_THISCOMPONENT, imageResHandle);
-
-		hr = imageFileSize ? S_OK : E_FAIL;
-	}
-
+	IWICStream* pStream = nullptr;
 	if (SUCCEEDED(hr))
 	{
 		// 创建 WIC 流
@@ -326,11 +279,12 @@ bool easy2d::Image::preload(int resNameId, const String& resType)
 	{
 		// 初始化流
 		hr = pStream->InitializeFromMemory(
-			reinterpret_cast<BYTE*>(pImageFile),
-			imageFileSize
+			reinterpret_cast<BYTE*>(resData.buffer),
+			static_cast<DWORD>(resData.size)
 		);
 	}
 
+	IWICBitmapDecoder* pDecoder = nullptr;
 	if (SUCCEEDED(hr))
 	{
 		// 创建流的解码器
@@ -342,12 +296,14 @@ bool easy2d::Image::preload(int resNameId, const String& resType)
 		);
 	}
 
+	IWICBitmapFrameDecode* pSource = nullptr;
 	if (SUCCEEDED(hr))
 	{
 		// 创建初始化框架
 		hr = pDecoder->GetFrame(0, &pSource);
 	}
 
+	IWICFormatConverter* pConverter = nullptr;
 	if (SUCCEEDED(hr))
 	{
 		// 创建图片格式转换器
@@ -370,17 +326,11 @@ bool easy2d::Image::preload(int resNameId, const String& resType)
 
 	if (SUCCEEDED(hr))
 	{
-		// 从 WIC 位图创建一个 Direct2D 位图
 		hr = Renderer::getRenderTarget()->CreateBitmapFromWicBitmap(
 			pConverter,
 			nullptr,
-			&pBitmap
+			ppBitmap
 		);
-	}
-
-	if (SUCCEEDED(hr))
-	{
-		s_mBitmapsFromResource.insert(std::pair<int, ID2D1Bitmap*>(resNameId, pBitmap));
 	}
 
 	// 释放相关资源
@@ -388,37 +338,7 @@ bool easy2d::Image::preload(int resNameId, const String& resType)
 	SafeRelease(pSource);
 	SafeRelease(pStream);
 	SafeRelease(pConverter);
-	SafeRelease(pScaler);
-
-	return SUCCEEDED(hr);
+	return hr;
 }
 
-
-void easy2d::Image::clearCache()
-{
-	for (auto bitmap : s_mBitmapsFromFile)
-	{
-		SafeRelease(bitmap.second);
-	}
-	s_mBitmapsFromFile.clear();
-
-	for (auto bitmap : s_mBitmapsFromResource)
-	{
-		SafeRelease(bitmap.second);
-	}
-	s_mBitmapsFromResource.clear();
-}
-
-void easy2d::Image::_setBitmap(ID2D1Bitmap * bitmap)
-{
-	if (bitmap)
-	{
-		_bitmap = bitmap;
-		_cropRect.setRect(Point{}, Size{ _bitmap->GetSize().width, _bitmap->GetSize().height });
-	}
-}
-
-ID2D1Bitmap * easy2d::Image::getBitmap()
-{
-	return _bitmap;
 }

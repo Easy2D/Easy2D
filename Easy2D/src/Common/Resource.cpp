@@ -12,12 +12,6 @@ bool easy2d::Resource::Data::isValid() const
 	return buffer != nullptr && size;
 }
 
-easy2d::Resource::Resource()
-    : _id(0)
-    , _type()
-{
-}
-
 easy2d::Resource::Resource(int id, const String& type)
     : _id(id)
     , _type(type)
@@ -26,9 +20,10 @@ easy2d::Resource::Resource(int id, const String& type)
 
 easy2d::Resource::Data easy2d::Resource::loadData() const
 {
+    Data data;
     do
     {
-        if (_data.buffer && _data.size)
+        if (data.buffer && data.size)
         {
             break;
         }
@@ -61,11 +56,11 @@ easy2d::Resource::Data easy2d::Resource::loadData() const
             break;
         }
 
-        _data.buffer = static_cast<void*>(buffer);
-        _data.size = static_cast<int>(size);
+        data.buffer = static_cast<void*>(buffer);
+        data.size = static_cast<int>(size);
     } while (0);
 
-    return _data;
+    return data;
 }
 
 int easy2d::Resource::getId() const

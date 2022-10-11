@@ -94,6 +94,8 @@ namespace easy2d
 
 		operator easy2d::Size() const;
 
+		bool isEmpty() const;
+
 		// 判断两点间距离
 		static float distance(const Point&, const Point&);
 	};
@@ -124,6 +126,8 @@ namespace easy2d
 		bool operator== (const Size& size) const;
 
 		operator easy2d::Point() const;
+
+		bool isEmpty() const;
 	};
 
 
@@ -145,6 +149,8 @@ namespace easy2d
 		Rect& operator= (const Rect& other);
 
 		bool operator== (const Rect& rect) const;
+
+		bool isEmpty() const;
 
 		// 设置矩形
 		void setRect(

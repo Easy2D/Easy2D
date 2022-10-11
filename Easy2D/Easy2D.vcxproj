@@ -2,13 +2,14 @@
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\Action\Action.cpp" />
-    <ClCompile Include="src\Action\Animation.cpp" />
+    <ClCompile Include="src\Action\FrameSequence.cpp" />
     <ClCompile Include="src\Action\CallFunc.cpp" />
     <ClCompile Include="src\Action\Delay.cpp" />
     <ClCompile Include="src\Action\JumpBy.cpp" />
     <ClCompile Include="src\Action\JumpTo.cpp" />
+    <ClCompile Include="src\Action\KeyFrame.cpp" />
     <ClCompile Include="src\Action\MoveBy.cpp" />
-    <ClCompile Include="src\Action\Animate.cpp" />
+    <ClCompile Include="src\Action\Animation.cpp" />
     <ClCompile Include="src\Action\MoveTo.cpp" />
     <ClCompile Include="src\Action\Loop.cpp" />
     <ClCompile Include="src\Action\OpacityBy.cpp" />

@@ -11,6 +11,7 @@ class Loop;
 class Sequence;
 class Spawn;
 class ActionManager;
+class Sprite;
 
 
 // 基础动作
@@ -28,22 +29,22 @@ public:
 	virtual ~Action();
 
 	// 获取动作运行状态
-	virtual bool isRunning();
+	bool isRunning();
 
 	// 继续动作
-	virtual void resume();
+	void resume();
 
 	// 暂停动作
-	virtual void pause();
+	void pause();
 
 	// 停止动作
-	virtual void stop();
+	void stop();
 
 	// 获取动作名称
-	virtual String getName() const;
+	String getName() const;
 
 	// 设置动作名称
-	virtual void setName(
+	void setName(
 		const String& name
 	);
 
@@ -57,7 +58,10 @@ public:
 	virtual void reset();
 
 	// 获取该动作的执行目标
-	virtual Node * getTarget();
+	Node * getTarget() const;
+
+	// 执行动作结束时将目标节点从父节点中移除
+	void removeTargetWhenDone();
 
 protected:
 	// 初始化动作
@@ -67,13 +71,13 @@ protected:
 	virtual void _update();
 
 	// 获取动作结束状态
-	virtual bool _isDone();
+	bool _isDone();
 
 	// 重置动作时间
 	virtual void _resetTime();
 
 	// 开始动作
-	virtual void _startWithTarget(
+	void _startWithTarget(
 		Node* target
 	);
 
@@ -82,6 +86,7 @@ protected:
 	bool	_running;
 	bool	_done;
 	bool	_initialized;
+	bool	_removeTarget;
 	Node *	_target;
 	float	_last;
 };
@@ -653,43 +658,84 @@ protected:
 };
 
 
-// 帧动画
-class Animation :
+// 关键帧
+class KeyFrame :
 	public Object
 {
 public:
-	Animation();
+	KeyFrame(Image* image);
 
-	explicit Animation(
-		const std::vector<Image*>& frames	/* 关键帧数组 */
+	KeyFrame(Image* image, const Rect& cropRect);
+
+	virtual ~KeyFrame();
+
+	// 获取帧图片
+	Image* getImage() const;
+
+	// 设置帧图片
+	void setImage(Image* image);
+
+	// 获取裁剪矩形
+	Rect getCropRect() const;
+
+	// 设置裁剪矩形
+	void setCropRect(const Rect& cropRect);
+
+	// 获取宽度
+	float getWidth() const;
+
+	// 获取高度
+	float getHeight() const;
+
+	// 获取大小
+	Size getSize() const;
+
+private:
+	Image*	_image;
+	Rect	_cropRect;
+};
+
+
+// 帧序列
+class FrameSequence :
+	public Object
+{
+public:
+	FrameSequence();
+
+	explicit FrameSequence(
+		const std::vector<KeyFrame*>& frames	/* 关键帧数组 */
 	);
 
-	explicit Animation(
-		float interval						/* 帧间隔（秒） */
+	explicit FrameSequence(
+		float interval							/* 帧间隔（秒） */
 	);
 
-	explicit Animation(
-		float interval,					/* 帧间隔（秒） */
-		const std::vector<Image*>& frames	/* 关键帧数组 */
+	explicit FrameSequence(
+		float interval,							/* 帧间隔（秒） */
+		const std::vector<KeyFrame*>& frames	/* 关键帧数组 */
 	);
 
-	virtual ~Animation();
+	virtual ~FrameSequence();
 
 	// 添加关键帧
 	void add(
-		Image * frame	/* 关键帧 */
+		KeyFrame* frame							/* 关键帧 */
 	);
 
 	// 添加多个关键帧
 	void add(
-		const std::vector<Image*>& frames	/* 关键帧列表 */
+		const std::vector<KeyFrame*>& frames	/* 关键帧列表 */
 	);
+
+	// 获取关键帧
+	const std::vector<KeyFrame*>& getFrames() const;
+
+	// 获取关键帧
+	std::vector<KeyFrame*>& getFrames();
 
 	// 获取帧间隔
 	float getInterval() const;
-
-	// 获取关键帧
-	const std::vector<Image*>& getFrames() const;
 
 	// 设置每一帧的时间间隔
 	void setInterval(
@@ -697,43 +743,43 @@ public:
 	);
 
 	// 获取帧动画的拷贝对象
-	Animation * clone() const;
+	FrameSequence * clone() const;
 
 	// 获取帧动画的倒转
-	Animation * reverse() const;
+	FrameSequence * reverse() const;
 
 protected:
-	float	_interval;
-	std::vector<Image*> _frames;
+	float _interval;
+	std::vector<KeyFrame*> _frames;
 };
 
 
-// 精灵动作
-class Animate :
+// 帧动画
+class Animation :
 	public Action
 {
 public:
-	Animate();
+	Animation();
 
-	explicit Animate(
-		Animation * animation
+	explicit Animation(
+		FrameSequence * seq
 	);
 
-	virtual ~Animate();
+	virtual ~Animation();
 
 	// 获取动画
-	virtual Animation * getAnimation() const;
+	virtual FrameSequence * getFrameSequence() const;
 
 	// 设置动画
-	virtual void setAnimation(
-		Animation * animation
+	virtual void setFrameSequence(
+		FrameSequence * seq
 	);
 
 	// 获取该动作的拷贝对象
-	virtual Animate * clone() const override;
+	virtual Animation * clone() const override;
 
 	// 获取该动作的倒转
-	virtual Animate * reverse() const override;
+	virtual Animation * reverse() const override;
 
 	// 重置动作
 	virtual void reset() override;
@@ -750,7 +796,7 @@ protected:
 
 protected:
 	UINT _frameIndex;
-	Animation * _animation;
+	FrameSequence* _seq;
 };
 
 

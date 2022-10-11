@@ -1,38 +1,59 @@
 #include <easy2d/e2dnode.h>
-
+#include <easy2d/e2daction.h>
 
 easy2d::Sprite::Sprite()
 	: _image(nullptr)
+	, _cropRect()
+	, _interpolationMode(InterpolationMode::Linear)
 {
 }
 
 easy2d::Sprite::Sprite(Image * image)
-	: _image(nullptr)
+	: Sprite()
 {
-	open(image);
+	setImage(image);
 }
 
 easy2d::Sprite::Sprite(const String& filePath)
-	: _image(nullptr)
+	: Sprite()
 {
 	open(filePath);
 }
 
+easy2d::Sprite::Sprite(const Resource& res)
+	: Sprite()
+{
+	open(res);
+}
+
+easy2d::Sprite::Sprite(KeyFrame* frame)
+	: Sprite()
+{
+	setKeyFrame(frame);
+}
+
 easy2d::Sprite::Sprite(int resNameId, const String& resType)
-	: _image(nullptr)
+	: Sprite()
 {
 	open(resNameId, resType);
 }
 
 easy2d::Sprite::Sprite(const String& filePath, const Rect& cropRect)
-	: _image(nullptr)
+	: Sprite()
 {
 	open(filePath);
 	crop(cropRect);
 }
 
+easy2d::Sprite::Sprite(const Resource& res, const Rect& cropRect)
+	: Sprite()
+{
+	open(res);
+	crop(cropRect);
+}
+
 easy2d::Sprite::Sprite(int resNameId, const String& resType, const Rect& cropRect)
-	: _image(nullptr)
+	: Sprite()
 {
 	open(resNameId, resType);
 	crop(cropRect);
@@ -43,31 +64,23 @@ easy2d::Sprite::~Sprite()
 	GC::release(_image);
 }
 
-bool easy2d::Sprite::open(Image * image)
+bool easy2d::Sprite::open(const String& filePath)
 {
+	auto image = Image::preload(filePath);
 	if (image)
 	{
-		GC::release(_image);
-		_image = image;
-		_image->retain();
-
-		Node::setSize(_image->getWidth(), _image->getHeight());
+		setImage(image);
 		return true;
 	}
 	return false;
 }
 
-bool easy2d::Sprite::open(const String& filePath)
+bool easy2d::Sprite::open(const Resource& res)
 {
-	if (!_image)
+	auto image = Image::preload(res);
+	if (image)
 	{
-		_image = gcnew Image;
-		_image->retain();
-	}
-
-	if (_image->open(filePath))
-	{
-		Node::setSize(_image->getWidth(), _image->getHeight());
+		setImage(image);
 		return true;
 	}
 	return false;
@@ -75,27 +88,47 @@ bool easy2d::Sprite::open(const String& filePath)
 
 bool easy2d::Sprite::open(int resNameId, const String& resType)
 {
-	if (!_image)
-	{
-		_image = gcnew Image;
-		_image->retain();
-	}
-
-	if (_image->open(resNameId, resType))
-	{
-		Node::setSize(_image->getWidth(), _image->getHeight());
-		return true;
-	}
-	return false;
+	return open(Resource{ resNameId, resType });
 }
 
 void easy2d::Sprite::crop(const Rect& cropRect)
 {
-	_image->crop(cropRect);
+	if (cropRect.isEmpty())
+	{
+		_cropRect.setRect(Point{}, _image->getSize());
+	}
+	else
+	{
+		_cropRect.leftTop.x = min(max(cropRect.leftTop.x, 0), _image->getWidth());
+		_cropRect.leftTop.y = min(max(cropRect.leftTop.y, 0), _image->getHeight());
+		_cropRect.rightBottom.x = min(max(cropRect.rightBottom.x, 0), _image->getWidth());
+		_cropRect.rightBottom.y = min(max(cropRect.rightBottom.y, 0), _image->getHeight());
+	}
 	Node::setSize(
-		min(max(cropRect.getWidth(), 0), _image->getSourceWidth() - _image->getCropX()),
-		min(max(cropRect.getHeight(), 0), _image->getSourceHeight() - _image->getCropY())
+		min(max(cropRect.getWidth(), 0), _image->getWidth() - _cropRect.leftTop.x),
+		min(max(cropRect.getHeight(), 0), _image->getHeight() - _cropRect.leftTop.y)
 	);
+}
+
+void easy2d::Sprite::setKeyFrame(KeyFrame* frame)
+{
+	setImage(frame->getImage());
+	crop(frame->getCropRect());
+}
+
+easy2d::Rect easy2d::Sprite::getCropRect() const
+{
+	return _cropRect;
+}
+
+easy2d::InterpolationMode easy2d::Sprite::getInterpolationMode() const
+{
+	return _interpolationMode;
+}
+
+void easy2d::Sprite::setInterpolationMode(InterpolationMode mode)
+{
+	_interpolationMode = mode;
 }
 
 easy2d::Image * easy2d::Sprite::getImage() const
@@ -103,10 +136,33 @@ easy2d::Image * easy2d::Sprite::getImage() const
 	return _image;
 }
 
+void easy2d::Sprite::setImage(Image* image)
+{
+	if (_image != image)
+	{
+		GC::release(_image);
+		_image = image;
+		GC::retain(_image);
+
+		if (_image)
+		{
+			_cropRect.setRect(Point{}, _image->getSize());
+			Node::setSize(_image->getWidth(), _image->getHeight());
+		}
+	}
+}
+
 void easy2d::Sprite::onRender()
 {
 	if (_image)
 	{
-		_image->draw(getBounds(), _displayOpacity);
+		// äÖÈ¾Í¼Æ¬
+		Renderer::getRenderTarget()->DrawBitmap(
+			_image->getBitmap(),
+			reinterpret_cast<const D2D1_RECT_F&>(getBounds()),
+			_displayOpacity,
+			(_interpolationMode == InterpolationMode::Nearest) ? D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR : D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+			reinterpret_cast<const D2D1_RECT_F&>(_cropRect)
+		);
 	}
 }

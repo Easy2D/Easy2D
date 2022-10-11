@@ -43,6 +43,11 @@ easy2d::Size::operator easy2d::Point() const
 	return Point(width, height);
 }
 
+bool easy2d::Size::isEmpty() const
+{
+	return !width && !height;
+}
+
 easy2d::Size easy2d::Size::operator-() const
 {
 	return Size(-width, -height);

@@ -1,99 +1,112 @@
 #include <easy2d/e2daction.h>
+#include <easy2d/e2dnode.h>
 
-easy2d::Animation::Animation()
-	: _interval(1)
+easy2d::Animation::Animation() 
+	: _frameIndex(0)
+	, _seq(nullptr)
 {
 }
 
-easy2d::Animation::Animation(const std::vector<Image*>& frames)
-	: _interval(1)
+easy2d::Animation::Animation(FrameSequence * seq)
+	: _frameIndex(0)
+	, _seq(seq)
 {
-	this->add(frames);
-}
-
-easy2d::Animation::Animation(float interval)
-	: _interval(interval)
-{
-}
-
-easy2d::Animation::Animation(float interval, const std::vector<Image*>& frames)
-	: _interval(interval)
-{
-	this->add(frames);
+	GC::retain(_seq);
 }
 
 easy2d::Animation::~Animation()
 {
-	for (auto frame : _frames)
+	GC::release(_seq);
+}
+
+easy2d::FrameSequence * easy2d::Animation::getFrameSequence() const
+{
+	return _seq;
+}
+
+void easy2d::Animation::setFrameSequence(FrameSequence * seq)
+{
+	if (seq && seq != _seq)
 	{
-		GC::release(frame);
+		GC::release(_seq);
+		_seq = seq;
+		_seq->retain();
 	}
 }
 
-void easy2d::Animation::setInterval(float interval)
+void easy2d::Animation::_init()
 {
-	_interval = max(interval, 0);
-}
+	Action::_init();
 
-void easy2d::Animation::add(Image * frame)
-{
-	if (frame)
+	auto target = dynamic_cast<Sprite*>(_target);
+	if (target && _seq)
 	{
-		_frames.push_back(frame);
-		frame->retain();
+		target->setKeyFrame(_seq->getFrames()[_frameIndex]);
+		++_frameIndex;
 	}
 }
 
-void easy2d::Animation::add(const std::vector<Image*>& frames)
+void easy2d::Animation::_update()
 {
-	for (const auto &image : frames)
+	Action::_update();
+
+	if (!_seq)
 	{
-		this->add(image);
+		this->stop();
+		return;
+	}
+
+	while ((Time::getTotalTime() - _last) >= _seq->getInterval())
+	{
+		auto& frames = _seq->getFrames();
+		auto target = dynamic_cast<Sprite*>(_target);
+
+		if (target)
+		{
+			target->setKeyFrame(frames[_frameIndex]);
+		}
+
+		_last += _seq->getInterval();
+		++_frameIndex;
+
+		if (_frameIndex == frames.size())
+		{
+			this->stop();
+			break;
+		}
 	}
 }
 
-float easy2d::Animation::getInterval() const
+void easy2d::Animation::_resetTime()
 {
-	return _interval;
+	Action::_resetTime();
+	_last = Time::getTotalTime();
 }
 
-const std::vector<easy2d::Image*>& easy2d::Animation::getFrames() const
+void easy2d::Animation::reset()
 {
-	return _frames;
+	Action::reset();
+	_frameIndex = 0;
 }
 
 easy2d::Animation * easy2d::Animation::clone() const
 {
-	auto animation = gcnew Animation(_interval);
-	if (animation)
+	if (_seq)
 	{
-		for (auto frame : _frames)
-		{
-			animation->add(frame);
-		}
+		return gcnew Animation(_seq);
 	}
-	return animation;
+	return nullptr;
 }
 
 easy2d::Animation * easy2d::Animation::reverse() const
 {
-	auto& oldFrames = this->getFrames();
-	std::vector<Image*> frames(oldFrames.size());
-
-	if (!oldFrames.empty())
+	if (_seq)
 	{
-		for (auto iter = oldFrames.crbegin(),
-			iterCrend = oldFrames.crend();
-			iter != iterCrend;
-			++iter)
+		auto animation = _seq->reverse();
+		if (animation)
 		{
-			Image* frame = *iter;
-			if (frame)
-			{
-				frames.push_back(frame);
-			}
+			return gcnew Animation(animation);
 		}
 	}
-
-	return gcnew Animation(this->getInterval(), frames);
+	return nullptr;
 }

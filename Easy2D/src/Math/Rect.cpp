@@ -33,6 +33,11 @@ bool easy2d::Rect::operator==(const Rect & rect) const
 	return (leftTop == rect.leftTop) && (rightBottom == rect.rightBottom);
 }
 
+bool easy2d::Rect::isEmpty() const
+{
+	return leftTop.isEmpty() && rightBottom.isEmpty();
+}
+
 void easy2d::Rect::setRect(const Point& pos, const Size& size)
 {
 	this->leftTop = pos;

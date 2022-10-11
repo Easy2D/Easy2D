@@ -1,11 +1,12 @@
 #pragma once
+#include <functional>
 #include <ostream>
 #include <easy2d/e2dmacros.h>
 #include <easy2d/e2dmath.h>
 
 namespace easy2d
 {
-
+class Game;
 
 // 方向
 enum class Direction : int
@@ -187,6 +188,71 @@ public:
 };
 
 
+// 资源
+class Resource
+{
+public:
+	// 资源的二进制数据
+	struct Data
+	{
+		void* buffer;	// 资源数据
+		int size;	// 资源数据大小
+
+		Data();
+
+		bool isValid() const;
+
+		template <typename Elem>
+		friend std::basic_ostream<Elem>& operator<<(std::basic_ostream<Elem>& out, const Resource::Data& data)
+		{
+			using OStreamType = std::basic_ostream<Elem>;
+
+			typename OStreamType::iostate state = OStreamType::goodbit;
+			const typename OStreamType::sentry ok(out);
+			if (!ok)
+			{
+				state |= OStreamType::badbit;
+			}
+			else
+			{
+				if (data.buffer && data.size)
+				{
+					out.write(reinterpret_cast<const Elem*>(data.buffer), static_cast<std::streamsize>(data.size));
+				}
+				else
+				{
+					state |= OStreamType::badbit;
+				}
+			}
+			out.setstate(state);
+			return out;
+		}
+	};
+
+	Resource(
+		int id,				/* 资源 ID */
+		const String& type	/* 资源类型 */
+	);
+
+	// 加载资源的二进制数据
+	Data loadData() const;
+
+	// 获取资源 ID
+	int getId() const;
+
+	// 获取资源类型
+	String getType() const;
+
+	bool operator==(const Resource& other) const noexcept { return _id == other._id && _type == other._type; }
+
+	bool operator<(const Resource& other) const noexcept { return _id < other._id || _type < other._type; }
+
+private:
+	int		_id;
+	String	_type;
+};
+
+
 // 基础对象
 class Object
 {
@@ -216,110 +282,52 @@ private:
 class Image :
 	public Object
 {
+	friend Game;
+
 public:
-	Image();
-
-	explicit Image(
-		const String& filePath	/* 图片文件路径 */
-	);
-
-	explicit Image(
-		int resNameId,			/* 图片资源名称 */
-		const String& resType	/* 图片资源类型 */
-	);
-
-	explicit Image(
-		const String& filePath,	/* 图片文件路径 */
-		const Rect& cropRect	/* 裁剪矩形 */
-	);
-
-	explicit Image(
-		int resNameId,			/* 图片资源名称 */
-		const String& resType,	/* 图片资源类型 */
-		const Rect& cropRect	/* 裁剪矩形 */
-	);
-
-	virtual ~Image();
-
-	// 加载图片文件
-	bool open(
-		const String& filePath	/* 图片文件路径 */
-	);
-
-	// 加载图片资源
-	bool open(
-		int resNameId,			/* 图片资源名称 */
-		const String& resType	/* 图片资源类型 */
-	);
-
-	// 将图片裁剪为矩形
-	void crop(
-		const Rect& cropRect	/* 裁剪矩形 */
-	);
-
-	// 获取宽度
-	virtual float getWidth() const;
-
-	// 获取高度
-	virtual float getHeight() const;
-
-	// 获取大小
-	virtual Size getSize() const;
-
-	// 获取源图片宽度
-	virtual float getSourceWidth() const;
-
-	// 获取源图片高度
-	virtual float getSourceHeight() const;
-
-	// 获取源图片大小
-	virtual Size getSourceSize() const;
-	
-	// 获取裁剪位置 X 坐标
-	virtual float getCropX() const;
-
-	// 获取裁剪位置 Y 坐标
-	virtual float getCropY() const;
-
-	// 获取裁剪位置
-	virtual Point getCropPos() const;
-
-	// 获取像素插值方式
-    InterpolationMode getInterpolationMode() const;
-
-    // 设置像素插值方式
-    void setInterpolationMode(InterpolationMode mode);
-
-	// 在指定位置渲染图片
-	void draw(const Rect& destRect, float opacity) const;
-
-	// 获取 ID2D1Bitmap 对象
-	ID2D1Bitmap * getBitmap();
-
 	// 预加载图片文件
-	static bool preload(
+	static Image* preload(
 		const String& filePath	/* 图片文件路径 */
 	);
 
 	// 预加载图片资源
-	static bool preload(
+	static Image* preload(
+		const Resource& res		/* 图片资源 */
+	);
+
+	// 预加载图片资源
+	static Image* preload(
 		int resNameId,			/* 图片资源名称 */
 		const String& resType	/* 图片资源类型 */
 	);
+
+	virtual ~Image();
+
+	// 获取宽度
+	float getWidth() const;
+
+	// 获取高度
+	float getHeight() const;
+
+	// 获取大小
+	Size getSize() const;
+
+	// 获取 ID2D1Bitmap 对象
+	ID2D1Bitmap* getBitmap();
+
+	// 重载缓存
+	static void reloadCache();
+
+protected:
+	Image(ID2D1Bitmap* bitmap);
+
+	void resetBitmap(ID2D1Bitmap* bitmap);
 
 	// 清空缓存
 	static void clearCache();
 
 protected:
-	// 设置 Bitmap
-	void _setBitmap(
-		ID2D1Bitmap * bitmap
-	);
-
-protected:
-	Rect _cropRect;
-	ID2D1Bitmap * _bitmap;
-	InterpolationMode _interpolationMode;
+	ID2D1Bitmap* _bitmap;
 };
 
 
@@ -552,69 +560,16 @@ protected:
 	Callback _callback;
 };
 
-// 资源
-class Resource
+}
+
+namespace std
 {
-public:
-	// 资源的二进制数据
-	struct Data
+	template<>
+	struct hash<easy2d::Resource>
 	{
-		void* buffer;	// 资源数据
-		int size;	// 资源数据大小
-
-		Data();
-
-		bool isValid() const;
-
-		template <typename Elem>
-		friend std::basic_ostream<Elem>& operator<<(std::basic_ostream<Elem>& out, const Resource::Data& data)
+		size_t operator()(const easy2d::Resource& res) const noexcept
 		{
-			using OStreamType = std::basic_ostream<Elem>;
-
-			typename OStreamType::iostate state = OStreamType::goodbit;
-			const typename OStreamType::sentry ok(out);
-			if (!ok)
-			{
-				state |= OStreamType::badbit;
-			}
-			else
-			{
-				if (data.buffer && data.size)
-				{
-					out.write(reinterpret_cast<const Elem*>(data.buffer), static_cast<std::streamsize>(data.size));
-				}
-				else
-				{
-					state |= OStreamType::badbit;
-				}
-			}
-			out.setstate(state);
-			return out;
+			return static_cast<size_t>(res.getId());
 		}
 	};
-
-	Resource();
-
-	Resource(
-		int id,				/* 资源 ID */
-		const String& type	/* 资源类型 */
-	);
-
-	// 加载资源的二进制数据
-	Resource::Data loadData() const;
-
-	// 获取资源 ID
-	int getId() const;
-
-	// 获取资源类型
-	String getType() const;
-
-private:
-	int		_id;
-	String	_type;
-
-	mutable Resource::Data _data;
-};
-
-
 }

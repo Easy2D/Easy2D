@@ -45,6 +45,11 @@ easy2d::Point::operator easy2d::Size() const
 	return Size(x, y);
 }
 
+bool easy2d::Point::isEmpty() const
+{
+	return !x && !y;
+}
+
 float easy2d::Point::distance(const Point &p1, const Point &p2)
 {
 	return sqrt(
