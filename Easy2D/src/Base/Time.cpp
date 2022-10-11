@@ -36,11 +36,17 @@ unsigned int easy2d::Time::getDeltaTimeMilliseconds()
 	return static_cast<unsigned int>(duration_cast<milliseconds>(s_tNow - s_tLast).count());
 }
 
-bool easy2d::Time::__init()
+void easy2d::Time::__init(int expectedFPS)
 {
+	if (expectedFPS > 0)
+	{
+		s_tExceptedInvertal = seconds(1) / expectedFPS;
+	}
+	else
+	{
+		s_tExceptedInvertal = milliseconds(0);
+	}
 	s_tStart = s_tFixed = s_tLast = s_tNow = steady_clock::now();
-	s_tExceptedInvertal = milliseconds(15);
-	return true;
 }
 
 bool easy2d::Time::__isReady()
@@ -69,12 +75,15 @@ void easy2d::Time::__reset()
 
 void easy2d::Time::__sleep()
 {
-	// 计算挂起时长
-	int nWaitMS = 16 - static_cast<int>(duration_cast<milliseconds>(s_tNow - s_tFixed).count());
-	
-	if (nWaitMS > 1)
+	if (s_tExceptedInvertal.count())
 	{
-		// 挂起线程，释放 CPU 占用
-		std::this_thread::sleep_for(milliseconds(nWaitMS));
+		// 计算挂起时长
+		int nWaitMS = static_cast<int>(s_tExceptedInvertal.count() - duration_cast<milliseconds>(s_tNow - s_tFixed).count());
+
+		if (nWaitMS > 1)
+		{
+			// 挂起线程，释放 CPU 占用
+			std::this_thread::sleep_for(milliseconds(nWaitMS));
+		}
 	}
 }

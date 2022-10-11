@@ -489,6 +489,7 @@ STDMETHODIMP TextRenderer::QueryInterface(
 namespace
 {
 	bool s_bShowFps = false;
+	bool s_bVSyncEnabled = true;
 	float s_fDpiScaleX = 0;
 	float s_fDpiScaleY = 0;
 	IDWriteTextFormat* s_pTextFormat = nullptr;
@@ -619,56 +620,61 @@ bool easy2d::Renderer::__createDeviceIndependentResources()
 
 bool easy2d::Renderer::__createDeviceResources()
 {
+	if (s_pRenderTarget)
+		return true;
+
 	HRESULT hr = S_OK;
+	HWND hWnd = Window::getHWnd();
 
-	if (!s_pRenderTarget)
+	HDC hdc = ::GetDC(hWnd);
+	s_fDpiScaleX = (float)::GetDeviceCaps(hdc, LOGPIXELSX);
+	s_fDpiScaleY = (float)::GetDeviceCaps(hdc, LOGPIXELSY);
+
+	// 创建设备相关资源。这些资源应在 Direct3D 设备消失时重建
+	RECT rc;
+	GetClientRect(hWnd, &rc);
+
+	D2D1_SIZE_U size = D2D1::SizeU(
+		rc.right - rc.left,
+		rc.bottom - rc.top
+	);
+
+	// 创建一个 Direct2D 渲染目标
+	hr = s_pDirect2dFactory->CreateHwndRenderTarget(
+		D2D1::RenderTargetProperties(),
+		D2D1::HwndRenderTargetProperties(
+			hWnd,
+			size,
+			s_bVSyncEnabled ? D2D1_PRESENT_OPTIONS_NONE  : D2D1_PRESENT_OPTIONS_IMMEDIATELY
+		),
+		&s_pRenderTarget
+	);
+	E2D_ERROR_IF_FAILED(hr, L"Create ID2D1HwndRenderTarget failed");
+
+	if (SUCCEEDED(hr))
 	{
-		HWND hWnd = Window::getHWnd();
-
-		HDC hdc = ::GetDC(hWnd);
-		s_fDpiScaleX = (float)::GetDeviceCaps(hdc, LOGPIXELSX);
-		s_fDpiScaleY = (float)::GetDeviceCaps(hdc, LOGPIXELSY);
-
-		// 创建设备相关资源。这些资源应在 Direct3D 设备消失时重建
-		RECT rc;
-		GetClientRect(hWnd, &rc);
-
-		D2D1_SIZE_U size = D2D1::SizeU(
-			rc.right - rc.left,
-			rc.bottom - rc.top
+		// 创建画刷
+		hr = s_pRenderTarget->CreateSolidColorBrush(
+			D2D1::ColorF(D2D1::ColorF::White),
+			&s_pSolidBrush
 		);
-
-		// 创建一个 Direct2D 渲染目标
-		hr = s_pDirect2dFactory->CreateHwndRenderTarget(
-			D2D1::RenderTargetProperties(),
-			D2D1::HwndRenderTargetProperties(
-				hWnd,
-				size),
-			&s_pRenderTarget
-		);
-		E2D_ERROR_IF_FAILED(hr, L"Create ID2D1HwndRenderTarget failed");
-
-		if (SUCCEEDED(hr))
-		{
-			// 创建画刷
-			hr = s_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(D2D1::ColorF::White),
-				&s_pSolidBrush
-			);
-			E2D_ERROR_IF_FAILED(hr, L"Create ID2D1SolidColorBrush failed");
-		}
-
-		if (SUCCEEDED(hr))
-		{
-			// 创建自定义的文字渲染器
-			s_pTextRenderer = TextRenderer::Create(
-				s_pDirect2dFactory,
-				s_pRenderTarget,
-				s_pSolidBrush
-			);
-		}
+		E2D_ERROR_IF_FAILED(hr, L"Create ID2D1SolidColorBrush failed");
 	}
 
+	if (SUCCEEDED(hr))
+	{
+		// 创建自定义的文字渲染器
+		s_pTextRenderer = TextRenderer::Create(
+			s_pDirect2dFactory,
+			s_pRenderTarget,
+			s_pSolidBrush
+		);
+	}
+
+	if (SUCCEEDED(hr))
+	{
+		Image::reloadCache();
+	}
 	return SUCCEEDED(hr);
 }
 
@@ -677,9 +683,6 @@ void easy2d::Renderer::__discardDeviceResources()
 	SafeRelease(s_pRenderTarget);
 	SafeRelease(s_pSolidBrush);
 	SafeRelease(s_pTextRenderer);
-	SafeRelease(s_pMiterStrokeStyle);
-	SafeRelease(s_pBevelStrokeStyle);
-	SafeRelease(s_pRoundStrokeStyle);
 }
 
 void easy2d::Renderer::__discardResources()
@@ -689,6 +692,9 @@ void easy2d::Renderer::__discardResources()
 	SafeRelease(s_pDirect2dFactory);
 	SafeRelease(s_pIWICFactory);
 	SafeRelease(s_pDWriteFactory);
+	SafeRelease(s_pMiterStrokeStyle);
+	SafeRelease(s_pBevelStrokeStyle);
+	SafeRelease(s_pRoundStrokeStyle);
 }
 
 void easy2d::Renderer::__render()
@@ -785,6 +791,17 @@ void easy2d::Renderer::setBackgroundColor(Color color)
 void easy2d::Renderer::showFps(bool show)
 {
 	s_bShowFps = show;
+}
+
+void easy2d::Renderer::setVSync(bool enabled)
+{
+	s_bVSyncEnabled = enabled;
+	__discardDeviceResources();
+}
+
+bool easy2d::Renderer::isVSyncEnabled()
+{
+	return s_bVSyncEnabled;
 }
 
 float easy2d::Renderer::getDpiScaleX()

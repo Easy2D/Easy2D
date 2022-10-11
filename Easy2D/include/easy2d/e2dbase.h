@@ -22,7 +22,9 @@ public:
 	);
 
 	// 启动游戏
-	static void start();
+	static void start(
+		int fpsLimit = 0					/* FPS 限制，0为不限制 */
+	);
 
 	// 暂停游戏
 	static void pause();
@@ -165,7 +167,7 @@ public:
 
 private:
 	// 初始化计时操作
-	static bool __init();
+	static void __init(int expectedFPS);
 
 	// 是否达到更新时间
 	static bool __isReady();
@@ -271,6 +273,14 @@ public:
 	static void showFps(
 		bool show = true
 	);
+
+	// 设置垂直同步（会重载资源，可能造成卡顿）
+	static void setVSync(
+		bool enabled
+	);
+
+	// 是否开启了垂直同步
+	static bool isVSyncEnabled();
 
 	// 获取系统 DPI 缩放
 	static float getDpiScaleX();

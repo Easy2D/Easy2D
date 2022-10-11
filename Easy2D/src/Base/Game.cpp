@@ -98,7 +98,7 @@ bool easy2d::Game::init(const String& title, int width, int height, const String
 	return s_bInitialized;
 }
 
-void easy2d::Game::start()
+void easy2d::Game::start(int fpsLimit)
 {
 	if (!s_bInitialized)
 	{
@@ -112,10 +112,8 @@ void easy2d::Game::start()
 	::ShowWindow(Window::getHWnd(), SW_SHOWNORMAL);
 	// 刷新窗口内容
 	::UpdateWindow(Window::getHWnd());
-	// 处理窗口消息
-	Window::__poll();
 	// 初始化计时
-	Time::__init();
+	Time::__init(fpsLimit);
 
 	s_bEndGame = false;
 
