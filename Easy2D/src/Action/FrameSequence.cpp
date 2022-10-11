@@ -44,9 +44,22 @@ void easy2d::FrameSequence::add(KeyFrame* frame)
 	}
 }
 
+void easy2d::FrameSequence::add(Image* image)
+{
+	add(gcnew KeyFrame(image));
+}
+
 void easy2d::FrameSequence::add(const std::vector<KeyFrame*>& frames)
 {
 	for (const auto &image : frames)
+	{
+		this->add(image);
+	}
+}
+
+void easy2d::FrameSequence::add(const std::vector<Image*>& frames)
+{
+	for (const auto& image : frames)
 	{
 		this->add(image);
 	}

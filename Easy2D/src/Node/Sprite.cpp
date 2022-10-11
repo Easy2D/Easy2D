@@ -93,18 +93,11 @@ bool easy2d::Sprite::open(int resNameId, const String& resType)
 
 void easy2d::Sprite::crop(const Rect& cropRect)
 {
-	if (cropRect.isEmpty())
-	{
-		_cropRect.setRect(Point{}, _image->getSize());
-	}
-	else
-	{
-		_cropRect.leftTop.x = min(max(cropRect.leftTop.x, 0), _image->getWidth());
-		_cropRect.leftTop.y = min(max(cropRect.leftTop.y, 0), _image->getHeight());
-		_cropRect.rightBottom.x = min(max(cropRect.rightBottom.x, 0), _image->getWidth());
-		_cropRect.rightBottom.y = min(max(cropRect.rightBottom.y, 0), _image->getHeight());
-	}
-	Node::setSize(
+	_cropRect.leftTop.x = min(max(cropRect.leftTop.x, 0), _image->getWidth());
+	_cropRect.leftTop.y = min(max(cropRect.leftTop.y, 0), _image->getHeight());
+	_cropRect.rightBottom.x = min(max(cropRect.rightBottom.x, 0), _image->getWidth());
+	_cropRect.rightBottom.y = min(max(cropRect.rightBottom.y, 0), _image->getHeight());
+	setSize(
 		min(max(cropRect.getWidth(), 0), _image->getWidth() - _cropRect.leftTop.x),
 		min(max(cropRect.getHeight(), 0), _image->getHeight() - _cropRect.leftTop.y)
 	);
@@ -146,8 +139,7 @@ void easy2d::Sprite::setImage(Image* image)
 
 		if (_image)
 		{
-			_cropRect.setRect(Point{}, _image->getSize());
-			Node::setSize(_image->getWidth(), _image->getHeight());
+			setSize(_image->getWidth(), _image->getHeight());
 		}
 	}
 }
@@ -156,13 +148,19 @@ void easy2d::Sprite::onRender()
 {
 	if (_image)
 	{
+		Rect* srcRect = nullptr;
+		if (!_cropRect.isEmpty())
+		{
+			srcRect = &_cropRect;
+		}
+
 		// äÖÈ¾Í¼Æ¬
 		Renderer::getRenderTarget()->DrawBitmap(
 			_image->getBitmap(),
 			reinterpret_cast<const D2D1_RECT_F&>(getBounds()),
 			_displayOpacity,
 			(_interpolationMode == InterpolationMode::Nearest) ? D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR : D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
-			reinterpret_cast<const D2D1_RECT_F&>(_cropRect)
+			reinterpret_cast<const D2D1_RECT_F*>(srcRect)
 		);
 	}
 }

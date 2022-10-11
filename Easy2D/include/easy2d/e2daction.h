@@ -723,9 +723,19 @@ public:
 		KeyFrame* frame							/* 关键帧 */
 	);
 
+	// 添加关键帧
+	void add(
+		Image* image							/* 关键帧 */
+	);
+
 	// 添加多个关键帧
 	void add(
 		const std::vector<KeyFrame*>& frames	/* 关键帧列表 */
+	);
+
+	// 添加多个关键帧
+	void add(
+		const std::vector<Image*>& frames		/* 关键帧列表 */
 	);
 
 	// 获取关键帧
