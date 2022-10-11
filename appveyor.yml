@@ -22,6 +22,11 @@ environment:
     flag_to_deploy: false
     appveyor_api_token:
       secure: UJFCbRNHMOqQg3e3Kv/ZnaIqqwXAt+5HDldetaZsZ5E=
+    OSS_ENDPOINT: oss-cn-hangzhou.aliyuncs.com
+    OSS_ACCESS_KEY_ID:
+      secure: afjmag78Qn/7T4bBflh/h8x1VISALmN9LdOY7yPsvJQ=
+    OSS_ACCESS_KEY_SECRET:
+      secure: Au2pBgQlxDJeujGzedsqdB/ItX0yusCbIxJK0KPZjjI=
 
 matrix:
   fast_finish: true # set this flag to immediately finish build once one of the jobs fails

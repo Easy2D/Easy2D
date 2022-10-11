@@ -1,5 +1,6 @@
 . .\scripts\appveyor\appveyor_get_build.ps1
 . .\scripts\appveyor\appveyor_get_artifacts.ps1
+. .\scripts\appveyor\ossutil.ps1
 
 # Ignore commits without APPVEYOR_API_TOKEN envrionment variable
 if (-not ($env:APPVEYOR_API_TOKEN)) { return }
@@ -88,22 +89,29 @@ cmd /c copy /b scripts\7z\7zS2.sfx + scripts\7z\7z-config.txt + install.7z insta
 7z.exe a -t7z -mmt -mx9 install-win7.7z .\published-win7\*
 cmd /c copy /b scripts\7z\7zS2.sfx + scripts\7z\7z-config-win7.txt + install-win7.7z installer-win7.exe
 
+# Initialize OSS util
+OSS-Init -Endpoint $env:OSS_ENDPOINT -AccessKeyId $env:OSS_ACCESS_KEY_ID -AccessKeySecret $env:OSS_ACCESS_KEY_SECRET
+
 # Upload artifacts
 $artifactVersion = "easy2d-v$($env:APPVEYOR_BUILD_VERSION)"
 $artifactName = $artifactVersion + '.7z'
 Rename-Item 'install.7z' -NewName $artifactName
+OSS-UploadFile -File $artifactName -Target "oss://easy2d-bucket/release/"
 Push-AppveyorArtifact $artifactName -FileName $artifactName
 
 $artifactName = $artifactVersion + '-installer.exe'
 Rename-Item 'installer.exe' -NewName $artifactName
+OSS-UploadFile -File $artifactName -Target "oss://easy2d-bucket/release/"
 Push-AppveyorArtifact $artifactName -FileName $artifactName
 
 $artifactName = $artifactVersion + '-win7.7z'
 Rename-Item 'install-win7.7z' -NewName $artifactName
+OSS-UploadFile -File $artifactName -Target "oss://easy2d-bucket/release/"
 Push-AppveyorArtifact $artifactName -FileName $artifactName
 
 $artifactName = $artifactVersion + '-win7-installer.exe'
 Rename-Item 'installer-win7.exe' -NewName $artifactName
+OSS-UploadFile -File $artifactName -Target "oss://easy2d-bucket/release/"
 Push-AppveyorArtifact $artifactName -FileName $artifactName
 
 # Delete redundant artifacts
