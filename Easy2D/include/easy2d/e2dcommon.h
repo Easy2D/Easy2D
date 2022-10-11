@@ -243,9 +243,9 @@ public:
 	// 获取资源类型
 	String getType() const;
 
-	bool operator==(const Resource& other) const noexcept { return _id == other._id && _type == other._type; }
+	bool operator==(const Resource& other) const { return _id == other._id && _type == other._type; }
 
-	bool operator<(const Resource& other) const noexcept { return _id < other._id || _type < other._type; }
+	bool operator<(const Resource& other) const { return _id < other._id || _type < other._type; }
 
 private:
 	int		_id;
@@ -567,7 +567,7 @@ namespace std
 	template<>
 	struct hash<easy2d::Resource>
 	{
-		size_t operator()(const easy2d::Resource& res) const noexcept
+		size_t operator()(const easy2d::Resource& res) const
 		{
 			return static_cast<size_t>(res.getId());
 		}
