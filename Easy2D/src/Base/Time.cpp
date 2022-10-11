@@ -13,7 +13,7 @@ static steady_clock::time_point s_tLast;
 // 固定的刷新时间
 static steady_clock::time_point s_tFixed;
 // 每一帧间隔
-static milliseconds s_tExceptedInvertal;
+static nanoseconds s_tExceptedInvertal;
 
 
 float easy2d::Time::getTotalTime()
@@ -40,18 +40,18 @@ void easy2d::Time::__init(int expectedFPS)
 {
 	if (expectedFPS > 0)
 	{
-		s_tExceptedInvertal = seconds(1) / expectedFPS;
+		s_tExceptedInvertal = duration_cast<nanoseconds>(seconds(1)) / expectedFPS;
 	}
 	else
 	{
-		s_tExceptedInvertal = milliseconds(0);
+		s_tExceptedInvertal = nanoseconds(0);
 	}
 	s_tStart = s_tFixed = s_tLast = s_tNow = steady_clock::now();
 }
 
 bool easy2d::Time::__isReady()
 {
-	return s_tExceptedInvertal < duration_cast<milliseconds>(s_tNow - s_tFixed);
+	return s_tExceptedInvertal < (s_tNow - s_tFixed);
 }
 
 void easy2d::Time::__updateNow()
@@ -78,12 +78,11 @@ void easy2d::Time::__sleep()
 	if (s_tExceptedInvertal.count())
 	{
 		// 计算挂起时长
-		int nWaitMS = static_cast<int>(s_tExceptedInvertal.count() - duration_cast<milliseconds>(s_tNow - s_tFixed).count());
-
-		if (nWaitMS > 1)
+		auto wait = duration_cast<nanoseconds>(s_tExceptedInvertal - (s_tNow - s_tFixed));
+		if (wait > milliseconds(1))
 		{
 			// 挂起线程，释放 CPU 占用
-			std::this_thread::sleep_for(milliseconds(nWaitMS));
+			std::this_thread::sleep_for(wait);
 		}
 	}
 }
