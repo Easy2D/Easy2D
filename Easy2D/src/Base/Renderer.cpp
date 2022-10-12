@@ -839,20 +839,19 @@ IDWriteFactory * easy2d::Renderer::getIDWriteFactory()
 	return s_pDWriteFactory;
 }
 
-void easy2d::Renderer::SetTextStyle(const Color& fillColor, bool hasOutline, const Color& outlineColor, float outlineWidth, LineJoin outlineJoin)
+void easy2d::Renderer::DrawTextLayout(TextLayout* layout, const DrawingStyle& style)
 {
-	s_pTextRenderer->SetTextStyle(
-		reinterpret_cast<const D2D1_COLOR_F&>(fillColor),
-		hasOutline,
-		reinterpret_cast<const D2D1_COLOR_F&>(outlineColor),
-		outlineWidth,
-		D2D1_LINE_JOIN(outlineJoin)
-	);
-}
-
-void easy2d::Renderer::DrawTextLayout(IDWriteTextLayout* layout)
-{
-	layout->Draw(nullptr, s_pTextRenderer, 0, 0);
+	if (layout->_textLayout)
+	{
+		s_pTextRenderer->SetTextStyle(
+			reinterpret_cast<const D2D1_COLOR_F&>(style.fillColor),
+			style.mode == DrawingStyle::Mode::Round || style.mode == DrawingStyle::Mode::Fill,
+			reinterpret_cast<const D2D1_COLOR_F&>(style.strokeColor),
+			style.strokeWidth,
+			D2D1_LINE_JOIN(style.lineJoin)
+		);
+		layout->_textLayout->Draw(nullptr, s_pTextRenderer, 0, 0);
+	}
 }
 
 ID2D1StrokeStyle * easy2d::Renderer::getMiterID2D1StrokeStyle()

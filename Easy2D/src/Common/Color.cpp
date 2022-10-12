@@ -8,6 +8,8 @@ static const UINT sc_redMask = 0xff << sc_redShift;
 static const UINT sc_greenMask = 0xff << sc_greenShift;
 static const UINT sc_blueMask = 0xff << sc_blueShift;
 
+const easy2d::Color easy2d::Color::Transparent = easy2d::Color(0, 0, 0, 0.f);
+
 easy2d::Color::Color()
 	: r(0)
 	, g(0)

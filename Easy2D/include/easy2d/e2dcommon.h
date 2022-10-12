@@ -21,6 +21,7 @@ enum class Direction : int
 // 线条相交样式
 enum class LineJoin : int
 {
+	None  = -1,
 	Miter = 0,	/* 斜切 */
 	Bevel = 1,	/* 斜角 */
 	Round = 2	/* 圆角 */
@@ -144,6 +145,9 @@ public:
 		YellowGreen = 0x9ACD32
 	};
 
+	// 透明色
+	static const Color Transparent;
+
 public:
 	float r;
 	float g;
@@ -152,39 +156,36 @@ public:
 };
 
 
-// 字体
-class Font
+// 绘图样式
+struct DrawingStyle
 {
-public:
-	String	family;			// 字体族
-	float	size;			// 字号
-	UINT	weight;			// 粗细值
-	bool	italic;			// 斜体
-
-public:
-	// 字体粗细值
-	enum Weight : UINT
+	// 绘图模式
+	enum class Mode
 	{
-		Thin = 100,
-		ExtraLight = 200,
-		Light = 300,
-		Normal = 400,
-		Medium = 500,
-		Bold = 700,
-		ExtraBold = 800,
-		Black = 900,
-		ExtraBlack = 950
+		Solid,		/* 填充 */
+		Round,		/* 轮廓 */
+		Fill,		/* 轮廓 + 填充 */
 	};
 
-public:
-	Font();
-
-	explicit Font(
-		const String& family,
-		float size = 22,
-		UINT weight = Font::Weight::Normal,
-		bool italic = false
+	// 绘图样式
+	DrawingStyle(
+		Mode mode = Mode::Fill,
+		Color fillColor = Color::White,
+		Color strokeColor = Color::Transparent,
+		float strokeWidth = 2.0f,
+		LineJoin lineJoin = LineJoin::None
 	);
+
+	// 纯色无描边样式
+	DrawingStyle(
+		Color fillColor
+	);
+
+	Mode	 mode;			// 绘图模式
+	Color	 fillColor;		// 填充色
+	Color	 strokeColor;	// 描边颜色
+	float	 strokeWidth;	// 描边宽度
+	LineJoin lineJoin;		// 线条相交样式
 };
 
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <easy2d/e2dnode.h>
+#include <easy2d/e2dbase.h>
 
 namespace easy2d
 {
@@ -156,119 +156,6 @@ protected:
 protected:
 	Shape* _shape = nullptr;
 	ID2D1GeometrySink* _sink = nullptr;
-};
-
-
-// 形状
-class ShapeNode :
-	public Node
-{
-public:
-	// 形状样式
-	enum class Style
-	{
-		Solid,		/* 填充 */
-		Round,		/* 轮廓 */
-		Fill,		/* 轮廓 + 填充 */
-	};
-
-public:
-	// 创建直线
-	static ShapeNode* createLine(Point begin, Point end);
-
-	// 创建矩形
-	static ShapeNode* createRect(
-		const Size& size		// 矩形宽高
-	);
-
-	// 创建圆角矩形
-	static ShapeNode* createRoundedRect(
-		const Size& size,		// 矩形宽高
-		const Vector2& radius	// 矩形圆角半径
-	);
-
-	// 创建圆形
-	static ShapeNode* createCircle(
-		float radius			// 半径
-	);
-
-	// 创建椭圆形
-	static ShapeNode* createEllipse(
-		const Vector2& radius	// 半径
-	);
-
-	// 创建多边形
-	static ShapeNode* createPolygon(
-		std::initializer_list<Point> vertices	// 多边形顶点
-	);
-
-	// 创建多边形
-	static ShapeNode* createPolygon(
-		const Point* vertices,
-		int count
-	);
-
-	ShapeNode(Shape* shape = nullptr);
-
-	virtual ~ShapeNode();
-
-	// 获取形状
-	Shape* getShape() const;
-
-	// 设置形状
-	void setShape(Shape* shape);
-
-	// 获取样式
-	Style getStyle() const;
-
-	// 获取填充颜色
-	Color getFillColor() const;
-
-	// 获取线条颜色
-	Color getStrokeColor() const;
-
-	// 获取线条宽度
-	float getStrokeWidth() const;
-
-	// 设置填充颜色
-	void setFillColor(
-		Color fillColor
-	);
-
-	// 设置线条颜色
-	void setStrokeColor(
-		Color strokeColor
-	);
-
-	// 设置线条宽度
-	void setStrokeWidth(
-		float strokeWidth
-	);
-
-	// 设置样式
-	void setStyle(Style style);
-
-	// 设置线条相交样式
-	void setLineJoin(
-		LineJoin lineJoin
-	);
-
-	virtual Rect getBounds() const override;
-
-	virtual Rect getBoundingBox() const override;
-
-	virtual bool containsPoint(Point const& point) const override;
-
-	virtual void onRender() override;
-
-protected:
-	Style	_style;
-	float	_strokeWidth;
-	Color	_strokeColor;
-	Color	_fillColor;
-	Rect	_bounds;
-	Shape* _shape;
-	ID2D1StrokeStyle* _strokeStyle;
 };
 
 }

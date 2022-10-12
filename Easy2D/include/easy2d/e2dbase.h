@@ -1,6 +1,7 @@
 #pragma once
 #include <easy2d/e2dmacros.h>
 #include <easy2d/e2dcommon.h>
+#include <easy2d/e2dtext.h>
 
 
 // Base Classes
@@ -303,18 +304,10 @@ public:
 	// 获取 IDWriteFactory 对象
 	static IDWriteFactory * getIDWriteFactory();
 
-	// 设置文字渲染样式
-	static void SetTextStyle(
-		const Color& fillColor,
-		bool hasOutline,
-		const Color& outlineColor,
-		float outlineWidth,
-		LineJoin outlineJoin
-	);
-
 	// 渲染文字布局
 	static void DrawTextLayout(
-		IDWriteTextLayout* layout
+		TextLayout* layout,
+		const DrawingStyle& style
 	);
 
 	// 获取 Miter 样式的 ID2D1StrokeStyle

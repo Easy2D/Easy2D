@@ -1,5 +1,7 @@
 #pragma once
 #include <easy2d/e2dbase.h>
+#include <easy2d/e2dshape.h>
+#include <easy2d/e2dtext.h>
 
 namespace easy2d 
 {
@@ -609,63 +611,28 @@ protected:
 };
 
 
-// 文本
-class Text :
-	public Node
+// 文本节点
+class Text
+	: public Node
 {
-public:
-	// 文本对齐方式
-	enum class Align
-	{
-		Left,		/* 左对齐 */
-		Right,		/* 右对齐 */
-		Center		/* 居中对齐 */
-	};
-
-	// 文本样式
-	class Style
-	{
-	public:
-		Color		color;				// 颜色
-		Align		alignment;			// 对齐方式
-		bool		wrapping;			// 打开自动换行
-		float		wrappingWidth;		// 自动换行宽度
-		float		lineSpacing;		// 行间距
-		bool		hasUnderline;		// 下划线
-		bool		hasStrikethrough;	// 删除线
-		bool		hasOutline;			// 显示描边
-		Color		outlineColor;		// 描边颜色
-		float		outlineWidth;		// 描边线宽
-		LineJoin	outlineJoin;		// 描边线相交样式
-
-	public:
-		Style();
-
-		Style(
-			Color color,
-			Align alignment = Align::Left,
-			bool wrapping = false,
-			float wrappingWidth = 0.0,
-			float lineSpacing = 0.0,
-			bool hasUnderline = false,
-			bool hasStrikethrough = false,
-			bool hasOutline = true,
-			Color outlineColor = Color(Color::Black, 0.5),
-			float outlineWidth = 1.0,
-			LineJoin outlineJoin = LineJoin::Round
-		);
-	};
-
 public:
 	Text();
 
 	explicit Text(
-		const String& text,						/* 文字内容 */
-		const Font& font = Font(),				/* 字体 */
-		const Style& style = Style()			/* 文本样式 */
+		const String& text,									/* 文字内容 */
+		const TextStyle& textStyle = TextStyle(),			/* 文本样式 */
+		const DrawingStyle& drawingStyle = DrawingStyle()	/* 绘图样式 */
+	);
+
+	explicit Text(
+		TextLayout* layout,									/* 文字布局 */
+		const DrawingStyle& drawingStyle = DrawingStyle()	/* 绘图样式 */
 	);
 
 	virtual ~Text();
+
+	// 获取文本布局
+	TextLayout* getLayout() const;
 
 	// 获取文本
 	String getText() const;
@@ -674,43 +641,18 @@ public:
 	Font getFont() const;
 
 	// 获取文本样式
-	Style getStyle() const;
+	TextStyle getTextStyle() const;
 
-	// 获取字体族
-	String getFontFamily() const;
-
-	// 获取当前字号
-	float getFontSize() const;
-
-	// 获取当前字体粗细值
-	UINT getFontWeight() const;
-
-	// 获取文字颜色
-	Color getColor() const;
-
-	// 获取描边颜色
-	Color getOutlineColor() const;
-
-	// 获取描边线宽
-	float getOutlineWidth() const;
-
-	// 获取描边线相交样式
-	LineJoin getOutlineJoin() const;
+	// 获取渲染样式
+	DrawingStyle getDrawingStyle() const;
 
 	// 获取文本显示行数
 	int getLineCount() const;
 
-	// 是否是斜体
-	bool isItalic() const;
-
-	// 是否显示删除线
-	bool hasStrikethrough() const;
-
-	// 是否显示下划线
-	bool hasUnderline() const;
-
-	// 是否显示描边
-	bool hasOutline() const;
+	// 设置文本布局
+	void setTextLayout(
+		TextLayout* layout
+	);
 
 	// 设置文本
 	void setText(
@@ -718,8 +660,13 @@ public:
 	);
 
 	// 设置文本样式
-	void setStyle(
-		const Style& style
+	void setTextStyle(
+		const TextStyle& style
+	);
+
+	// 设置渲染样式
+	void setDrawingStyle(
+		DrawingStyle style
 	);
 
 	// 设置字体
@@ -732,32 +679,27 @@ public:
 		const String& family
 	);
 
-	// 设置字号（默认值为 22）
+	// 设置字号
 	void setFontSize(
 		float size
 	);
 
-	// 设置字体粗细值（默认值为 Text::Font::Weight::Normal）
+	// 设置字体粗细值
 	void setFontWeight(
 		UINT weight
 	);
 
-	// 设置文字颜色（默认值为 Color::WHITE）
-	void setColor(
-		Color color
-	);
-
-	// 设置文字斜体（默认值为 false）
+	// 设置文字斜体
 	void setItalic(
-		bool value
+		bool italic
 	);
 
-	// 打开或关闭文本自动换行（默认为关闭）
+	// 打开或关闭文本自动换行
 	void setWrapping(
 		bool wrapping
 	);
 
-	// 设置文本自动换行的宽度（默认为 0）
+	// 设置文本自动换行的宽度
 	void setWrappingWidth(
 		float wrappingWidth
 	);
@@ -767,60 +709,50 @@ public:
 		float lineSpacing
 	);
 
-	// 设置对齐方式（默认为 Align::Left）
+	// 设置对齐方式
 	void setAlignment(
-		Align align
+		TextAlign align
 	);
 
-	// 设置下划线（默认值为 false）
+	// 设置下划线
 	void setUnderline(
 		bool hasUnderline
 	);
 
-	// 设置删除线（默认值为 false）
+	// 设置删除线
 	void setStrikethrough(
 		bool hasStrikethrough
 	);
 
-	// 设置是否显示描边
-	void setOutline(
-		bool hasOutline
+	// 设置文字填充颜色
+	void setFillColor(
+		Color color
 	);
 
 	// 设置描边颜色
-	void setOutlineColor(
-		Color outlineColor
+	void setStrokeColor(
+		Color strokeColor
 	);
 
 	// 设置描边线宽
-	void setOutlineWidth(
-		float outlineWidth
+	void setStrokeWidth(
+		float strokeWidth
 	);
 
 	// 设置描边线相交样式
-	void setOutlineJoin(
-		LineJoin outlineJoin
+	void setLineJoin(
+		LineJoin lineJoin
 	);
 
 	// 渲染文字
 	virtual void onRender() override;
 
 protected:
-	// 重新排版文字
-	void _reset();
-
-	// 创建文字格式化
-	void _createFormat();
-
-	// 创建文字布局
-	void _createLayout();
+	void updateLayout();
 
 protected:
-	String	_text;
-	Font	_font;
-	Style	_style;
-	IDWriteTextFormat * _textFormat;
-	IDWriteTextLayout * _textLayout;
+	TextLayout*	_layout;
+	DrawingStyle _style;
 };
 
 
@@ -1073,6 +1005,125 @@ public:
 protected:
 	bool _enable;
 	std::vector<Button*> _buttons;
+};
+
+
+// 形状节点
+class ShapeNode :
+	public Node
+{
+public:
+	// 创建直线节点
+	static ShapeNode* createLine(
+		Point begin,
+		Point end,
+		DrawingStyle style = DrawingStyle{}
+	);
+
+	// 创建矩形节点
+	static ShapeNode* createRect(
+		const Size& size,		// 矩形宽高
+		DrawingStyle style = DrawingStyle{}
+	);
+
+	// 创建圆角矩形节点
+	static ShapeNode* createRoundedRect(
+		const Size& size,		// 矩形宽高
+		const Vector2& radius,	// 矩形圆角半径
+		DrawingStyle style = DrawingStyle{}
+	);
+
+	// 创建圆形节点
+	static ShapeNode* createCircle(
+		float radius,			// 半径
+		DrawingStyle style = DrawingStyle{}
+	);
+
+	// 创建椭圆形节点
+	static ShapeNode* createEllipse(
+		const Vector2& radius,	// 半径
+		DrawingStyle style = DrawingStyle{}
+	);
+
+	// 创建多边形节点
+	static ShapeNode* createPolygon(
+		std::initializer_list<Point> vertices,	// 多边形顶点
+		DrawingStyle style = DrawingStyle{}
+	);
+
+	// 创建多边形节点
+	static ShapeNode* createPolygon(
+		const Point* vertices,
+		int count,
+		DrawingStyle style = DrawingStyle{}
+	);
+
+	ShapeNode(
+		Shape* shape = nullptr,
+		DrawingStyle style = DrawingStyle{}
+	);
+
+	virtual ~ShapeNode();
+
+	// 获取形状
+	Shape* getShape() const;
+
+	// 设置形状
+	void setShape(Shape* shape);
+
+	// 获取填充颜色
+	Color getFillColor() const;
+
+	// 设置填充颜色
+	void setFillColor(
+		Color fillColor
+	);
+
+	// 获取线条颜色
+	Color getStrokeColor() const;
+
+	// 设置线条颜色
+	void setStrokeColor(
+		Color strokeColor
+	);
+
+	// 获取线条宽度
+	float getStrokeWidth() const;
+
+	// 设置线条宽度
+	void setStrokeWidth(
+		float strokeWidth
+	);
+
+	// 设置线条相交样式
+	void setLineJoin(
+		LineJoin lineJoin
+	);
+
+	// 获取绘图模式
+	DrawingStyle::Mode getDrawingMode() const;
+
+	// 设置绘图模式
+	void setDrawingMode(DrawingStyle::Mode mode);
+
+	// 获取绘图样式
+	DrawingStyle getDrawingStyle() const;
+
+	// 设置绘图样式
+	void setDrawingStyle(DrawingStyle style);
+
+	virtual Rect getBounds() const override;
+
+	virtual Rect getBoundingBox() const override;
+
+	virtual bool containsPoint(Point const& point) const override;
+
+	virtual void onRender() override;
+
+protected:
+	Shape*			_shape;
+	Rect			_bounds;
+	DrawingStyle	_style;
 };
 
 }
