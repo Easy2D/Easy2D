@@ -237,6 +237,9 @@
     <ClCompile Include="src\Common\DrawingStyle.cpp">
       <Filter>src\Common</Filter>
     </ClCompile>
+    <ClCompile Include="src\Node\Canvas.cpp">
+      <Filter>src\Node</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\easy2d\e2daction.h">

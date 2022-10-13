@@ -1126,4 +1126,177 @@ protected:
 	DrawingStyle	_style;
 };
 
+
+class Canvas;
+
+// 画布画笔
+class CanvasBrush
+	: public Node
+{
+	friend Canvas;
+
+public:
+	// 绘制形状
+	void drawShape(
+		Shape* shape
+	);
+
+	// 绘制图片
+	void drawImage(
+		Image* image,										/* 图像 */
+		const Point& pos,									/* 绘制位置 */
+		const Rect& cropRect = Rect{},						/* 裁剪矩形 */
+		InterpolationMode mode = InterpolationMode::Linear	/* 图像插值模式 */
+	);
+
+	// 绘制图片
+	void drawImage(
+		Image* image,										/* 图像 */
+		const Rect& destRect,								/* 绘制区域 */
+		const Rect& cropRect = Rect{},						/* 裁剪矩形 */
+		InterpolationMode mode = InterpolationMode::Linear	/* 图像插值模式 */
+	);
+
+	// 绘制关键帧
+	void drawImage(
+		KeyFrame* frame,									/* 关键帧 */
+		const Point& pos,									/* 绘制位置 */
+		InterpolationMode mode = InterpolationMode::Linear	/* 图像插值模式 */
+	);
+
+	// 绘制关键帧
+	void drawImage(
+		KeyFrame* frame,									/* 关键帧 */
+		const Rect& destRect,								/* 绘制区域 */
+		InterpolationMode mode = InterpolationMode::Linear	/* 图像插值模式 */
+	);
+
+	// 绘制文本
+	void drawText(
+		TextLayout* layout,
+		const Point& pos
+	);
+
+	// 绘制文本
+	void drawText(
+		const String& text,
+		const Point& pos,
+		const TextStyle& style = TextStyle()
+	);
+
+	// 获取填充颜色
+	Color getFillColor() const;
+
+	// 设置填充颜色
+	void setFillColor(
+		Color fillColor
+	);
+
+	// 获取线条颜色
+	Color getStrokeColor() const;
+
+	// 设置线条颜色
+	void setStrokeColor(
+		Color strokeColor
+	);
+
+	// 获取线条宽度
+	float getStrokeWidth() const;
+
+	// 设置线条宽度
+	void setStrokeWidth(
+		float strokeWidth
+	);
+
+	// 设置线条相交样式
+	void setLineJoin(
+		LineJoin lineJoin
+	);
+
+	// 获取绘图模式
+	DrawingStyle::Mode getDrawingMode() const;
+
+	// 设置绘图模式
+	void setDrawingMode(DrawingStyle::Mode mode);
+
+	// 获取绘图样式
+	DrawingStyle getDrawingStyle() const;
+
+	// 设置绘图样式
+	void setDrawingStyle(DrawingStyle style);
+
+	// 获取透明度
+	float getOpacity() const;
+
+	// 设置透明度（范围：0 ~ 1）
+	void setOpacity(float opacity);
+
+	// 设置变换矩阵
+	void setTransform(const Matrix32& matrix);
+
+	// 清空画布
+	void clear();
+
+	// 指定颜色清空画布
+	void clear(const Color& color);
+
+	virtual ~CanvasBrush();
+
+protected:
+	CanvasBrush(
+		ID2D1RenderTarget* rt,
+		ID2D1SolidColorBrush* brush
+	);
+
+protected:
+	ID2D1RenderTarget* _rt;
+	ID2D1SolidColorBrush* _brush;
+	ID2D1DrawingStateBlock* _state;
+	float _opacity;
+	DrawingStyle _style;
+};
+
+
+// 画布
+class Canvas
+	: public Node
+{
+public:
+	Canvas(const Size& size);
+
+	virtual ~Canvas();
+
+	// 画图
+	void draw(const Function<void(CanvasBrush*)>& drawing);
+
+	// 重新绘制上次内容
+	void redraw();
+
+	// 重设画布大小并清空画布（会导致画刷失效）
+	void resizeAndClear(Size size);
+
+	// 获取像素插值方式
+	InterpolationMode getInterpolationMode() const;
+
+	// 设置像素插值方式
+	void setInterpolationMode(InterpolationMode mode);
+
+	// 获取画布图像
+	Image* getImage() const;
+
+	virtual void onRender() override;
+
+protected:
+	void _initialize();
+
+	void _discardResources();
+
+protected:
+	Image* _image;
+	ID2D1RenderTarget* _rt;
+	ID2D1SolidColorBrush* _brush;
+	InterpolationMode _interpolationMode;
+	Function<void(CanvasBrush*)> _drawing;
+};
+
 }

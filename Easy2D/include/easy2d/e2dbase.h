@@ -304,12 +304,6 @@ public:
 	// 获取 IDWriteFactory 对象
 	static IDWriteFactory * getIDWriteFactory();
 
-	// 渲染文字布局
-	static void DrawTextLayout(
-		TextLayout* layout,
-		const DrawingStyle& style
-	);
-
 	// 获取 Miter 样式的 ID2D1StrokeStyle
 	static ID2D1StrokeStyle * getMiterID2D1StrokeStyle();
 
@@ -318,6 +312,18 @@ public:
 
 	// 获取 Round 样式的 ID2D1StrokeStyle
 	static ID2D1StrokeStyle * getRoundID2D1StrokeStyle();
+
+	// 渲染文字布局
+	static void DrawTextLayout(
+		TextLayout* layout,
+		const DrawingStyle& style,
+		const Point& offset = Point(),
+		ID2D1RenderTarget* rt = nullptr,
+		ID2D1SolidColorBrush* brush = nullptr
+	);
+
+	// 设备依赖资源是否刚刚重建
+	static bool isDeviceResourceRecreated();
 
 private:
 	// 渲染游戏画面

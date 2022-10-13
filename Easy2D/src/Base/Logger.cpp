@@ -145,7 +145,7 @@ void easy2d::Logger::messageln(String format, ...)
 	va_list args = nullptr;
 	va_start(args, format);
 
-	Output(std::wcout, L" ", format.c_str(), args);
+	Output(std::wcout, L"Debug: ", format.c_str(), args);
 
 	va_end(args);
 }

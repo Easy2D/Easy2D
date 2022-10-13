@@ -7,6 +7,7 @@
 namespace easy2d
 {
 class Game;
+class Canvas;
 
 // 方向
 enum class Direction : int
@@ -284,20 +285,21 @@ class Image :
 	public Object
 {
 	friend Game;
+	friend Canvas;
 
 public:
-	// 预加载图片文件
-	static Image* preload(
+	// 加载图片文件
+	static Image* load(
 		const String& filePath	/* 图片文件路径 */
 	);
 
-	// 预加载图片资源
-	static Image* preload(
+	// 加载图片资源
+	static Image* load(
 		const Resource& res		/* 图片资源 */
 	);
 
-	// 预加载图片资源
-	static Image* preload(
+	// 加载图片资源
+	static Image* load(
 		int resNameId,			/* 图片资源名称 */
 		const String& resType	/* 图片资源类型 */
 	);

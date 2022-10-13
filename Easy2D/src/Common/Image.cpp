@@ -80,7 +80,7 @@ easy2d::Size easy2d::Image::getSize() const
 	}
 }
 
-easy2d::Image* easy2d::Image::preload(const String& filePath)
+easy2d::Image* easy2d::Image::load(const String& filePath)
 {
 	auto iter = s_mImagesFromFile.find(filePath);
 	if (iter != s_mImagesFromFile.end())
@@ -109,7 +109,7 @@ easy2d::Image* easy2d::Image::preload(const String& filePath)
 	return nullptr;
 }
 
-easy2d::Image* easy2d::Image::preload(const Resource& res)
+easy2d::Image* easy2d::Image::load(const Resource& res)
 {
 	auto iter = s_mImagesFromResource.find(res);
 	if (iter != s_mImagesFromResource.end())
@@ -138,9 +138,9 @@ easy2d::Image* easy2d::Image::preload(const Resource& res)
 	return nullptr;
 }
 
-easy2d::Image* easy2d::Image::preload(int resNameId, const String& resType)
+easy2d::Image* easy2d::Image::load(int resNameId, const String& resType)
 {
-	return preload(Resource{ resNameId, resType });
+	return load(Resource{ resNameId, resType });
 }
 
 namespace

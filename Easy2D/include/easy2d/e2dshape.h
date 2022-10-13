@@ -6,6 +6,7 @@ namespace easy2d
 
 class ShapeMaker;
 class ShapeNode;
+class CanvasBrush;
 
 // 形状
 class Shape :
@@ -13,6 +14,7 @@ class Shape :
 {
 	friend ShapeMaker;
 	friend ShapeNode;
+	friend CanvasBrush;
 
 public:
 	// 创建直线

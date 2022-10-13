@@ -16,12 +16,12 @@ private:
 
 public:
 	static TextRenderer* Create(
-		ID2D1Factory* pD2DFactory,
-		ID2D1HwndRenderTarget* pRT,
-		ID2D1SolidColorBrush* pBrush
+		ID2D1Factory* pD2DFactory
 	);
 
-	STDMETHOD_(void, SetTextStyle)(
+	STDMETHOD_(void, Prepare)(
+		ID2D1RenderTarget* pRt,
+		ID2D1SolidColorBrush* pBrush,
 		CONST D2D1_COLOR_F& fillColor,
 		BOOL hasOutline,
 		CONST D2D1_COLOR_F& outlineColor,
@@ -95,7 +95,7 @@ private:
 	FLOAT fOutlineWidth;
 	BOOL bShowOutline_;
 	ID2D1Factory* pD2DFactory_;
-	ID2D1HwndRenderTarget* pRT_;
+	ID2D1RenderTarget* pRT_;
 	ID2D1SolidColorBrush* pBrush_;
 	ID2D1StrokeStyle* pCurrStrokeStyle_;
 };
@@ -116,31 +116,25 @@ TextRenderer::TextRenderer()
 TextRenderer::~TextRenderer()
 {
 	SafeRelease(pD2DFactory_);
-	SafeRelease(pRT_);
-	SafeRelease(pBrush_);
 }
 
 TextRenderer* TextRenderer::Create(
-	ID2D1Factory* pD2DFactory,
-	ID2D1HwndRenderTarget* pRT,
-	ID2D1SolidColorBrush* pBrush
+	ID2D1Factory* pD2DFactory
 )
 {
 	TextRenderer* pTextRenderer = new (std::nothrow) TextRenderer();
 	if (pTextRenderer)
 	{
 		pD2DFactory->AddRef();
-		pRT->AddRef();
-		pBrush->AddRef();
 
 		pTextRenderer->pD2DFactory_ = pD2DFactory;
-		pTextRenderer->pRT_ = pRT;
-		pTextRenderer->pBrush_ = pBrush;
 	}
 	return pTextRenderer;
 }
 
-STDMETHODIMP_(void) TextRenderer::SetTextStyle(
+STDMETHODIMP_(void) TextRenderer::Prepare(
+	ID2D1RenderTarget* pRT,
+	ID2D1SolidColorBrush* pBrush,
 	CONST D2D1_COLOR_F& fillColor,
 	BOOL hasOutline,
 	CONST D2D1_COLOR_F& outlineColor,
@@ -148,6 +142,8 @@ STDMETHODIMP_(void) TextRenderer::SetTextStyle(
 	D2D1_LINE_JOIN outlineJoin
 )
 {
+	pRT_ = pRT;
+	pBrush_ = pBrush;
 	sFillColor_ = fillColor;
 	bShowOutline_ = hasOutline;
 	sOutlineColor_ = outlineColor;
@@ -490,6 +486,7 @@ namespace
 {
 	bool s_bShowFps = false;
 	bool s_bVSyncEnabled = true;
+	bool s_bIsDeviceResourceRecreated = false;
 	float s_fDpiScaleX = 0;
 	float s_fDpiScaleY = 0;
 	IDWriteTextFormat* s_pTextFormat = nullptr;
@@ -615,6 +612,14 @@ bool easy2d::Renderer::__createDeviceIndependentResources()
 		s_pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 	}
 
+	if (SUCCEEDED(hr))
+	{
+		// 创建自定义的文字渲染器
+		s_pTextRenderer = TextRenderer::Create(
+			s_pDirect2dFactory
+		);
+	}
+
 	return SUCCEEDED(hr);
 }
 
@@ -663,16 +668,6 @@ bool easy2d::Renderer::__createDeviceResources()
 
 	if (SUCCEEDED(hr))
 	{
-		// 创建自定义的文字渲染器
-		s_pTextRenderer = TextRenderer::Create(
-			s_pDirect2dFactory,
-			s_pRenderTarget,
-			s_pSolidBrush
-		);
-	}
-
-	if (SUCCEEDED(hr))
-	{
 		Image::reloadCache();
 	}
 	return SUCCEEDED(hr);
@@ -682,12 +677,13 @@ void easy2d::Renderer::__discardDeviceResources()
 {
 	SafeRelease(s_pRenderTarget);
 	SafeRelease(s_pSolidBrush);
-	SafeRelease(s_pTextRenderer);
+	s_bIsDeviceResourceRecreated = true;
 }
 
 void easy2d::Renderer::__discardResources()
 {
 	__discardDeviceResources();
+	SafeRelease(s_pTextRenderer);
 	SafeRelease(s_pTextFormat);
 	SafeRelease(s_pDirect2dFactory);
 	SafeRelease(s_pIWICFactory);
@@ -746,7 +742,9 @@ void easy2d::Renderer::__render()
 		{
 			s_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 			s_pSolidBrush->SetOpacity(1.0f);
-			s_pTextRenderer->SetTextStyle(
+			s_pTextRenderer->Prepare(
+				s_pRenderTarget,
+				s_pSolidBrush,
 				D2D1::ColorF(D2D1::ColorF::White),
 				TRUE,
 				D2D1::ColorF(D2D1::ColorF::Black, 0.4f),
@@ -770,13 +768,21 @@ void easy2d::Renderer::__render()
 		hr = S_OK;
 		Renderer::__discardDeviceResources();
 	}
+	else
+	{
+		s_bIsDeviceResourceRecreated = false;
+	}
 
 	if (FAILED(hr))
 	{
-		E2D_ERROR(L"Device loss recovery failed");
+		E2D_ERROR(L"Renderer error occurred! ERR_CODE=%#X", hr);
 	}
 }
 
+bool easy2d::Renderer::isDeviceResourceRecreated()
+{
+	return s_bIsDeviceResourceRecreated;
+}
 
 easy2d::Color easy2d::Renderer::getBackgroundColor()
 {
@@ -795,8 +801,11 @@ void easy2d::Renderer::showFps(bool show)
 
 void easy2d::Renderer::setVSync(bool enabled)
 {
-	s_bVSyncEnabled = enabled;
-	__discardDeviceResources();
+	if (s_bVSyncEnabled != enabled)
+	{
+		s_bVSyncEnabled = enabled;
+		__discardDeviceResources();
+	}
 }
 
 bool easy2d::Renderer::isVSyncEnabled()
@@ -839,18 +848,24 @@ IDWriteFactory * easy2d::Renderer::getIDWriteFactory()
 	return s_pDWriteFactory;
 }
 
-void easy2d::Renderer::DrawTextLayout(TextLayout* layout, const DrawingStyle& style)
+void easy2d::Renderer::DrawTextLayout(TextLayout* layout, const DrawingStyle& style, const Point& offset, ID2D1RenderTarget* rt, ID2D1SolidColorBrush* brush)
 {
 	if (layout->_textLayout)
 	{
-		s_pTextRenderer->SetTextStyle(
+		if (!rt)
+			rt = s_pRenderTarget;
+		if (!brush)
+			brush = s_pSolidBrush;
+		s_pTextRenderer->Prepare(
+			rt,
+			brush,
 			reinterpret_cast<const D2D1_COLOR_F&>(style.fillColor),
 			style.mode == DrawingStyle::Mode::Round || style.mode == DrawingStyle::Mode::Fill,
 			reinterpret_cast<const D2D1_COLOR_F&>(style.strokeColor),
 			style.strokeWidth,
 			D2D1_LINE_JOIN(style.lineJoin)
 		);
-		layout->_textLayout->Draw(nullptr, s_pTextRenderer, 0, 0);
+		layout->_textLayout->Draw(nullptr, s_pTextRenderer, offset.x, offset.y);
 	}
 }
 

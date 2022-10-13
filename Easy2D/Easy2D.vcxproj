@@ -43,6 +43,7 @@
     <ClCompile Include="src\Math\Rect.cpp" />
     <ClCompile Include="src\Math\Size.cpp" />
     <ClCompile Include="src\Node\Button.cpp" />
+    <ClCompile Include="src\Node\Canvas.cpp" />
     <ClCompile Include="src\Node\Scene.cpp" />
     <ClCompile Include="src\Node\ShapeNode.cpp" />
     <ClCompile Include="src\Node\Shape\ShapeMaker.cpp" />

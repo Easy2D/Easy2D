@@ -66,7 +66,7 @@ easy2d::Sprite::~Sprite()
 
 bool easy2d::Sprite::open(const String& filePath)
 {
-	auto image = Image::preload(filePath);
+	auto image = Image::load(filePath);
 	if (image)
 	{
 		setImage(image);
@@ -77,7 +77,7 @@ bool easy2d::Sprite::open(const String& filePath)
 
 bool easy2d::Sprite::open(const Resource& res)
 {
-	auto image = Image::preload(res);
+	auto image = Image::load(res);
 	if (image)
 	{
 		setImage(image);
