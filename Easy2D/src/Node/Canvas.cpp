@@ -1,49 +1,43 @@
 #include <easy2d/e2dnode.h>
 #include <easy2d/e2daction.h>
 
-easy2d::Canvas::Canvas(const Size& size)
+//
+// CanvasBase
+//
+
+easy2d::CanvasBase::CanvasBase(const Size& size)
 	: _image(nullptr)
 	, _rt(nullptr)
 	, _brush(nullptr)
 	, _interpolationMode(InterpolationMode::Linear)
-	, _drawing()
 {
 	setSize(size);
 }
 
-easy2d::Canvas::~Canvas()
+easy2d::CanvasBase::~CanvasBase()
 {
 	_discardResources();
 }
 
-void easy2d::Canvas::draw(const Function<void(CanvasBrush*)>& drawing)
+void easy2d::CanvasBase::redraw()
 {
 	_initialize();
-	_drawing = drawing;
-	redraw();
+	CanvasBrush brush(_rt, _brush);
+	draw(&brush);
 }
 
-void easy2d::Canvas::redraw()
-{
-	if (_drawing)
-	{
-		CanvasBrush brush(_rt, _brush);
-		_drawing(&brush);
-	}
-}
-
-void easy2d::Canvas::resizeAndClear(Size size)
+void easy2d::CanvasBase::resizeAndClear(Size size)
 {
 	_discardResources();
 	setSize(size);
 }
 
-easy2d::Image* easy2d::Canvas::getImage() const
+easy2d::Image* easy2d::CanvasBase::getImage() const
 {
 	return _image;
 }
 
-void easy2d::Canvas::onRender()
+void easy2d::CanvasBase::onRender()
 {
 	if (_image)
 	{
@@ -64,7 +58,7 @@ void easy2d::Canvas::onRender()
 	}
 }
 
-void easy2d::Canvas::_initialize()
+void easy2d::CanvasBase::_initialize()
 {
 	if (!_rt)
 	{
@@ -115,35 +109,67 @@ void easy2d::Canvas::_initialize()
 
 		if (FAILED(hr))
 		{
-			E2D_ERROR(L"Canvas beginDraw failed! ERR_CODE=%#X", hr);
+			E2D_ERROR(L"CanvasBase beginDraw failed! ERR_CODE=%#X", hr);
 		}
 	}
 }
 
-void easy2d::Canvas::_discardResources()
+void easy2d::CanvasBase::_discardResources()
 {
 	SafeRelease(_brush);
 	SafeRelease(_rt);
 	GC::release(_image);
 }
 
-easy2d::InterpolationMode easy2d::Canvas::getInterpolationMode() const
+easy2d::InterpolationMode easy2d::CanvasBase::getInterpolationMode() const
 {
 	return _interpolationMode;
 }
 
-void easy2d::Canvas::setInterpolationMode(InterpolationMode mode)
+void easy2d::CanvasBase::setInterpolationMode(InterpolationMode mode)
 {
 	_interpolationMode = mode;
 }
 
+//
+// Canvas
+//
+
+easy2d::Canvas::Canvas(const Size& size)
+	: CanvasBase(size)
+	, _drawing()
+{
+}
+
+void easy2d::Canvas::draw(const Function<void(CanvasBrush*)>& drawing)
+{
+	_drawing = drawing;
+	redraw();
+}
+
+void easy2d::Canvas::draw(CanvasBrush* brush)
+{
+	if (_drawing)
+	{
+		_drawing(brush);
+	}
+}
+
+//
 // CanvasBrush
+//
 
 easy2d::CanvasBrush::CanvasBrush(ID2D1RenderTarget* rt, ID2D1SolidColorBrush* brush)
-	: _rt(rt)
+	: _dirtyTransform(false)
+	, _rt(rt)
 	, _brush(brush)
 	, _state(nullptr)
+	, _interpolationMode(InterpolationMode::Linear)
 	, _opacity(1.0f)
+	, _pos()
+	, _rotation(0.f)
+	, _scale(1.f, 1.f)
+	, _skew()
 	, _style()
 {
 	_rt->AddRef();
@@ -175,8 +201,22 @@ easy2d::CanvasBrush::~CanvasBrush()
 	SafeRelease(_rt);
 }
 
+void easy2d::CanvasBrush::_updateTransform()
+{
+	if (_dirtyTransform)
+	{
+		Matrix32 transform = Matrix32::scaling(_scale.x, _scale.y)
+			* Matrix32::skewing(_skew.x, _skew.y)
+			* Matrix32::rotation(_rotation)
+			* Matrix32::translation(_pos.x, _pos.y);
+		_rt->SetTransform(reinterpret_cast<const D2D1_MATRIX_3X2_F&>(transform));
+		_dirtyTransform = false;
+	}
+}
+
 void easy2d::CanvasBrush::drawShape(Shape* shape)
 {
+	_updateTransform();
 	_brush->SetOpacity(_opacity);
 	if (_style.mode == DrawingStyle::Mode::Fill || _style.mode == DrawingStyle::Mode::Round)
 	{
@@ -204,13 +244,14 @@ void easy2d::CanvasBrush::drawShape(Shape* shape)
 	}
 }
 
-void easy2d::CanvasBrush::drawImage(Image* image, const Point& pos, const Rect& cropRect, InterpolationMode mode)
+void easy2d::CanvasBrush::drawImage(Image* image, const Point& pos, const Rect& cropRect)
 {
-	drawImage(image, Rect(pos, image->getSize()), cropRect, mode);
+	drawImage(image, Rect(pos, image->getSize()), cropRect);
 }
 
-void easy2d::CanvasBrush::drawImage(Image* image, const Rect& destRect, const Rect& cropRect, InterpolationMode mode)
+void easy2d::CanvasBrush::drawImage(Image* image, const Rect& destRect, const Rect& cropRect)
 {
+	_updateTransform();
 	const Rect* srcRect = nullptr;
 	if (!cropRect.isEmpty())
 	{
@@ -221,25 +262,26 @@ void easy2d::CanvasBrush::drawImage(Image* image, const Rect& destRect, const Re
 		image->getBitmap(),
 		reinterpret_cast<const D2D1_RECT_F&>(destRect),
 		_opacity,
-		(mode == InterpolationMode::Nearest) ? D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR : D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+		(_interpolationMode == InterpolationMode::Nearest) ? D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR : D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
 		reinterpret_cast<const D2D1_RECT_F*>(srcRect)
 	);
 }
 
-void easy2d::CanvasBrush::drawImage(KeyFrame* frame, const Point& pos, InterpolationMode mode)
+void easy2d::CanvasBrush::drawImage(KeyFrame* frame, const Point& pos)
 {
 	auto image = frame->getImage();
-	drawImage(image, Rect(pos, image->getSize()), frame->getCropRect(), mode);
+	drawImage(image, Rect(pos, image->getSize()), frame->getCropRect());
 }
 
-void easy2d::CanvasBrush::drawImage(KeyFrame* frame, const Rect& destRect, InterpolationMode mode)
+void easy2d::CanvasBrush::drawImage(KeyFrame* frame, const Rect& destRect)
 {
 	auto image = frame->getImage();
-	drawImage(image, destRect, frame->getCropRect(), mode);
+	drawImage(image, destRect, frame->getCropRect());
 }
 
 void easy2d::CanvasBrush::drawText(TextLayout* layout, const Point& pos)
 {
+	_updateTransform();
 	_brush->SetOpacity(_opacity);
 	Renderer::DrawTextLayout(layout, _style, pos, _rt, _brush);
 }
@@ -325,7 +367,80 @@ void easy2d::CanvasBrush::setOpacity(float opacity)
 	_opacity = max(min(opacity, 1.f), 0.f);
 }
 
-void easy2d::CanvasBrush::setTransform(const Matrix32& matrix)
+easy2d::Point easy2d::CanvasBrush::getPos() const
 {
-	_rt->SetTransform(matrix.toD2DMatrix());
+	return _pos;
+}
+
+void easy2d::CanvasBrush::setPos(const Point& point)
+{
+	if (_pos != point)
+	{
+		_pos = point;
+		_dirtyTransform = true;
+	}
+}
+
+void easy2d::CanvasBrush::movePos(const Vector2& point)
+{
+	setPos(getPos() + point);
+}
+
+float easy2d::CanvasBrush::getRotation() const
+{
+	return _rotation;
+}
+
+void easy2d::CanvasBrush::setRotation(float rotation)
+{
+	if (_rotation != rotation)
+	{
+		_rotation = rotation;
+		_dirtyTransform = true;
+	}
+}
+
+easy2d::Vector2 easy2d::CanvasBrush::getScale() const
+{
+	return _scale;
+}
+
+void easy2d::CanvasBrush::setScale(const Vector2& scale)
+{
+	if (_scale != scale)
+	{
+		_scale = scale;
+		_dirtyTransform = true;
+	}
+}
+
+easy2d::Vector2 easy2d::CanvasBrush::getSkew() const
+{
+	return _skew;
+}
+
+void easy2d::CanvasBrush::setSkew(const Vector2& skew)
+{
+	if (_skew != skew)
+	{
+		_skew = skew;
+		_dirtyTransform = true;
+	}
+}
+
+easy2d::Matrix32 easy2d::CanvasBrush::getTransform() const
+{
+	Matrix32 transform;
+	_rt->GetTransform(reinterpret_cast<D2D1_MATRIX_3X2_F*>(&transform));
+	return transform;
+}
+
+easy2d::InterpolationMode easy2d::CanvasBrush::getInterpolationMode() const
+{
+	return _interpolationMode;
+}
+
+void easy2d::CanvasBrush::setInterpolationMode(InterpolationMode mode)
+{
+	_interpolationMode = mode;
 }

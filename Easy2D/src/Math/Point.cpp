@@ -67,3 +67,8 @@ bool easy2d::Point::operator==(const Point & point) const
 {
 	return (x == point.x) && (y == point.y);
 }
+
+bool easy2d::Point::operator!=(const Point& point) const
+{
+	return !operator==(point);
+}

@@ -57,3 +57,8 @@ bool easy2d::Size::operator==(const Size & size) const
 {
 	return (width == size.width) && (height == size.height);
 }
+
+bool easy2d::Size::operator!=(const Size& size) const
+{
+	return !operator==(size);
+}

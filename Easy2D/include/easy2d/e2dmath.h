@@ -91,6 +91,7 @@ namespace easy2d
 		Point operator / (float const& point) const;
 		Point operator - () const;
 		bool operator== (const Point& point) const;
+		bool operator!= (const Point& point) const;
 
 		operator easy2d::Size() const;
 
@@ -124,6 +125,7 @@ namespace easy2d
 		Size operator / (float const& size) const;
 		Size operator - () const;
 		bool operator== (const Size& size) const;
+		bool operator!= (const Size& size) const;
 
 		operator easy2d::Point() const;
 

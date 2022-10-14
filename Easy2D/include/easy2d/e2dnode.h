@@ -1127,13 +1127,13 @@ protected:
 };
 
 
-class Canvas;
+class CanvasBase;
 
 // 画布画笔
 class CanvasBrush
-	: public Node
+	: public Object
 {
-	friend Canvas;
+	friend CanvasBase;
 
 public:
 	// 绘制形状
@@ -1143,44 +1143,40 @@ public:
 
 	// 绘制图片
 	void drawImage(
-		Image* image,										/* 图像 */
-		const Point& pos,									/* 绘制位置 */
-		const Rect& cropRect = Rect{},						/* 裁剪矩形 */
-		InterpolationMode mode = InterpolationMode::Linear	/* 图像插值模式 */
+		Image* image,					/* 图像 */
+		const Point& pos = Point(),		/* 绘制位置 */
+		const Rect& cropRect = Rect{}	/* 裁剪矩形 */
 	);
 
 	// 绘制图片
 	void drawImage(
-		Image* image,										/* 图像 */
-		const Rect& destRect,								/* 绘制区域 */
-		const Rect& cropRect = Rect{},						/* 裁剪矩形 */
-		InterpolationMode mode = InterpolationMode::Linear	/* 图像插值模式 */
+		Image* image,					/* 图像 */
+		const Rect& destRect,			/* 绘制区域 */
+		const Rect& cropRect = Rect{}	/* 裁剪矩形 */
 	);
 
 	// 绘制关键帧
 	void drawImage(
-		KeyFrame* frame,									/* 关键帧 */
-		const Point& pos,									/* 绘制位置 */
-		InterpolationMode mode = InterpolationMode::Linear	/* 图像插值模式 */
+		KeyFrame* frame,				/* 关键帧 */
+		const Point& pos = Point()		/* 绘制位置 */
 	);
 
 	// 绘制关键帧
 	void drawImage(
-		KeyFrame* frame,									/* 关键帧 */
-		const Rect& destRect,								/* 绘制区域 */
-		InterpolationMode mode = InterpolationMode::Linear	/* 图像插值模式 */
+		KeyFrame* frame,				/* 关键帧 */
+		const Rect& destRect			/* 绘制区域 */
 	);
 
 	// 绘制文本
 	void drawText(
 		TextLayout* layout,
-		const Point& pos
+		const Point& pos = Point()
 	);
 
 	// 绘制文本
 	void drawText(
 		const String& text,
-		const Point& pos,
+		const Point& pos = Point(),
 		const TextStyle& style = TextStyle()
 	);
 
@@ -1231,8 +1227,51 @@ public:
 	// 设置透明度（范围：0 ~ 1）
 	void setOpacity(float opacity);
 
-	// 设置变换矩阵
-	void setTransform(const Matrix32& matrix);
+	// 获取坐标
+	Point getPos() const;
+
+	// 设置坐标
+	void setPos(
+		const Point& point
+	);
+
+	// 移动画笔
+	void movePos(
+		const Vector2& point
+	);
+
+	// 获取旋转角度
+	float getRotation() const;
+
+	// 设置旋转角度
+	void setRotation(
+		float rotation
+	);
+
+	// 获取缩放比例
+	Vector2 getScale() const;
+
+	// 设置缩放比例
+	void setScale(
+		const Vector2& scale
+	);
+
+	// 获取节点倾斜角度
+	Vector2 getSkew() const;
+
+	// 设置倾斜角度
+	void setSkew(
+		const Vector2& skew
+	);
+
+	// 获取画笔变换矩阵
+	Matrix32 getTransform() const;
+
+	// 获取绘制图像时的像素插值方式
+	InterpolationMode getInterpolationMode() const;
+
+	// 设置绘制图像时的像素插值方式
+	void setInterpolationMode(InterpolationMode mode);
 
 	// 清空画布
 	void clear();
@@ -1248,26 +1287,31 @@ protected:
 		ID2D1SolidColorBrush* brush
 	);
 
+	void _updateTransform();
+
 protected:
+	bool _dirtyTransform;
 	ID2D1RenderTarget* _rt;
 	ID2D1SolidColorBrush* _brush;
 	ID2D1DrawingStateBlock* _state;
+	InterpolationMode _interpolationMode;
 	float _opacity;
+	Point _pos;
+	float _rotation;
+	Vector2 _scale;
+	Vector2 _skew;
 	DrawingStyle _style;
 };
 
 
 // 画布
-class Canvas
+class CanvasBase
 	: public Node
 {
 public:
-	Canvas(const Size& size);
+	CanvasBase(const Size& size);
 
-	virtual ~Canvas();
-
-	// 画图
-	void draw(const Function<void(CanvasBrush*)>& drawing);
+	virtual ~CanvasBase();
 
 	// 重新绘制上次内容
 	void redraw();
@@ -1287,15 +1331,35 @@ public:
 	virtual void onRender() override;
 
 protected:
+	// 画图
+	virtual void draw(CanvasBrush* brush) = 0;
+
+private:
 	void _initialize();
 
 	void _discardResources();
 
-protected:
+private:
 	Image* _image;
 	ID2D1RenderTarget* _rt;
 	ID2D1SolidColorBrush* _brush;
 	InterpolationMode _interpolationMode;
+};
+
+// 画布
+class Canvas
+	: public CanvasBase
+{
+public:
+	Canvas(const Size& size);
+
+	// 画图
+	void draw(const Function<void(CanvasBrush*)>& drawing);
+
+protected:
+	virtual void draw(CanvasBrush* brush) override;
+
+private:
 	Function<void(CanvasBrush*)> _drawing;
 };
 
