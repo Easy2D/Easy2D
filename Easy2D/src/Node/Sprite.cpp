@@ -8,7 +8,7 @@ easy2d::Sprite::Sprite()
 {
 }
 
-easy2d::Sprite::Sprite(Image * image)
+easy2d::Sprite::Sprite(Image* image)
 	: Sprite()
 {
 	setImage(image);
@@ -93,14 +93,31 @@ bool easy2d::Sprite::open(int resNameId, const String& resType)
 
 void easy2d::Sprite::crop(const Rect& cropRect)
 {
-	_cropRect.leftTop.x = min(max(cropRect.leftTop.x, 0), _image->getWidth());
-	_cropRect.leftTop.y = min(max(cropRect.leftTop.y, 0), _image->getHeight());
-	_cropRect.rightBottom.x = min(max(cropRect.rightBottom.x, 0), _image->getWidth());
-	_cropRect.rightBottom.y = min(max(cropRect.rightBottom.y, 0), _image->getHeight());
-	setSize(
-		min(max(cropRect.getWidth(), 0), _image->getWidth() - _cropRect.leftTop.x),
-		min(max(cropRect.getHeight(), 0), _image->getHeight() - _cropRect.leftTop.y)
-	);
+	if (cropRect.isEmpty())
+	{
+		// 不裁剪
+		_cropRect = cropRect;
+		if (_image)
+		{
+			setSize(_image->getWidth(), _image->getHeight());
+		}
+		else
+		{
+			setSize(Size{});
+		}
+	}
+	else
+	{
+		// 保证裁剪矩形不超出图片大小
+		_cropRect.leftTop.x = min(max(cropRect.leftTop.x, 0), _image->getWidth());
+		_cropRect.leftTop.y = min(max(cropRect.leftTop.y, 0), _image->getHeight());
+		_cropRect.rightBottom.x = min(max(cropRect.rightBottom.x, 0), _image->getWidth());
+		_cropRect.rightBottom.y = min(max(cropRect.rightBottom.y, 0), _image->getHeight());
+		setSize(
+			min(max(cropRect.getWidth(), 0), _image->getWidth() - _cropRect.leftTop.x),
+			min(max(cropRect.getHeight(), 0), _image->getHeight() - _cropRect.leftTop.y)
+		);
+	}
 }
 
 void easy2d::Sprite::setKeyFrame(KeyFrame* frame)
@@ -129,7 +146,7 @@ easy2d::Image * easy2d::Sprite::getImage() const
 	return _image;
 }
 
-void easy2d::Sprite::setImage(Image* image)
+void easy2d::Sprite::setImage(Image* image, bool resetSize)
 {
 	if (_image != image)
 	{
@@ -137,9 +154,9 @@ void easy2d::Sprite::setImage(Image* image)
 		_image = image;
 		GC::retain(_image);
 
-		if (_image)
+		if (resetSize)
 		{
-			setSize(_image->getWidth(), _image->getHeight());
+			crop(Rect{});
 		}
 	}
 }

@@ -579,7 +579,7 @@ public:
 
 	// 将图片裁剪为矩形
 	void crop(
-		const Rect& cropRect	/* 裁剪矩形 */
+		const Rect& cropRect	/* 裁剪矩形，传空矩形则不裁剪 */
 	);
 
 	// 获取图片
@@ -587,7 +587,8 @@ public:
 
 	// 设置图片
 	void setImage(
-		Image* image
+		Image* image,
+		bool resetCropRect = true	/* 重置裁剪矩形 */
 	);
 
 	// 设置关键帧
