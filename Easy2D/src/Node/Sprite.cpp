@@ -146,7 +146,7 @@ easy2d::Image * easy2d::Sprite::getImage() const
 	return _image;
 }
 
-void easy2d::Sprite::setImage(Image* image, bool resetSize)
+void easy2d::Sprite::setImage(Image* image, bool resetCropRect)
 {
 	if (_image != image)
 	{
@@ -154,7 +154,7 @@ void easy2d::Sprite::setImage(Image* image, bool resetSize)
 		_image = image;
 		GC::retain(_image);
 
-		if (resetSize)
+		if (resetCropRect)
 		{
 			crop(Rect{});
 		}

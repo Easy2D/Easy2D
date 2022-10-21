@@ -509,60 +509,6 @@ struct KeyUpEvent
 	int count;
 };
 
-
-// 事件监听器
-class Listener
-	: public Object
-{
-	friend class Input;
-
-public:
-	using Callback = Function<void(Event*)>;
-
-	Listener();
-
-	Listener(
-		const Callback& func,
-		const String& name = String{},
-		bool paused = false
-	);
-
-	// 启动监听
-	void start();
-
-	// 停止监听
-	void stop();
-
-	// 获取监听器运行状态
-	bool isRunning() const;
-
-	// 获取名称
-	String getName() const;
-
-	// 设置名称
-	void setName(
-		const String& name
-	);
-
-	// 设置监听回调函数
-	void setCallback(
-		const Callback& func
-	);
-
-	// 处理事件
-	virtual void handle(Event* evt);
-
-	void done();
-
-	bool isDone();
-
-protected:
-	bool _running;
-	bool _done;
-	String _name;
-	Callback _callback;
-};
-
 }
 
 namespace std

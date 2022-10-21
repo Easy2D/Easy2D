@@ -187,8 +187,6 @@ private:
 };
 
 
-class Listener;
-
 // ÊäÈë¿ØÖÆ
 class Input
 {

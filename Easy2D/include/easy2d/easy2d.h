@@ -22,6 +22,7 @@
 #include <easy2d/e2dcommon.h>
 #include <easy2d/e2dbase.h>
 #include <easy2d/e2dmanager.h>
+#include <easy2d/e2dlistener.h>
 #include <easy2d/e2dshape.h>
 #include <easy2d/e2dtext.h>
 #include <easy2d/e2dnode.h>

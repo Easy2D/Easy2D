@@ -2,10 +2,10 @@
 #include <easy2d/e2dbase.h>
 #include <easy2d/e2dshape.h>
 #include <easy2d/e2dtext.h>
+#include <easy2d/e2dlistener.h>
 
 namespace easy2d 
 {
-
 
 class Action;
 class KeyFrame;
@@ -390,12 +390,12 @@ public:
 
 	// 添加碰撞监听
 	void addListener(
-		Listener* listener		/* 监听器 */
+		ListenerBase* listener		/* 监听器 */
 	);
 
 	// 移除监听器
 	void removeListener(
-		Listener* listener		/* 监听器 */
+		ListenerBase* listener		/* 监听器 */
 	);
 
 	// 启动输入监听
@@ -477,13 +477,13 @@ protected:
 	float		_anchorX;
 	float		_anchorY;
 	int			_nOrder;
-	String		_name;
+	String*		_name;
 	size_t		_hashName;
-	Scene *		_parentScene;
-	Node *		_parent;
+	Scene*		_parentScene;
+	Node*		_parent;
 	
 	std::vector<Node*>	_children;
-	std::vector<Listener*> _listeners;
+	std::vector<ListenerBase*> _listeners;
 
 	mutable bool		_dirtyTransform;
 	mutable Matrix32	_transform;
@@ -758,6 +758,7 @@ protected:
 
 
 // 按钮
+// 已废弃，请使用 ButtonListener 替代
 class Button :
 	public Node
 {
@@ -825,9 +826,6 @@ public:
 		const Callback& func
 	);
 
-	// 分发事件
-	virtual void dispatch(Event* evt) override;
-
 protected:
 	// 按钮状态枚举
 	enum class ButtonState { Normal, Mouseover, Selected };
@@ -841,23 +839,21 @@ protected:
 	// 执行按钮函数对象
 	virtual void _runCallback();
 
-	void updateStatus(Event* evt);
+	void handle(ButtonEvent evt);
 
 protected:
 	bool		_enable;
-	bool		_isSelected;
-	bool		_isHover;
-	bool		_isPressed;
-	Node *		_normal;
-	Node *		_mouseover;
-	Node *		_selected;
-	Node *		_disabled;
+	Node*		_normal;
+	Node*		_mouseover;
+	Node*		_selected;
+	Node*		_disabled;
 	ButtonState	_state;
 	Callback	_func;
 };
 
 
 // 开关按钮
+// 已废弃，请使用 ToggleButtonListener 替代
 class ToggleButton :
 	public Button
 {
@@ -910,22 +906,22 @@ public:
 
 	// 设置按钮打开状态下显示的按钮
 	virtual void setNormal(
-		Node * normal
+		Node* normal
 	) override;
 
 	// 设置按钮打开状态下，鼠标移入按钮时显示的按钮
 	virtual void setMouseOver(
-		Node * mouseover
+		Node* mouseover
 	) override;
 
 	// 设置按钮打开状态下，鼠标按下按钮时显示的按钮
 	virtual void setSelected(
-		Node * selected
+		Node* selected
 	) override;
 
 	// 设置按钮打开状态下，被禁用时显示的按钮
 	virtual void setDisabled(
-		Node * disabled
+		Node* disabled
 	) override;
 
 	// 设置按钮关闭状态下显示的按钮
@@ -956,15 +952,15 @@ protected:
 	void _runCallback() override;
 
 protected:
-	Node*	_normalOn;
-	Node*	_mouseoverOn;
-	Node*	_selectedOn;
-	Node*	_disabledOn;
-	Node*	_normalOff;
-	Node*	_mouseoverOff;
-	Node*	_selectedOff;
-	Node*	_disabledOff;
-	bool	_toggle;
+	bool _toggle;
+	Node* _normalOn;
+	Node* _mouseoverOn;
+	Node* _selectedOn;
+	Node* _disabledOn;
+	Node* _normalOff;
+	Node* _mouseoverOff;
+	Node* _selectedOff;
+	Node* _disabledOff;
 };
 
 

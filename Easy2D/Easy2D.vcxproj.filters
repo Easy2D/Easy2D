@@ -40,6 +40,9 @@
     <Filter Include="src\Node\Text">
       <UniqueIdentifier>{1209ca65-1f96-47d4-873b-7e372e5aace9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Node\Listener">
+      <UniqueIdentifier>{406c6047-beff-414e-a389-20bbeb9370fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base\Input.cpp">
@@ -198,9 +201,6 @@
     <ClCompile Include="src\Math\Size.cpp">
       <Filter>src\Math</Filter>
     </ClCompile>
-    <ClCompile Include="src\Common\Listener.cpp">
-      <Filter>src\Common</Filter>
-    </ClCompile>
     <ClCompile Include="src\Common\Event.cpp">
       <Filter>src\Common</Filter>
     </ClCompile>
@@ -240,6 +240,12 @@
     <ClCompile Include="src\Node\Canvas.cpp">
       <Filter>src\Node</Filter>
     </ClCompile>
+    <ClCompile Include="src\Node\Listener\Listener.cpp">
+      <Filter>src\Node\Listener</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Listener\ButtonListener.cpp">
+      <Filter>src\Node\Listener</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\easy2d\e2daction.h">
@@ -276,6 +282,9 @@
       <Filter>include\easy2d</Filter>
     </ClInclude>
     <ClInclude Include="include\easy2d\e2dtext.h">
+      <Filter>include\easy2d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\easy2d\e2dlistener.h">
       <Filter>include\easy2d</Filter>
     </ClInclude>
   </ItemGroup>

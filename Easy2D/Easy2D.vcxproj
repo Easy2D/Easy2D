@@ -31,7 +31,6 @@
     <ClCompile Include="src\Common\Color.cpp" />
     <ClCompile Include="src\Common\DrawingStyle.cpp" />
     <ClCompile Include="src\Common\Event.cpp" />
-    <ClCompile Include="src\Common\Listener.cpp" />
     <ClCompile Include="src\Common\Object.cpp" />
     <ClCompile Include="src\Common\Image.cpp" />
     <ClCompile Include="src\Common\Resource.cpp" />
@@ -44,6 +43,8 @@
     <ClCompile Include="src\Math\Size.cpp" />
     <ClCompile Include="src\Node\Button.cpp" />
     <ClCompile Include="src\Node\Canvas.cpp" />
+    <ClCompile Include="src\Node\Listener\ButtonListener.cpp" />
+    <ClCompile Include="src\Node\Listener\Listener.cpp" />
     <ClCompile Include="src\Node\Scene.cpp" />
     <ClCompile Include="src\Node\ShapeNode.cpp" />
     <ClCompile Include="src\Node\Shape\ShapeMaker.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="include\easy2d\e2daction.h" />
     <ClInclude Include="include\easy2d\e2dbase.h" />
     <ClInclude Include="include\easy2d\e2dcommon.h" />
+    <ClInclude Include="include\easy2d\e2dlistener.h" />
     <ClInclude Include="include\easy2d\e2dmacros.h" />
     <ClInclude Include="include\easy2d\e2dmanager.h" />
     <ClInclude Include="include\easy2d\e2dmath.h" />

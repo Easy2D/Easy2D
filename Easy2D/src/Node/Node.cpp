@@ -9,6 +9,7 @@ static float s_fDefaultAnchorY = 0;
 
 easy2d::Node::Node()
 	: _nOrder(0)
+	, _name(nullptr)
 	, _posX(0)
 	, _posY(0)
 	, _width(0)
@@ -44,6 +45,12 @@ easy2d::Node::~Node()
 	{
 		child->_parent = nullptr;
 		GC::release(child);
+	}
+
+	if (_name)
+	{
+		delete _name;
+		_name = nullptr;
 	}
 }
 
@@ -213,7 +220,11 @@ bool easy2d::Node::isVisible() const
 
 easy2d::String easy2d::Node::getName() const
 {
-	return _name;
+	if (_name)
+	{
+		return *_name;
+	}
+	return String();
 }
 
 size_t easy2d::Node::getHashName() const
@@ -610,12 +621,12 @@ std::vector<easy2d::Node*> easy2d::Node::getChildren(const String& name) const
 	for (auto child : _children)
 	{
 		// 不同的名称可能会有相同的 Hash 值，但是先比较 Hash 可以提升搜索速度
-		if (child->_hashName == hash && child->_name == name)
+		if (child->_hashName == hash && child->getName() == name)
 		{
 			vChildren.push_back(child);
 		}
 	}
-	return std::move(vChildren);
+	return vChildren;
 }
 
 easy2d::Node * easy2d::Node::getChild(const String& name) const
@@ -625,7 +636,7 @@ easy2d::Node * easy2d::Node::getChild(const String& name) const
 	for (auto child : _children)
 	{
 		// 不同的名称可能会有相同的 Hash 值，但是先比较 Hash 可以提升搜索速度
-		if (child->_hashName == hash && child->_name == name)
+		if (child->_hashName == hash && child->getName() == name)
 		{
 			return child;
 		}
@@ -696,7 +707,7 @@ void easy2d::Node::removeChildren(const String& childName)
 	for (size_t i = 0; i < size; ++i)
 	{
 		auto child = _children[i];
-		if (child->_hashName == hash && child->_name == childName)
+		if (child->_hashName == hash && child->getName() == childName)
 		{
 			_children.erase(_children.begin() + i);
 			child->_parent = nullptr;
@@ -789,10 +800,7 @@ void easy2d::Node::stopAllActions()
 
 void easy2d::Node::dispatch(Event* evt)
 {
-	if (!Game::isPaused())
-	{
-		__updateListeners(evt);
-	}
+	__updateListeners(evt);
 
 	for (const auto& child : _children)
 	{
@@ -807,12 +815,24 @@ void easy2d::Node::setVisible(bool value)
 
 void easy2d::Node::setName(const String& name)
 {
-	if (name.empty()) E2D_WARNING(L"Invalid Node name.");
-
-	if (!name.empty() && _name != name)
+	if (getName() != name)
 	{
-		// 保存节点名
-		_name = name;
+		if (!name.empty())
+		{
+			if (_name)
+			{
+				*_name = name;
+			}
+			else
+			{
+				_name = new String(name);
+			}
+		}
+		else if (_name)
+		{
+			delete _name;
+			_name = nullptr;
+		}
 		// 保存节点 Hash 名
 		_hashName = std::hash<String>{}(name);
 	}
@@ -835,7 +855,7 @@ easy2d::Listener* easy2d::Node::addListener(const Listener::Callback& func, cons
 	return listener;
 }
 
-void easy2d::Node::addListener(Listener* listener)
+void easy2d::Node::addListener(ListenerBase* listener)
 {
 	if (listener)
 	{
@@ -848,7 +868,7 @@ void easy2d::Node::addListener(Listener* listener)
 	}
 }
 
-void easy2d::Node::removeListener(Listener* listener)
+void easy2d::Node::removeListener(ListenerBase* listener)
 {
 	if (listener)
 	{
@@ -944,7 +964,7 @@ void easy2d::Node::__updateListeners(Event* evt)
 		else
 		{
 			// 更新监听器
-			listener->handle(evt);
+			listener->receive(this, evt);
 			++i;
 		}
 	}

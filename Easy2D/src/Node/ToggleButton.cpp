@@ -15,16 +15,7 @@ easy2d::ToggleButton::ToggleButton()
 }
 
 easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, const Callback& func)
-	: Button()
-	, _toggle(true)
-	, _normalOn(nullptr)
-	, _mouseoverOn(nullptr)
-	, _selectedOn(nullptr)
-	, _disabledOn(nullptr)
-	, _normalOff(nullptr)
-	, _mouseoverOff(nullptr)
-	, _selectedOff(nullptr)
-	, _disabledOff(nullptr)
+	: ToggleButton()
 {
 	this->setNormal(toggleOnNormal);
 	this->setNormalOff(toggleOffNormal);
@@ -32,12 +23,7 @@ easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal
 }
 
 easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, Node * toggleOnSelected, Node * toggleOffSelected, const Callback& func)
-	: Button()
-	, _toggle(true)
-	, _normalOff(nullptr)
-	, _mouseoverOff(nullptr)
-	, _selectedOff(nullptr)
-	, _disabledOff(nullptr)
+	: ToggleButton()
 {
 	this->setNormal(toggleOnNormal);
 	this->setNormalOff(toggleOffNormal);
@@ -47,12 +33,7 @@ easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal
 }
 
 easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, Node * toggleOnMouseOver, Node * toggleOffMouseOver, Node * toggleOnSelected, Node * toggleOffSelected, const Callback& func)
-	: Button()
-	, _toggle(true)
-	, _normalOff(nullptr)
-	, _mouseoverOff(nullptr)
-	, _selectedOff(nullptr)
-	, _disabledOff(nullptr)
+	: ToggleButton()
 {
 	this->setNormal(toggleOnNormal);
 	this->setNormalOff(toggleOffNormal);
@@ -64,12 +45,7 @@ easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal
 }
 
 easy2d::ToggleButton::ToggleButton(Node * toggleOnNormal, Node * toggleOffNormal, Node * toggleOnMouseOver, Node * toggleOffMouseOver, Node * toggleOnSelected, Node * toggleOffSelected, Node * toggleOnDisabled, Node * toggleOffDisabled, const Callback& func)
-	: Button()
-	, _toggle(true)
-	, _normalOff(nullptr)
-	, _mouseoverOff(nullptr)
-	, _selectedOff(nullptr)
-	, _disabledOff(nullptr)
+	: ToggleButton()
 {
 	this->setNormal(toggleOnNormal);
 	this->setNormalOff(toggleOffNormal);
