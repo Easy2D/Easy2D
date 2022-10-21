@@ -24,18 +24,13 @@ public:
 	struct Property
 	{
 		bool visable;		// 可见性
-		float posX;			// X 坐标
-		float posY;			// Y 坐标
-		float width;		// 宽度
-		float height;		// 高度
+		Point pos;			// 坐标
+		Size size;			// 宽高
 		float opacity;		// 透明度
-		float anchorX;		// 锚点 X 坐标
-		float anchorY;		// 锚点 Y 坐标
-		float scaleX;		// 横向缩放
-		float scaleY;		// 纵向缩放
+		Point anchor;		// 锚点
+		Vector2 scale;		// 缩放
 		float rotation;		// 旋转角度
-		float skewAngleX;	// 横向倾斜角度
-		float skewAngleY;	// 纵向倾斜角度
+		Vector2 skewAngle;	// 倾斜角度
 	};
 
 public:
@@ -463,20 +458,15 @@ protected:
 	bool		_autoUpdate;
 	bool		_needSort;
 	bool		_positionFixed;
-	float		_posX;
-	float		_posY;
-	float		_width;
-	float		_height;
-	float		_scaleX;
-	float		_scaleY;
+	int			_order;
 	float		_rotation;
-	float		_skewAngleX;
-	float		_skewAngleY;
 	float		_displayOpacity;
 	float		_realOpacity;
-	float		_anchorX;
-	float		_anchorY;
-	int			_nOrder;
+	Point		_pos;
+	Size		_size;
+	Vector2		_scale;
+	Vector2		_skewAngle;
+	Point		_anchor;
 	String*		_name;
 	size_t		_hashName;
 	Scene*		_parentScene;

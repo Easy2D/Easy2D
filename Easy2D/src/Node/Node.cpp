@@ -8,21 +8,16 @@ static float s_fDefaultAnchorX = 0;
 static float s_fDefaultAnchorY = 0;
 
 easy2d::Node::Node()
-	: _nOrder(0)
+	: _order(0)
 	, _name(nullptr)
-	, _posX(0)
-	, _posY(0)
-	, _width(0)
-	, _height(0)
-	, _scaleX(1.0f)
-	, _scaleY(1.0f)
+	, _pos()
+	, _size()
+	, _scale(1.0f, 1.0f)
 	, _rotation(0)
-	, _skewAngleX(0)
-	, _skewAngleY(0)
+	, _skewAngle()
 	, _displayOpacity(1.0f)
 	, _realOpacity(1.0f)
-	, _anchorX(s_fDefaultAnchorX)
-	, _anchorY(s_fDefaultAnchorY)
+	, _anchor(s_fDefaultAnchorX, s_fDefaultAnchorY)
 	, _transform()
 	, _visible(true)
 	, _parent(nullptr)
@@ -158,12 +153,12 @@ void easy2d::Node::_updateTransform() const
 	_dirtyTransform = false;
 	_dirtyInverseTransform = true;
 
-	_transform = Matrix32::scaling(_scaleX, _scaleY)
-		* Matrix32::skewing(_skewAngleX, _skewAngleY)
+	_transform = Matrix32::scaling(_scale.x, _scale.y)
+		* Matrix32::skewing(_skewAngle.x, _skewAngle.y)
 		* Matrix32::rotation(_rotation)
-		* Matrix32::translation(_posX, _posY);
+		* Matrix32::translation(_pos.x, _pos.y);
 
-	_transform.translate(-_width * _anchorX, -_height * _anchorY);
+	_transform.translate(-_size.width * _anchor.x, -_size.height * _anchor.y);
 
 	if (_parent)
 	{
@@ -234,52 +229,52 @@ size_t easy2d::Node::getHashName() const
 
 float easy2d::Node::getPosX() const
 {
-	return _posX;
+	return _pos.x;
 }
 
 float easy2d::Node::getPosY() const
 {
-	return _posY;
+	return _pos.y;
 }
 
 easy2d::Point easy2d::Node::getPos() const
 {
-	return Point(_posX, _posY);
+	return _pos;
 }
 
 float easy2d::Node::getWidth() const
 {
-	return _width * _scaleX;
+	return _size.width * _scale.x;
 }
 
 float easy2d::Node::getHeight() const
 {
-	return _height * _scaleY;
+	return _size.height * _scale.y;
 }
 
 float easy2d::Node::getRealWidth() const
 {
-	return _width;
+	return _size.width;
 }
 
 float easy2d::Node::getRealHeight() const
 {
-	return _height;
+	return _size.height;
 }
 
 easy2d::Size easy2d::Node::getRealSize() const
 {
-	return Size(_width, _height);
+	return Size(_size.width, _size.height);
 }
 
 float easy2d::Node::getAnchorX() const
 {
-	return _anchorX;
+	return _anchor.x;
 }
 
 float easy2d::Node::getAnchorY() const
 {
-	return _anchorY;
+	return _anchor.y;
 }
 
 easy2d::Size easy2d::Node::getSize() const
@@ -289,22 +284,22 @@ easy2d::Size easy2d::Node::getSize() const
 
 float easy2d::Node::getScaleX() const
 {
-	return _scaleX;
+	return _scale.x;
 }
 
 float easy2d::Node::getScaleY() const
 {
-	return _scaleY;
+	return _scale.y;
 }
 
 float easy2d::Node::getSkewX() const
 {
-	return _skewAngleX;
+	return _skewAngle.x;
 }
 
 float easy2d::Node::getSkewY() const
 {
-	return _skewAngleY;
+	return _skewAngle.y;
 }
 
 float easy2d::Node::getRotation() const
@@ -321,24 +316,19 @@ easy2d::Node::Property easy2d::Node::getProperty() const
 {
 	Property prop;
 	prop.visable = _visible;
-	prop.posX = _posX;
-	prop.posY = _posY;
-	prop.width = _width;
-	prop.height = _height;
+	prop.pos = _pos;
+	prop.size = _size;
 	prop.opacity = _realOpacity;
-	prop.anchorX = _anchorX;
-	prop.anchorY = _anchorY;
-	prop.scaleX = _scaleX;
-	prop.scaleY = _scaleY;
+	prop.anchor = _anchor;
+	prop.scale = _scale;
 	prop.rotation = _rotation;
-	prop.skewAngleX = _skewAngleX;
-	prop.skewAngleY = _skewAngleY;
+	prop.skewAngle = _skewAngle;
 	return prop;
 }
 
 easy2d::Rect easy2d::Node::getBounds() const
 {
-	return Rect(Point{}, Size(_width, _height));
+	return Rect(Point{}, _size);
 }
 
 easy2d::Rect easy2d::Node::getBoundingBox() const
@@ -348,37 +338,36 @@ easy2d::Rect easy2d::Node::getBoundingBox() const
 
 int easy2d::Node::getOrder() const
 {
-	return _nOrder;
+	return _order;
 }
 
 void easy2d::Node::setOrder(int order)
 {
-	_nOrder = order;
+	_order = order;
 }
 
 void easy2d::Node::setPosX(float x)
 {
-	this->setPos(x, _posY);
+	this->setPos(x, _pos.y);
 }
 
 void easy2d::Node::setPosY(float y)
 {
-	this->setPos(_posX, y);
+	this->setPos(_pos.x, y);
 }
 
 void easy2d::Node::setPos(const Point & p)
 {
-	this->setPos(p.x, p.y);
+	if (_pos != p)
+	{
+		_pos = p;
+		_dirtyTransform = true;
+	}
 }
 
 void easy2d::Node::setPos(float x, float y)
 {
-	if (_posX == x && _posY == y)
-		return;
-
-	_posX = float(x);
-	_posY = float(y);
-	_dirtyTransform = true;
+	this->setPos(Point{ x, y });
 }
 
 void easy2d::Node::setPosFixed(bool fixed)
@@ -402,7 +391,7 @@ void easy2d::Node::movePosY(float y)
 
 void easy2d::Node::movePos(float x, float y)
 {
-	this->setPos(_posX + x, _posY + y);
+	this->setPos(_pos.x + x, _pos.y + y);
 }
 
 void easy2d::Node::movePos(const Vector2 & v)
@@ -412,12 +401,12 @@ void easy2d::Node::movePos(const Vector2 & v)
 
 void easy2d::Node::setScaleX(float scaleX)
 {
-	this->setScale(scaleX, _scaleY);
+	this->setScale(scaleX, _scale.y);
 }
 
 void easy2d::Node::setScaleY(float scaleY)
 {
-	this->setScale(_scaleX, scaleY);
+	this->setScale(_scale.x, scaleY);
 }
 
 void easy2d::Node::setScale(float scale)
@@ -427,31 +416,31 @@ void easy2d::Node::setScale(float scale)
 
 void easy2d::Node::setScale(float scaleX, float scaleY)
 {
-	if (_scaleX == scaleX && _scaleY == scaleY)
+	if (_scale.x == scaleX && _scale.y == scaleY)
 		return;
 
-	_scaleX = float(scaleX);
-	_scaleY = float(scaleY);
+	_scale.x = float(scaleX);
+	_scale.y = float(scaleY);
 	_dirtyTransform = true;
 }
 
 void easy2d::Node::setSkewX(float angleX)
 {
-	this->setSkew(angleX, _skewAngleY);
+	this->setSkew(angleX, _skewAngle.y);
 }
 
 void easy2d::Node::setSkewY(float angleY)
 {
-	this->setSkew(_skewAngleX, angleY);
+	this->setSkew(_skewAngle.x, angleY);
 }
 
 void easy2d::Node::setSkew(float angleX, float angleY)
 {
-	if (_skewAngleX == angleX && _skewAngleY == angleY)
+	if (_skewAngle.x == angleX && _skewAngle.y == angleY)
 		return;
 
-	_skewAngleX = float(angleX);
-	_skewAngleY = float(angleY);
+	_skewAngle.x = float(angleX);
+	_skewAngle.y = float(angleY);
 	_dirtyTransform = true;
 }
 
@@ -476,41 +465,41 @@ void easy2d::Node::setOpacity(float opacity)
 
 void easy2d::Node::setAnchorX(float anchorX)
 {
-	this->setAnchor(anchorX, _anchorY);
+	this->setAnchor(anchorX, _anchor.y);
 }
 
 void easy2d::Node::setAnchorY(float anchorY)
 {
-	this->setAnchor(_anchorX, anchorY);
+	this->setAnchor(_anchor.x, anchorY);
 }
 
 void easy2d::Node::setAnchor(float anchorX, float anchorY)
 {
-	if (_anchorX == anchorX && _anchorY == anchorY)
+	if (_anchor.x == anchorX && _anchor.y == anchorY)
 		return;
 
-	_anchorX = min(max(float(anchorX), 0), 1);
-	_anchorY = min(max(float(anchorY), 0), 1);
+	_anchor.x = min(max(float(anchorX), 0), 1);
+	_anchor.y = min(max(float(anchorY), 0), 1);
 	_dirtyTransform = true;
 }
 
 void easy2d::Node::setWidth(float width)
 {
-	this->setSize(width, _height);
+	this->setSize(width, _size.height);
 }
 
 void easy2d::Node::setHeight(float height)
 {
-	this->setSize(_width, height);
+	this->setSize(_size.width, height);
 }
 
 void easy2d::Node::setSize(float width, float height)
 {
-	if (_width == width && _height == height)
+	if (_size.width == width && _size.height == height)
 		return;
 
-	_width = float(width);
-	_height = float(height);
+	_size.width = float(width);
+	_size.height = float(height);
 	_dirtyTransform = true;
 }
 
@@ -522,13 +511,13 @@ void easy2d::Node::setSize(Size size)
 void easy2d::Node::setProperty(Property prop)
 {
 	this->setVisible(prop.visable);
-	this->setPos(prop.posX, prop.posY);
-	this->setSize(prop.width, prop.height);
+	this->setPos(prop.pos);
+	this->setSize(prop.size);
 	this->setOpacity(prop.opacity);
-	this->setAnchor(prop.anchorX, prop.anchorY);
-	this->setScale(prop.scaleX, prop.scaleY);
+	this->setAnchor(prop.anchor.x, prop.anchor.y);
+	this->setScale(prop.scale.x, prop.scale.y);
 	this->setRotation(prop.rotation);
-	this->setSkew(prop.skewAngleX, prop.skewAngleY);
+	this->setSkew(prop.skewAngle.x, prop.skewAngle.y);
 }
 
 void easy2d::Node::addChild(Node * child, int order  /* = 0 */)
@@ -606,7 +595,7 @@ easy2d::Scene * easy2d::Node::getParentScene() const
 
 bool easy2d::Node::containsPoint(Point const& point) const
 {
-	if (_width == 0.f || _height == 0.f)
+	if (_size.width == 0.f || _size.height == 0.f)
 		return false;
 
 	Point local = getInverseTransform().transform(point);
