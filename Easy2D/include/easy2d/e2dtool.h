@@ -1,5 +1,6 @@
 #pragma once
 #include <easy2d/e2dbase.h>
+#include <random> // 
 
 namespace easy2d
 {

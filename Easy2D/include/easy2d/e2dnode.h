@@ -3,6 +3,7 @@
 #include <easy2d/e2dshape.h>
 #include <easy2d/e2dtext.h>
 #include <easy2d/e2dlistener.h>
+#include <vector>
 
 namespace easy2d 
 {

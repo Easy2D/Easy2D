@@ -35,14 +35,6 @@
 #include <dwrite.h>
 #include <d2d1helper.h>
 
-// C++ RunTime Header Files
-#include <stack>
-#include <vector>
-#include <functional>
-#include <sstream>
-#include <random>
-#include <utility>
-
 // Import Libraries
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")

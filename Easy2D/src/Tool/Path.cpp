@@ -4,8 +4,7 @@
 #include <commdlg.h>
 #include <io.h> // _access
 #include <direct.h> // _mkdir
-#include <shlobj_core.h> // SHGetFolderPathA
-#include <Shlobj.h> // CSIDL_LOCAL_APPDATA
+#include <shlobj.h> // SHGetFolderPathA, CSIDL_LOCAL_APPDATA
 
 static easy2d::String s_sLocalAppDataPath;
 static easy2d::String s_sTempPath;

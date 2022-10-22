@@ -1,6 +1,8 @@
 #pragma once
 #include <easy2d/e2dmacros.h>
 #include <easy2d/e2dcommon.h>
+#include <stack>
+#include <vector>
 
 namespace easy2d
 {
