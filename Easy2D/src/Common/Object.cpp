@@ -1,6 +1,6 @@
 #include <easy2d/e2dbase.h>
 #include <easy2d/e2dmanager.h>
-#include <algorithm>
+#include <functional> // std::hash
 
 easy2d::Object::Object()
 	: _refCount(1)

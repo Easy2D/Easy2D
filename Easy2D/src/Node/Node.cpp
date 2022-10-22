@@ -1,6 +1,7 @@
 #include <easy2d/e2dnode.h>
 #include <easy2d/e2dmanager.h>
 #include <easy2d/e2daction.h>
+#include <algorithm> // std::sort
 
 // 默认中心点位置
 static float s_fDefaultAnchorX = 0;
