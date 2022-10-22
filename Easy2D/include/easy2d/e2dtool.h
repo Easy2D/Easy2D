@@ -392,7 +392,7 @@ public:
 private:
 	// ≥ı ºªØ
 	static bool __init(
-		const String& gameName
+		const String& uniqueName
 	);
 };
 

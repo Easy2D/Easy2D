@@ -11,7 +11,7 @@ static easy2d::String s_sTempPath;
 static easy2d::String s_sDataSavePath;
 static std::list<easy2d::String> s_vPathList;
 
-bool easy2d::Path::__init(const String& gameName)
+bool easy2d::Path::__init(const String& uniqueName)
 {
 	char szPath[MAX_PATH];
 	HRESULT hr = SHGetFolderPathA(nullptr, CSIDL_LOCAL_APPDATA, nullptr, 0, szPath);
@@ -28,9 +28,9 @@ bool easy2d::Path::__init(const String& gameName)
 	
 	// 获取数据的默认保存路径
 	s_sDataSavePath = s_sLocalAppDataPath + "\\Easy2DGameData\\";
-	if (!gameName.empty())
+	if (!uniqueName.empty())
 	{
-		s_sDataSavePath.append(gameName).append("\\");
+		s_sDataSavePath.append(uniqueName).append("\\");
 	}
 	if (!Path::exists(s_sDataSavePath))
 	{
@@ -49,9 +49,9 @@ bool easy2d::Path::__init(const String& gameName)
 	}
 
 	s_sTempPath.append(path).append("\\Easy2DGameTemp\\");
-	if (!gameName.empty())
+	if (!uniqueName.empty())
 	{
-		s_sTempPath.append(gameName).append("\\");
+		s_sTempPath.append(uniqueName).append("\\");
 	}
 
 	if (!Path::exists(s_sTempPath))

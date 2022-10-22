@@ -9,11 +9,11 @@ static bool s_bEndGame = true;
 static bool s_bPaused = false;
 // 是否进行过初始化
 static bool s_bInitialized = false;
-// 游戏名称
-static easy2d::String s_sGameName;
+// 游戏唯一标识
+static easy2d::String s_sUniqueName;
 
 
-bool easy2d::Game::init(const String& title, int width, int height, const String& uniqueName)
+bool easy2d::Game::init(const String& title, int width, int height, const String& uniqueName, bool singleton)
 {
 	if (s_bInitialized)
 	{
@@ -21,10 +21,13 @@ bool easy2d::Game::init(const String& title, int width, int height, const String
 		return false;
 	}
 
-	if (!uniqueName.empty())
+	// 保存唯一标识
+	s_sUniqueName = uniqueName.empty() ? title : uniqueName;
+
+	if (singleton)
 	{
 		// 创建进程互斥体
-		String fullMutexName = "Easy2DApp-" + uniqueName;
+		String fullMutexName = "Easy2DApp-" + s_sUniqueName;
 		HANDLE hMutex = ::CreateMutexA(nullptr, TRUE, fullMutexName.c_str());
 
 		if (hMutex == nullptr)
@@ -83,14 +86,11 @@ bool easy2d::Game::init(const String& title, int width, int height, const String
 		return false;
 	}
 
-	// 初始化路径
-	if (!Path::__init(title))
+	// 初始化Path
+	if (!Path::__init(s_sUniqueName))
 	{
 		E2D_WARNING("Path::__init failed!");
 	}
-
-	// 保存游戏名称
-	s_sGameName = title;
 
 	// 初始化成功
 	s_bInitialized = true;
@@ -212,7 +212,7 @@ void easy2d::Game::destroy()
 	s_bInitialized = false;
 }
 
-easy2d::String easy2d::Game::getName()
+easy2d::String easy2d::Game::getUniqueName()
 {
-	return s_sGameName;
+	return s_sUniqueName;
 }

@@ -18,7 +18,8 @@ public:
 		const String& title = "Easy2D Game",	/* 窗口标题 */
 		int width = 640,						/* 窗口宽度 */
 		int height = 480,						/* 窗口高度 */
-		const String& uniqueName = ""			/* 唯一名称，设置后相同名称的游戏仅能启动一个 */
+		const String& uniqueName = "",			/* 唯一标识 */
+		bool singleton = false					/* 仅能启动一个游戏实例 */
 	);
 
 	// 启动游戏
@@ -44,8 +45,8 @@ public:
 	// 游戏是否暂停
 	static bool isPaused();
 
-	// 获取游戏名称
-	static String getName();
+	// 获取游戏唯一标识
+	static String getUniqueName();
 };
 
 
