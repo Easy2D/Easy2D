@@ -1,7 +1,6 @@
 #pragma once
 #include <easy2d/e2dmacros.h>
 #include <easy2d/e2dcommon.h>
-#include <easy2d/e2dtext.h>
 
 
 // Base Classes
@@ -252,6 +251,7 @@ private:
 	static void __uninit();
 };
 
+class TextLayout;
 
 // äÖÈ¾Æ÷
 class Renderer

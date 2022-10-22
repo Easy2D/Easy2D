@@ -13,7 +13,6 @@ static easy2d::Window::Cursor s_currentCursor = easy2d::Window::Cursor::Normal;
 bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 {
 	// ×¢²á´°¿ÚÀà
-	HINSTANCE   hinst	= GetModuleHandle(nullptr);
 	WNDCLASSEXA wcex	= { 0 };
 	wcex.cbSize			= sizeof(WNDCLASSEX);
 	wcex.lpszClassName	= "Easy2DApp";
@@ -22,10 +21,10 @@ bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 	wcex.lpfnWndProc	= Window::WndProc;
 	wcex.cbClsExtra		= 0;
 	wcex.cbWndExtra		= 0;
-	wcex.hInstance		= hinst;
+	wcex.hInstance		= HINST_THISCOMPONENT;
 	wcex.hbrBackground	= nullptr;
 	wcex.lpszMenuName	= nullptr;
-	wcex.hCursor		= ::LoadCursor(hinst, IDC_ARROW);
+	wcex.hCursor		= ::LoadCursor(HINST_THISCOMPONENT, IDC_ARROW);
 
 	RegisterClassExA(&wcex);
 
@@ -51,7 +50,7 @@ bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 		nWidth, nHeight,
 		nullptr,
 		nullptr,
-		hinst,
+		HINST_THISCOMPONENT,
 		nullptr
 	);
 
@@ -71,7 +70,7 @@ bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 	}
 	else
 	{
-		::UnregisterClassA("Easy2DApp", hinst);
+		::UnregisterClassA("Easy2DApp", HINST_THISCOMPONENT);
 	}
 
 	if (FAILED(hr))

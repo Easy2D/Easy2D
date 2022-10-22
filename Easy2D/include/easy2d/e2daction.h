@@ -1,16 +1,16 @@
 #pragma once
 #include <easy2d/e2dcommon.h>
 #include <easy2d/e2dbase.h>
+#include <vector>
 
 namespace easy2d
 {
 
-
-class Node;
 class Loop;
 class Sequence;
 class Spawn;
 class ActionManager;
+class Node;
 class Sprite;
 
 

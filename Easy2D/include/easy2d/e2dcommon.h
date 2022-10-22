@@ -1,8 +1,9 @@
 #pragma once
-#include <functional>
-#include <ostream>
 #include <easy2d/e2dmacros.h>
 #include <easy2d/e2dmath.h>
+#include <functional> // std::function, std::hash
+#include <ostream> // std::basic_ostream
+#include <string>
 
 namespace easy2d
 {

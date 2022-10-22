@@ -1,6 +1,7 @@
 #include <easy2d/e2dbase.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 namespace
 {

@@ -1,4 +1,5 @@
 #include <easy2d/e2dbase.h>
+#include <vector>
 
 //
 // gcnew helper
