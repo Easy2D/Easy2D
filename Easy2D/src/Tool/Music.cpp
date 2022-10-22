@@ -637,7 +637,7 @@ namespace
 {
 	HINSTANCE s_hInstance = nullptr;
 
-	void TraceMCIError(LPCTSTR info, MCIERROR error);
+	void TraceMCIError(LPCSTR info, MCIERROR error);
 }
 
 class easy2d::Music::Media
@@ -692,7 +692,7 @@ easy2d::Music::Media::Media()
 	, _playing(false)
 	, _repeatTimes(0)
 {
-	_wnd = CreateWindowEx(
+	_wnd = CreateWindowExA(
 		WS_EX_APPWINDOW,
 		WIN_CLASS_NAME,
 		NULL,
@@ -705,7 +705,7 @@ easy2d::Music::Media::Media()
 
 	if (_wnd)
 	{
-		SetWindowLongPtr(_wnd, GWLP_USERDATA, (LONG_PTR)this);
+		SetWindowLongPtrA(_wnd, GWLP_USERDATA, (LONG_PTR)this);
 	}
 }
 
@@ -722,11 +722,11 @@ bool easy2d::Music::Media::open(const String& pFileName)
 
 	close();
 
-	MCI_OPEN_PARMS mciOpen = { 0 };
+	MCI_OPEN_PARMSA mciOpen = { 0 };
 	mciOpen.lpstrDeviceType = 0;
 	mciOpen.lpstrElementName = pFileName.c_str();
 
-	MCIERROR mciError = mciSendCommand(
+	MCIERROR mciError = mciSendCommandA(
 		0,
 		MCI_OPEN,
 		MCI_OPEN_ELEMENT,
@@ -761,7 +761,7 @@ bool easy2d::Music::Media::play(int nLoopCount)
 	mciPlay.dwCallback = reinterpret_cast<DWORD_PTR>(_wnd);
 
 	// 播放声音
-	MCIERROR mciError = mciSendCommand(
+	MCIERROR mciError = mciSendCommandA(
 		_dev,
 		MCI_PLAY,
 		MCI_FROM | MCI_NOTIFY,
@@ -830,7 +830,7 @@ void easy2d::Music::Media::_sendCommand(int nCommand, DWORD_PTR param1, DWORD_PT
 		return;
 	}
 	// 向当前设备发送操作
-	mciSendCommand(_dev, nCommand, param1, parma2);
+	mciSendCommandA(_dev, nCommand, param1, parma2);
 }
 
 LRESULT WINAPI easy2d::Music::Media::MciProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
@@ -848,11 +848,11 @@ LRESULT WINAPI easy2d::Music::Media::MciProc(HWND hWnd, UINT Msg, WPARAM wParam,
 
 		if (pMusic->_repeatTimes)
 		{
-			mciSendCommand(static_cast<MCIDEVICEID>(lParam), MCI_SEEK, MCI_SEEK_TO_START, 0);
+			mciSendCommandA(static_cast<MCIDEVICEID>(lParam), MCI_SEEK, MCI_SEEK_TO_START, 0);
 
 			MCI_PLAY_PARMS mciPlay = { 0 };
 			mciPlay.dwCallback = reinterpret_cast<DWORD_PTR>(hWnd);
-			mciSendCommand(static_cast<MCIDEVICEID>(lParam), MCI_PLAY, MCI_NOTIFY, reinterpret_cast<DWORD_PTR>(&mciPlay));
+			mciSendCommandA(static_cast<MCIDEVICEID>(lParam), MCI_PLAY, MCI_NOTIFY, reinterpret_cast<DWORD_PTR>(&mciPlay));
 		}
 		else
 		{
@@ -860,14 +860,14 @@ LRESULT WINAPI easy2d::Music::Media::MciProc(HWND hWnd, UINT Msg, WPARAM wParam,
 			return 0;
 		}
 	}
-	return DefWindowProc(hWnd, Msg, wParam, lParam);
+	return DefWindowProcA(hWnd, Msg, wParam, lParam);
 }
 
 bool easy2d::Music::__init()
 {
 	s_hInstance = HINST_THISCOMPONENT;
 
-	WNDCLASS  wc;
+	WNDCLASSA wc = { 0 };
 	wc.style = 0;
 	wc.lpfnWndProc = Media::MciProc;
 	wc.cbClsExtra = 0;
@@ -879,7 +879,7 @@ bool easy2d::Music::__init()
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = WIN_CLASS_NAME;
 
-	if (!RegisterClass(&wc) && 1410 != GetLastError())
+	if (!RegisterClassA(&wc) && 1410 != GetLastError())
 	{
 		return false;
 	}
@@ -892,10 +892,10 @@ void easy2d::Music::__uninit()
 
 namespace
 {
-	void TraceMCIError(LPCTSTR info, MCIERROR error)
+	void TraceMCIError(LPCSTR info, MCIERROR error)
 	{
-		TCHAR errorStr[128] = { 0 };
-		if (mciGetErrorString(error, errorStr, 128))
+		char errorStr[128] = { 0 };
+		if (mciGetErrorStringA(error, errorStr, 128))
 		{
 			E2D_ERROR("%s: %s (%d)", info, errorStr, error);
 		}
