@@ -38,11 +38,14 @@ enum class InterpolationMode
 };
 
 
-// ×Ö·û´®
-using String = std::wstring;
-
 // Õ­×Ö·û´®
 using ByteString = std::string;
+
+// ¿í×Ö·û´®
+using WideString = std::wstring;
+
+// ×Ö·û´®
+using String = ByteString;
 
 
 // º¯Êý¶ÔÏó
@@ -65,13 +68,13 @@ inline void SafeRelease(Interface*& p)
 ByteString FormatString(const char* format, ...);
 
 // ¸ñÊ½»¯×Ö·û´®
-String FormatString(const wchar_t* format, ...);
+WideString FormatString(const wchar_t* format, ...);
 
 // ¿í×Ö·û´®×ªÕ­×Ö·û´®
-ByteString WideToNarrow(const String& str);
+ByteString WideToNarrow(const WideString& str);
 
 // Õ­×Ö·û´®×ª¿í×Ö·û´®
-String NarrowToWide(const ByteString& str);
+WideString NarrowToWide(const ByteString& str);
 
 
 // ÑÕÉ«

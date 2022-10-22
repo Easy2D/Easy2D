@@ -13,20 +13,21 @@ static easy2d::Window::Cursor s_currentCursor = easy2d::Window::Cursor::Normal;
 bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 {
 	// 注册窗口类
-	WNDCLASSEX wcex		= { 0 };
+	HINSTANCE   hinst	= GetModuleHandle(nullptr);
+	WNDCLASSEXA wcex	= { 0 };
 	wcex.cbSize			= sizeof(WNDCLASSEX);
-	wcex.lpszClassName	= L"Easy2DApp";
+	wcex.lpszClassName	= "Easy2DApp";
 	wcex.hIcon			= nullptr;
 	wcex.style			= CS_HREDRAW | CS_VREDRAW;
 	wcex.lpfnWndProc	= Window::WndProc;
 	wcex.cbClsExtra		= 0;
-	wcex.cbWndExtra		= sizeof(LONG_PTR);
-	wcex.hInstance		= HINST_THISCOMPONENT;
+	wcex.cbWndExtra		= 0;
+	wcex.hInstance		= hinst;
 	wcex.hbrBackground	= nullptr;
 	wcex.lpszMenuName	= nullptr;
-	wcex.hCursor		= ::LoadCursorW(HINST_THISCOMPONENT, IDC_ARROW);
+	wcex.hCursor		= ::LoadCursor(hinst, IDC_ARROW);
 
-	RegisterClassEx(&wcex);
+	RegisterClassExA(&wcex);
 
 	// 计算窗口大小
 	DWORD dwStyle = WS_OVERLAPPEDWINDOW &~ WS_MAXIMIZEBOX &~ WS_THICKFRAME;
@@ -41,16 +42,16 @@ bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 	int screenHeight = ::GetSystemMetrics(SM_CYSCREEN);
 
 	// 创建窗口
-	s_HWnd = ::CreateWindowEx(
+	s_HWnd = ::CreateWindowExA(
 		NULL,
-		L"Easy2DApp",
+		"Easy2DApp",
 		title.c_str(),
 		dwStyle,
 		(screenWidth - nWidth) / 2, (screenHeight - nHeight) / 2, 
 		nWidth, nHeight,
 		nullptr,
 		nullptr,
-		HINST_THISCOMPONENT,
+		hinst,
 		nullptr
 	);
 
@@ -70,12 +71,12 @@ bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 	}
 	else
 	{
-		::UnregisterClass(L"Easy2DApp", HINST_THISCOMPONENT);
+		::UnregisterClassA("Easy2DApp", hinst);
 	}
 
 	if (FAILED(hr))
 	{
-		Window::error(L"Create Window Failed!");
+		Window::error("Create Window Failed!");
 	}
 
 	return SUCCEEDED(hr);
@@ -184,7 +185,7 @@ void easy2d::Window::setSize(int width, int height)
 	int screenHeight = ::GetSystemMetrics(SM_CYSCREEN);
 	// 当输入的窗口大小比分辨率大时，给出警告
 	if (screenWidth < width || screenHeight < height)
-		E2D_WARNING(L"The window is larger than screen!");
+		E2D_WARNING("The window is larger than screen!");
 	// 取最小值
 	width = min(width, screenWidth);
 	height = min(height, screenHeight);
@@ -195,16 +196,16 @@ void easy2d::Window::setSize(int width, int height)
 void easy2d::Window::setTitle(const String& title)
 {
 	// 设置窗口标题
-	::SetWindowText(s_HWnd, title.c_str());
+	::SetWindowTextA(s_HWnd, title.c_str());
 }
 
 void easy2d::Window::setIcon(int iconID)
 {
-	HINSTANCE hInstance = ::GetModuleHandle(nullptr);
-	HICON hIcon = (HICON)::LoadImage(hInstance, MAKEINTRESOURCE(iconID), IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR | LR_CREATEDIBSECTION | LR_DEFAULTSIZE);
+	HINSTANCE hInstance = ::GetModuleHandleA(nullptr);
+	HICON hIcon = (HICON)::LoadImageA(hInstance, MAKEINTRESOURCEA(iconID), IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR | LR_CREATEDIBSECTION | LR_DEFAULTSIZE);
 	// 设置窗口的图标
-	::SendMessage(s_HWnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
-	::SendMessage(s_HWnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+	::SendMessageA(s_HWnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+	::SendMessageA(s_HWnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 }
 
 void easy2d::Window::setCursor(Cursor cursor)
@@ -214,8 +215,8 @@ void easy2d::Window::setCursor(Cursor cursor)
 
 easy2d::String easy2d::Window::getTitle()
 {
-	wchar_t wszTitle[MAX_PATH] = { 0 };
-	::GetWindowText(s_HWnd, wszTitle, MAX_PATH);
+	char wszTitle[MAX_PATH] = { 0 };
+	::GetWindowTextA(s_HWnd, wszTitle, MAX_PATH);
 	return wszTitle;
 }
 
@@ -242,19 +243,19 @@ void easy2d::Window::setTypewritingEnable(bool enable)
 
 void easy2d::Window::info(const String & text, const String & title)
 {
-	::MessageBox(s_HWnd, text.c_str(), title.c_str(), MB_ICONINFORMATION | MB_OK);
+	::MessageBoxA(s_HWnd, text.c_str(), title.c_str(), MB_ICONINFORMATION | MB_OK);
 	Game::reset();
 }
 
 void easy2d::Window::warning(const String& title, const String& text)
 {
-	::MessageBox(s_HWnd, text.c_str(), title.c_str(), MB_ICONWARNING | MB_OK);
+	::MessageBoxA(s_HWnd, text.c_str(), title.c_str(), MB_ICONWARNING | MB_OK);
 	Game::reset();
 }
 
 void easy2d::Window::error(const String & text, const String & title)
 {
-	::MessageBox(s_HWnd, text.c_str(), title.c_str(), MB_ICONERROR | MB_OK);
+	::MessageBoxA(s_HWnd, text.c_str(), title.c_str(), MB_ICONERROR | MB_OK);
 	Game::reset();
 }
 
@@ -363,16 +364,6 @@ LRESULT easy2d::Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	hasHandled = true;
 	break;
 
-	// 重绘窗口
-	case WM_PAINT:
-	{
-		easy2d::Renderer::__render();
-		ValidateRect(hWnd, nullptr);
-	}
-	result = 0;
-	hasHandled = true;
-	break;
-
 	case WM_SETCURSOR:
 	{
 		Window::__updateCursor();
@@ -405,7 +396,7 @@ LRESULT easy2d::Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
 	if (!hasHandled)
 	{
-		result = DefWindowProc(hWnd, message, wParam, lParam);
+		result = DefWindowProcA(hWnd, message, wParam, lParam);
 	}
 
 	return result;

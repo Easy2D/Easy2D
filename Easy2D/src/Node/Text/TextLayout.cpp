@@ -214,8 +214,15 @@ void easy2d::TextLayout::_recreateFormat()
 {
 	SafeRelease(_textFormat);
 
+	WideString fontFamily;
+
+	if (!_style.font.family.empty())
+	{
+		fontFamily = NarrowToWide(_style.font.family);
+	}
+
 	HRESULT hr = Renderer::getIDWriteFactory()->CreateTextFormat(
-		_style.font.family.c_str(),
+		fontFamily.c_str(),
 		nullptr,
 		DWRITE_FONT_WEIGHT(_style.font.weight),
 		_style.font.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL,
@@ -227,7 +234,7 @@ void easy2d::TextLayout::_recreateFormat()
 
 	if (FAILED(hr))
 	{
-		E2D_WARNING(L"Text::_createFormat error : Create IDWriteTextFormat failed!");
+		E2D_WARNING("Text::_createFormat error : Create IDWriteTextFormat failed!");
 		_textFormat = nullptr;
 		return;
 	}
@@ -273,11 +280,12 @@ void easy2d::TextLayout::_recreateLayout()
 
 	if (_textFormat == nullptr)
 	{
-		E2D_WARNING(L"Text::_createLayout failed! _textFormat NULL pointer exception.");
+		E2D_WARNING("Text::_createLayout failed! _textFormat NULL pointer exception.");
 		return;
 	}
 
-	UINT32 length = (UINT32)_text.length();
+	WideString content = NarrowToWide(_text);
+	UINT32 length = (UINT32)content.length();
 
 	// 创建 TextLayout
 	HRESULT hr;
@@ -285,7 +293,7 @@ void easy2d::TextLayout::_recreateLayout()
 	if (_style.wrapping)
 	{
 		hr = Renderer::getIDWriteFactory()->CreateTextLayout(
-			_text.c_str(),
+			content.c_str(),
 			length,
 			_textFormat,
 			float(_style.wrappingWidth),
@@ -303,7 +311,7 @@ void easy2d::TextLayout::_recreateLayout()
 	}
 	else
 	{
-		hr = Renderer::getIDWriteFactory()->CreateTextLayout(_text.c_str(), length, _textFormat, 0, 0, &_textLayout);
+		hr = Renderer::getIDWriteFactory()->CreateTextLayout(content.c_str(), length, _textFormat, 0, 0, &_textLayout);
 		// 为防止文本对齐问题，根据刚才创建的 layout 宽度重新创建它
 		if (_textLayout)
 		{
@@ -314,13 +322,13 @@ void easy2d::TextLayout::_recreateLayout()
 			_size = Size(metrics.width, metrics.height);
 			// 重新创建 layout
 			SafeRelease(_textLayout);
-			hr = Renderer::getIDWriteFactory()->CreateTextLayout(_text.c_str(), length, _textFormat, _size.width, 0, &_textLayout);
+			hr = Renderer::getIDWriteFactory()->CreateTextLayout(content.c_str(), length, _textFormat, _size.width, 0, &_textLayout);
 		}
 	}
 
 	if (FAILED(hr))
 	{
-		E2D_WARNING(L"Text::_createLayout error : Create IDWriteTextLayout failed!");
+		E2D_WARNING("Text::_createLayout error : Create IDWriteTextLayout failed!");
 		_textLayout = nullptr;
 		return;
 	}

@@ -43,7 +43,7 @@ void easy2d::SceneManager::enter(Scene * scene, Transition * transition /* = nul
 void easy2d::SceneManager::back(Transition * transition /* = nullptr */)
 {
 	// 栈为空时，调用返回场景函数失败
-	if (s_SceneStack.size() == 0) E2D_WARNING(L"Scene stack is empty!");
+	if (s_SceneStack.size() == 0) E2D_WARNING("Scene stack is empty!");
 	if (s_SceneStack.size() == 0) return;
 
 	// 从栈顶取出场景指针，作为下一场景

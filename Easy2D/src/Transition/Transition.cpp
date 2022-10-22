@@ -42,7 +42,7 @@ void easy2d::Transition::_init(Scene * prev, Scene * next)
 
 	if (FAILED(hr))
 	{
-		E2D_WARNING(L"场景过渡动画图层创建失败");
+		E2D_WARNING("场景过渡动画图层创建失败");
 		return;
 	}
 

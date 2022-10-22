@@ -19,9 +19,9 @@ easy2d::ByteString easy2d::FormatString(const char* format, ...)
     return result;
 }
 
-easy2d::String easy2d::FormatString(const wchar_t* format, ...)
+easy2d::WideString easy2d::FormatString(const wchar_t* format, ...)
 {
-    easy2d::String result;
+    easy2d::WideString result;
     if (format)
     {
         va_list args = nullptr;
@@ -38,7 +38,7 @@ easy2d::String easy2d::FormatString(const wchar_t* format, ...)
     return result;
 }
 
-easy2d::ByteString easy2d::WideToNarrow(const easy2d::String& str)
+easy2d::ByteString easy2d::WideToNarrow(const easy2d::WideString& str)
 {
     if (str.empty())
         return easy2d::ByteString();
@@ -56,20 +56,20 @@ easy2d::ByteString easy2d::WideToNarrow(const easy2d::String& str)
     return easy2d::ByteString();
 }
 
-easy2d::String easy2d::NarrowToWide(const easy2d::ByteString& str)
+easy2d::WideString easy2d::NarrowToWide(const easy2d::ByteString& str)
 {
     if (str.empty())
-        return easy2d::String();
+        return easy2d::WideString();
 
     int num = ::MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
     if (num > 0)
     {
-        easy2d::String result;
+        easy2d::WideString result;
         result.resize(num - 1);
 
         // C++11 保证了字符串是空结尾的
         ::MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, &result[0], num);
         return result;
     }
-    return easy2d::String();
+    return easy2d::WideString();
 }

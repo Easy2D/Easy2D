@@ -368,7 +368,7 @@ public:
 	// 添加输入监听
 	Listener* addListener(
 		const Listener::Callback& func,	/* 监听到用户输入时的执行函数 */
-		const String& name = L"",		/* 监听器名称 */
+		const String& name = {},		/* 监听器名称 */
 		bool paused = false				/* 是否暂停 */
 	);
 

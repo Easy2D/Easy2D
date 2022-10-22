@@ -11,21 +11,21 @@ class Random
 public:
 	// 取得范围内的一个整型随机数
 	template<typename T>
-	static inline T range(T min, T max) 
-	{ 
-		return easy2d::Random::__randomInt(min, max); 
+	static inline T range(T min, T max)
+	{
+		return easy2d::Random::__randomInt(min, max);
 	}
 
 	// 取得范围内的一个浮点数随机数
-	static inline float range(float min, float max) 
-	{ 
-		return easy2d::Random::__randomReal(min, max); 
+	static inline float range(float min, float max)
+	{
+		return easy2d::Random::__randomReal(min, max);
 	}
 
 	// 取得范围内的一个浮点数随机数
 	static inline double range(double min, double max)
-	{ 
-		return easy2d::Random::__randomReal(min, max); 
+	{
+		return easy2d::Random::__randomReal(min, max);
 	}
 
 private:
@@ -220,7 +220,7 @@ public:
 	// 添加定时器（每帧执行一次）
 	static void add(
 		const Function<void()>& func,	/* 执行函数 */
-		const String& name = L""		/* 定时器名称 */
+		const String& name = ""		/* 定时器名称 */
 	);
 
 	// 添加定时器
@@ -229,7 +229,7 @@ public:
 		float delay,					/* 时间间隔（秒） */
 		int times = -1,					/* 执行次数（设 -1 为永久执行） */
 		bool paused = false,			/* 是否暂停 */
-		const String& name = L""		/* 定时器名称 */
+		const String& name = ""		/* 定时器名称 */
 	);
 
 	// 在足够延迟后执行指定函数
@@ -282,28 +282,28 @@ public:
 	static void saveInt(
 		const String& key,					/* 键值 */
 		int value,							/* 数据 */
-		const String& field = L"Defalut"	/* 字段名称 */
+		const String& field = "Defalut"	/* 字段名称 */
 	);
 
 	// 保存 float 类型的值
 	static void saveDouble(
 		const String& key,					/* 键值 */
 		float value,						/* 数据 */
-		const String& field = L"Defalut"	/* 字段名称 */
+		const String& field = "Defalut"	/* 字段名称 */
 	);
 
 	// 保存 bool 类型的值
 	static void saveBool(
 		const String& key,					/* 键值 */
 		bool value,							/* 数据 */
-		const String& field = L"Defalut"	/* 字段名称 */
+		const String& field = "Defalut"	/* 字段名称 */
 	);
 
 	// 保存 字符串 类型的值
 	static void saveString(
 		const String& key,					/* 键值 */
 		const String& value,				/* 数据 */
-		const String& field = L"Defalut"	/* 字段名称 */
+		const String& field = "Defalut"	/* 字段名称 */
 	);
 
 	// 获取 int 类型的值
@@ -311,7 +311,7 @@ public:
 	static int getInt(
 		const String& key,					/* 键值 */
 		int defaultValue,					/* 默认值 */
-		const String& field = L"Defalut"	/* 字段名称 */
+		const String& field = "Defalut"	/* 字段名称 */
 	);
 
 	// 获取 float 类型的值
@@ -319,7 +319,7 @@ public:
 	static float getDouble(
 		const String& key,					/* 键值 */
 		float defaultValue,				/* 默认值 */
-		const String& field = L"Defalut"	/* 字段名称 */
+		const String& field = "Defalut"	/* 字段名称 */
 	);
 
 	// 获取 bool 类型的值
@@ -327,7 +327,7 @@ public:
 	static bool getBool(
 		const String& key,					/* 键值 */
 		bool defaultValue,					/* 默认值 */
-		const String& field = L"Defalut"	/* 字段名称 */
+		const String& field = "Defalut"	/* 字段名称 */
 	);
 
 	// 获取 字符串 类型的值
@@ -335,7 +335,7 @@ public:
 	static String getString(
 		const String& key,					/* 键值 */
 		const String& defaultValue,			/* 默认值 */
-		const String& field = L"Defalut"	/* 字段名称 */
+		const String& field = "Defalut"	/* 字段名称 */
 	);
 };
 
@@ -374,8 +374,8 @@ public:
 
 	// 打开保存文件对话框
 	static String getSaveFilePath(
-		const String& title = L"保存到",		/* 对话框标题 */
-		const String& defExt = L""			/* 默认扩展名 */
+		const String& title = "保存到",		/* 对话框标题 */
+		const String& defExt = ""			/* 默认扩展名 */
 	);
 
 	// 创建文件夹

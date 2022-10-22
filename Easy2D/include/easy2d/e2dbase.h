@@ -16,10 +16,10 @@ class Game
 public:
 	// 初始化游戏
 	static bool init(
-		const String& title = L"Easy2D",	/* 窗口标题 */
-		int width = 640,					/* 窗口宽度 */
-		int height = 480,					/* 窗口高度 */
-		const String& mutexName = L""		/* 进程互斥体名称 */
+		const String& title = "Easy2D Game",	/* 窗口标题 */
+		int width = 640,						/* 窗口宽度 */
+		int height = 480,						/* 窗口高度 */
+		const String& uniqueName = ""			/* 唯一名称，设置后相同名称的游戏仅能启动一个 */
 	);
 
 	// 启动游戏
@@ -111,19 +111,19 @@ public:
 	// 弹出提示窗口
 	static void info(
 		const String& text,					/* 内容 */
-		const String& title = L"Infomation"	/* 窗口标题 */
+		const String& title = "Infomation"	/* 窗口标题 */
 	);
 
 	// 弹出警告窗口
 	static void warning(
 		const String& text,					/* 内容 */
-		const String& title = L"Warning"	/* 窗口标题 */
+		const String& title = "Warning"		/* 窗口标题 */
 	);
 
 	// 弹出错误窗口
 	static void error(
 		const String& text,					/* 内容 */
-		const String& title = L"Error"		/* 窗口标题 */
+		const String& title = "Error"		/* 窗口标题 */
 	);
 
 private:

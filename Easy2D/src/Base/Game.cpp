@@ -13,28 +13,28 @@ static bool s_bInitialized = false;
 static easy2d::String s_sGameName;
 
 
-bool easy2d::Game::init(const String& title, int width, int height, const String& mutexName)
+bool easy2d::Game::init(const String& title, int width, int height, const String& uniqueName)
 {
 	if (s_bInitialized)
 	{
-		E2D_WARNING(L"The game has been initialized!");
+		E2D_WARNING("The game has been initialized!");
 		return false;
 	}
 
-	if (!mutexName.empty())
+	if (!uniqueName.empty())
 	{
 		// 创建进程互斥体
-		String fullMutexName = L"Easy2DApp-" + mutexName;
-		HANDLE hMutex = ::CreateMutex(nullptr, TRUE, fullMutexName.c_str());
+		String fullMutexName = "Easy2DApp-" + uniqueName;
+		HANDLE hMutex = ::CreateMutexA(nullptr, TRUE, fullMutexName.c_str());
 
 		if (hMutex == nullptr)
 		{
-			E2D_WARNING(L"CreateMutex Failed!");
+			E2D_WARNING("CreateMutex Failed!");
 		}
 		else if (::GetLastError() == ERROR_ALREADY_EXISTS)
 		{
 			// 如果程序已经存在并且正在运行，弹窗提示
-			Window::error(L"游戏已在其他窗口中打开！", L"提示");
+			Window::error("游戏已在其他窗口中打开！", "提示");
 			// 关闭进程互斥体
 			::CloseHandle(hMutex);
 			return false;
@@ -44,49 +44,49 @@ bool easy2d::Game::init(const String& title, int width, int height, const String
 	// 初始化 COM 组件
 	if (FAILED(CoInitialize(nullptr)))
 	{
-		E2D_ERROR(L"初始化 COM 组件失败");
+		E2D_ERROR("初始化 COM 组件失败");
 		return false;
 	}
 
 	// 创建设备无关资源
 	if (!Renderer::__createDeviceIndependentResources())
 	{
-		E2D_ERROR(L"渲染器设备无关资源创建失败");
+		E2D_ERROR("渲染器设备无关资源创建失败");
 		return false;
 	}
 
 	// 初始化窗口
 	if (!Window::__init(title, width, height))
 	{
-		E2D_ERROR(L"初始化窗口失败");
+		E2D_ERROR("初始化窗口失败");
 		return false;
 	}
 
 	// 创建设备相关资源
 	if (!Renderer::__createDeviceResources())
 	{
-		E2D_ERROR(L"渲染器设备相关资源创建失败");
+		E2D_ERROR("渲染器设备相关资源创建失败");
 		return false;
 	}
 
 	// 初始化 DirectInput
 	if (!Input::__init())
 	{
-		E2D_ERROR(L"初始化 DirectInput 失败");
+		E2D_ERROR("初始化 DirectInput 失败");
 		return false;
 	}
 
 	// 初始化播放器
 	if (!Music::__init())
 	{
-		E2D_ERROR(L"初始化 XAudio2 失败");
+		E2D_ERROR("初始化 XAudio2 失败");
 		return false;
 	}
 
 	// 初始化路径
 	if (!Path::__init(title))
 	{
-		E2D_WARNING(L"Path::__init failed!");
+		E2D_WARNING("Path::__init failed!");
 	}
 
 	// 保存游戏名称
@@ -102,7 +102,7 @@ void easy2d::Game::start(int fpsLimit)
 {
 	if (!s_bInitialized)
 	{
-		E2D_WARNING(L"开始游戏前未进行初始化");
+		E2D_ERROR("开始游戏前未进行初始化");
 		return;
 	}
 

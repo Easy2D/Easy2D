@@ -511,7 +511,7 @@ bool easy2d::Renderer::__createDeviceIndependentResources()
 		D2D1_FACTORY_TYPE_SINGLE_THREADED,
 		&s_pDirect2dFactory
 	);
-	E2D_ERROR_IF_FAILED(hr, L"Create ID2D1Factory failed");
+	E2D_ERROR_IF_FAILED(hr, "Create ID2D1Factory failed");
 
 	if (SUCCEEDED(hr))
 	{
@@ -528,7 +528,7 @@ bool easy2d::Renderer::__createDeviceIndependentResources()
 			0,
 			&s_pMiterStrokeStyle
 		);
-		E2D_ERROR_IF_FAILED(hr, L"Create ID2D1StrokeStyle failed");
+		E2D_ERROR_IF_FAILED(hr, "Create ID2D1StrokeStyle failed");
 	}
 
 	if (SUCCEEDED(hr))
@@ -546,7 +546,7 @@ bool easy2d::Renderer::__createDeviceIndependentResources()
 			0,
 			&s_pBevelStrokeStyle
 		);
-		E2D_ERROR_IF_FAILED(hr, L"Create ID2D1StrokeStyle failed");
+		E2D_ERROR_IF_FAILED(hr, "Create ID2D1StrokeStyle failed");
 	}
 
 	if (SUCCEEDED(hr))
@@ -564,7 +564,7 @@ bool easy2d::Renderer::__createDeviceIndependentResources()
 			0,
 			&s_pRoundStrokeStyle
 		);
-		E2D_ERROR_IF_FAILED(hr, L"Create ID2D1StrokeStyle failed");
+		E2D_ERROR_IF_FAILED(hr, "Create ID2D1StrokeStyle failed");
 	}
 
 	if (SUCCEEDED(hr))
@@ -577,7 +577,7 @@ bool easy2d::Renderer::__createDeviceIndependentResources()
 			IID_IWICImagingFactory,
 			reinterpret_cast<void**>(&s_pIWICFactory)
 		);
-		E2D_ERROR_IF_FAILED(hr, L"Create IWICImagingFactory failed");
+		E2D_ERROR_IF_FAILED(hr, "Create IWICImagingFactory failed");
 	}
 
 	if (SUCCEEDED(hr))
@@ -588,7 +588,7 @@ bool easy2d::Renderer::__createDeviceIndependentResources()
 			__uuidof(IDWriteFactory),
 			reinterpret_cast<IUnknown * *>(&s_pDWriteFactory)
 		);
-		E2D_ERROR_IF_FAILED(hr, L"Create IDWriteFactory failed");
+		E2D_ERROR_IF_FAILED(hr, "Create IDWriteFactory failed");
 	}
 
 	if (SUCCEEDED(hr))
@@ -604,7 +604,7 @@ bool easy2d::Renderer::__createDeviceIndependentResources()
 			L"",
 			&s_pTextFormat
 		);
-		E2D_ERROR_IF_FAILED(hr, L"Create IDWriteTextFormat failed");
+		E2D_ERROR_IF_FAILED(hr, "Create IDWriteTextFormat failed");
 	}
 
 	if (SUCCEEDED(hr))
@@ -654,7 +654,7 @@ bool easy2d::Renderer::__createDeviceResources()
 		),
 		&s_pRenderTarget
 	);
-	E2D_ERROR_IF_FAILED(hr, L"Create ID2D1HwndRenderTarget failed");
+	E2D_ERROR_IF_FAILED(hr, "Create ID2D1HwndRenderTarget failed");
 
 	if (SUCCEEDED(hr))
 	{
@@ -663,7 +663,7 @@ bool easy2d::Renderer::__createDeviceResources()
 			D2D1::ColorF(D2D1::ColorF::White),
 			&s_pSolidBrush
 		);
-		E2D_ERROR_IF_FAILED(hr, L"Create ID2D1SolidColorBrush failed");
+		E2D_ERROR_IF_FAILED(hr, "Create ID2D1SolidColorBrush failed");
 	}
 
 	if (SUCCEEDED(hr))
@@ -713,7 +713,7 @@ void easy2d::Renderer::__render()
 	{
 		static int s_nRenderTimes = 0;
 		static float s_fLastRenderTime = 0;
-		static String s_sFpsText;
+		static WideString s_sFpsText;
 
 		++s_nRenderTimes;
 
@@ -775,7 +775,7 @@ void easy2d::Renderer::__render()
 
 	if (FAILED(hr))
 	{
-		E2D_ERROR(L"Renderer error occurred! ERR_CODE=%#X", hr);
+		E2D_ERROR("Renderer error occurred! ERR_CODE=%#X", hr);
 	}
 }
 

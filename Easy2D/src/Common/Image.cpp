@@ -105,7 +105,7 @@ easy2d::Image* easy2d::Image::load(const String& filePath)
 		return image;
 	}
 
-	E2D_ERROR(L"Load image failed! ERROR_CODE = %#X", hr);
+	E2D_ERROR("Load image failed! ERROR_CODE = %#X", hr);
 	return nullptr;
 }
 
@@ -134,7 +134,7 @@ easy2d::Image* easy2d::Image::load(const Resource& res)
 		return image;
 	}
 
-	E2D_ERROR(L"Load image failed! ERROR_CODE = %#X", hr);
+	E2D_ERROR("Load image failed! ERROR_CODE = %#X", hr);
 	return nullptr;
 }
 
@@ -175,7 +175,7 @@ void easy2d::Image::reloadCache()
 		}
 		else
 		{
-			E2D_ERROR(L"Reload image failed! ERROR_CODE = %#X", hr);
+			E2D_ERROR("Reload image failed! ERROR_CODE = %#X", hr);
 		}
 		SafeRelease(pBitmap);
 	}
@@ -190,7 +190,7 @@ void easy2d::Image::reloadCache()
 		}
 		else
 		{
-			E2D_ERROR(L"Reload image failed! ERROR_CODE = %#X", hr);
+			E2D_ERROR("Reload image failed! ERROR_CODE = %#X", hr);
 		}
 		SafeRelease(pBitmap);
 	}
@@ -207,12 +207,14 @@ HRESULT LoadBitmapFromFile(ID2D1Bitmap** ppBitmap, const easy2d::String& filePat
 		return S_FALSE;
 	}
 
+	WideString wFilePath = NarrowToWide(filePath);
+
 	HRESULT hr = S_OK;
 
 	// ´´½¨½âÂëÆ÷
 	IWICBitmapDecoder* pDecoder = nullptr;
 	hr = Renderer::getIWICImagingFactory()->CreateDecoderFromFilename(
-		actualFilePath.c_str(),
+		wFilePath.c_str(),
 		nullptr,
 		GENERIC_READ,
 		WICDecodeMetadataCacheOnLoad,

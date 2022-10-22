@@ -11,12 +11,12 @@ using namespace easy2d;
 
 namespace
 {
-	IDirectInput8* s_pDirectInput = nullptr;			// DirectInput 接口对象
-	IDirectInputDevice8* s_KeyboardDevice = nullptr;	// 键盘设备接口
+	IDirectInput8A* s_pDirectInput = nullptr;			// DirectInput 接口对象
+	IDirectInputDevice8A* s_KeyboardDevice = nullptr;	// 键盘设备接口
 	char s_KeyBuffer[BUFFER_SIZE] = { 0 };				// 用于保存键盘按键信息缓冲区
 	char s_KeyRecordBuffer[BUFFER_SIZE] = { 0 };		// 键盘消息二级缓冲区
 
-	IDirectInputDevice8* s_MouseDevice = nullptr;		// 鼠标设备接口
+	IDirectInputDevice8A* s_MouseDevice = nullptr;		// 鼠标设备接口
 	DIMOUSESTATE s_MouseState;							// 鼠标信息存储结构体
 	DIMOUSESTATE s_MouseRecordState;					// 鼠标信息二级缓冲
 	POINT s_MousePosition;								// 鼠标位置存储结构体
@@ -139,7 +139,7 @@ bool Input::__init()
 		}
 		else
 		{
-			E2D_WARNING(L"Keyboard not found!");
+			E2D_WARNING("Keyboard not found!");
 			return false;
 		}
 	}
@@ -158,7 +158,7 @@ bool Input::__init()
 		}
 		else
 		{
-			E2D_WARNING(L"MouseCode not found!");
+			E2D_WARNING("MouseCode not found!");
 			return false;
 		}
 	}

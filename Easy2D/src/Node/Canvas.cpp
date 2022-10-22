@@ -109,7 +109,7 @@ void easy2d::CanvasBase::_initialize()
 
 		if (FAILED(hr))
 		{
-			E2D_ERROR(L"CanvasBase beginDraw failed! ERR_CODE=%#X", hr);
+			E2D_ERROR("CanvasBase beginDraw failed! ERR_CODE=%#X", hr);
 		}
 	}
 }
@@ -182,7 +182,7 @@ easy2d::CanvasBrush::CanvasBrush(ID2D1RenderTarget* rt, ID2D1SolidColorBrush* br
 	}
 	else
 	{
-		E2D_ERROR(L"CanvasBrush create drawing state block failed! ERR_CODE=%#X", hr);
+		E2D_ERROR("CanvasBrush create drawing state block failed! ERR_CODE=%#X", hr);
 	}
 
 	_rt->BeginDraw();

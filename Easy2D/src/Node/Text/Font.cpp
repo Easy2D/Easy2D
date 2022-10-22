@@ -1,7 +1,7 @@
 #include <easy2d/e2dtext.h>
 
 easy2d::Font::Font()
-	: family(L"")
+	: family("")
 	, size(22)
 	, weight(Font::Weight::Normal)
 	, italic(false)

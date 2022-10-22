@@ -15,28 +15,28 @@ namespace
 
 namespace 
 {
-	void Output(std::wostream& os, const wchar_t* prompt, const wchar_t* format, va_list args)
+	void Output(std::ostream& os, const char* prompt, const char* format, va_list args)
 	{
 		if (s_bEnable)
 		{
-			static wchar_t tempBuffer[1024 * 3 + 1];
+			static char tempBuffer[1024 * 3 + 1];
 
-			std::wstringstream ss;
+			std::stringstream ss;
 
 			if (prompt)
 				ss << prompt;
 
 			if (format)
 			{
-				const auto len = ::_vscwprintf(format, args) + 1;
-				::_vsnwprintf_s(tempBuffer, len, len, format, args);
+				const auto len = ::_vscprintf(format, args) + 1;
+				::_vsnprintf_s(tempBuffer, len, len, format, args);
 
 				ss << tempBuffer << std::endl;
 			}
 
-			std::wstring output = ss.str();
+			std::string output = ss.str();
 			os << output << std::flush;
-			::OutputDebugStringW(output.c_str());
+			::OutputDebugStringA(output.c_str());
 		}
 	}
 
@@ -145,7 +145,7 @@ void easy2d::Logger::messageln(String format, ...)
 	va_list args = nullptr;
 	va_start(args, format);
 
-	Output(std::wcout, L"Debug: ", format.c_str(), args);
+	Output(std::cout, "Debug: ", format.c_str(), args);
 
 	va_end(args);
 }
@@ -155,7 +155,7 @@ void easy2d::Logger::warningln(String format, ...)
 	va_list args = nullptr;
 	va_start(args, format);
 
-	Output(std::wcout, L"Warning: ", format.c_str(), args);
+	Output(std::cout, "Warning: ", format.c_str(), args);
 
 	va_end(args);
 }
@@ -165,7 +165,7 @@ void easy2d::Logger::errorln(String format, ...)
 	va_list args = nullptr;
 	va_start(args, format);
 
-	Output(std::wcout, L"Error: ", format.c_str(), args);
+	Output(std::cout, "Error: ", format.c_str(), args);
 
 	va_end(args);
 }
@@ -184,7 +184,7 @@ void easy2d::Logger::showConsole(bool show)
 			HWND console = ::AllocateConsole();
 			if (!console)
 			{
-				E2D_WARNING(L"AllocConsole failed");
+				E2D_WARNING("AllocConsole failed");
 			}
 			else
 			{

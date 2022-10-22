@@ -76,8 +76,8 @@ void easy2d::ActionManager::__stopAllBindedWith(Node * target)
 
 void easy2d::ActionManager::start(Action * action, Node * target, bool paused)
 {
-	if (action == nullptr) E2D_WARNING(L"Action NULL pointer exception!");
-	if (target == nullptr) E2D_WARNING(L"Target node NULL pointer exception!");
+	if (action == nullptr) E2D_WARNING("Action NULL pointer exception!");
+	if (target == nullptr) E2D_WARNING("Target node NULL pointer exception!");
 
 	if (action && target)
 	{
@@ -94,7 +94,7 @@ void easy2d::ActionManager::start(Action * action, Node * target, bool paused)
 		}
 		else
 		{
-			E2D_WARNING(L"该 Action 已有执行目标");
+			E2D_WARNING("该 Action 已有执行目标");
 		}
 	}
 }

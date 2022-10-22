@@ -158,7 +158,7 @@ public:
 	// 获取该动作的倒转
 	virtual MoveTo * reverse() const override
 	{
-		E2D_WARNING(L"reverse() not supported in MoveTo");
+		E2D_WARNING("reverse() not supported in MoveTo");
 		return nullptr;
 	}
 
@@ -223,7 +223,7 @@ public:
 	// 获取该动作的倒转
 	virtual JumpTo * reverse() const override
 	{
-		E2D_WARNING(L"reverse() not supported in JumpTo");
+		E2D_WARNING("reverse() not supported in JumpTo");
 		return nullptr;
 	}
 
@@ -295,7 +295,7 @@ public:
 	// 获取该动作的倒转
 	virtual ScaleTo * reverse() const override
 	{
-		E2D_WARNING(L"reverse() not supported in ScaleTo");
+		E2D_WARNING("reverse() not supported in ScaleTo");
 		return nullptr;
 	}
 
@@ -354,7 +354,7 @@ public:
 	// 获取该动作的倒转
 	virtual OpacityTo * reverse() const override
 	{
-		E2D_WARNING(L"reverse() not supported in OpacityTo");
+		E2D_WARNING("reverse() not supported in OpacityTo");
 		return nullptr;
 	}
 
@@ -442,7 +442,7 @@ public:
 	// 获取该动作的倒转
 	virtual RotateTo * reverse() const override
 	{
-		E2D_WARNING(L"reverse() not supported in RotateTo");
+		E2D_WARNING("reverse() not supported in RotateTo");
 		return nullptr;
 	}
 

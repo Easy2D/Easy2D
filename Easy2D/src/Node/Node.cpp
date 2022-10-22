@@ -500,13 +500,13 @@ void easy2d::Node::setProperty(Property prop)
 
 void easy2d::Node::addChild(Node * child, int order  /* = 0 */)
 {
-	if (child == nullptr) E2D_WARNING(L"Node::addChild NULL pointer exception.");
+	if (child == nullptr) E2D_WARNING("Node::addChild NULL pointer exception.");
 
 	if (child)
 	{
 		if (child->_parent != nullptr)
 		{
-			E2D_WARNING(L"节点已有父节点, 不能再添加到其他节点");
+			E2D_WARNING("节点已有父节点, 不能再添加到其他节点");
 			return;
 		}
 
@@ -514,7 +514,7 @@ void easy2d::Node::addChild(Node * child, int order  /* = 0 */)
 		{
 			if (child == parent)
 			{
-				E2D_WARNING(L"一个节点不能同时是另一个节点的父节点和子节点");
+				E2D_WARNING("一个节点不能同时是另一个节点的父节点和子节点");
 				return;
 			}
 		}
@@ -629,7 +629,7 @@ void easy2d::Node::removeFromParent()
 
 bool easy2d::Node::removeChild(Node * child)
 {
-	if (child == nullptr) E2D_WARNING(L"Node::removeChildren NULL pointer exception.");
+	if (child == nullptr) E2D_WARNING("Node::removeChildren NULL pointer exception.");
 
 	if (_children.empty())
 	{
@@ -658,7 +658,7 @@ bool easy2d::Node::removeChild(Node * child)
 
 void easy2d::Node::removeChildren(const String& childName)
 {
-	if (childName.empty()) E2D_WARNING(L"Invalid Node name.");
+	if (childName.empty()) E2D_WARNING("Invalid Node name.");
 
 	if (_children.empty())
 	{
