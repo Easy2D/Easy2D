@@ -42,16 +42,6 @@ void easy2d::Action::stop()
 	}
 }
 
-easy2d::String easy2d::Action::getName() const
-{
-	return _name;
-}
-
-void easy2d::Action::setName(const String& name)
-{
-	_name = name;
-}
-
 easy2d::Node * easy2d::Action::getTarget() const
 {
 	return _target;

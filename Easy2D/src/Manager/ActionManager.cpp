@@ -175,12 +175,12 @@ std::vector<easy2d::Action*> easy2d::ActionManager::get(const String& name)
 	std::vector<Action*> actions;
 	for (auto action : s_vActions)
 	{
-		if (action->getName() == name)
+		if (action->isName(name))
 		{
 			actions.push_back(action);
 		}
 	}
-	return std::move(actions);
+	return actions;
 }
 
 const std::vector<easy2d::Action*>& easy2d::ActionManager::getAll()

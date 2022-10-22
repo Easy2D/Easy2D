@@ -275,8 +275,24 @@ public:
 	// 获取引用计数
 	int getRefCount() const;
 
+	// 获取名称
+	String getName() const;
+
+	// 设置名称
+	void setName(
+		const String& name
+	);
+
+	// 名称是否相同
+	bool isName(
+		const String& name,
+		size_t hashName = 0
+	) const;
+
 private:
 	int _refCount;
+	String* _name;
+	size_t _hashName;
 };
 
 

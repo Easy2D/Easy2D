@@ -13,8 +13,6 @@ class ListenerBase
 	friend class Node;
 
 public:
-	virtual ~ListenerBase();
-
 	// 启动监听
 	void start();
 
@@ -23,14 +21,6 @@ public:
 
 	// 获取监听器运行状态
 	bool isRunning() const;
-
-	// 获取名称
-	String getName() const;
-
-	// 设置名称
-	void setName(
-		const String& name
-	);
 
 	// 游戏暂停时仍然运行
 	void ignoreGamePaused();
@@ -53,7 +43,6 @@ protected:
 	bool _running;
 	bool _done;
 	bool _ignoreGamePaused;
-	String* _name;
 };
 
 

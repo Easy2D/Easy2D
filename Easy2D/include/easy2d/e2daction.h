@@ -40,14 +40,6 @@ public:
 	// 停止动作
 	void stop();
 
-	// 获取动作名称
-	String getName() const;
-
-	// 设置动作名称
-	void setName(
-		const String& name
-	);
-
 	// 获取动作的拷贝
 	virtual Action * clone() const = 0;
 
@@ -82,12 +74,11 @@ protected:
 	);
 
 protected:
-	String	_name;
 	bool	_running;
 	bool	_done;
 	bool	_initialized;
 	bool	_removeTarget;
-	Node *	_target;
+	Node*	_target;
 	float	_last;
 };
 

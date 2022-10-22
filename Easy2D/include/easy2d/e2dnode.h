@@ -47,12 +47,6 @@ public:
 	// 获取节点显示状态
 	bool isVisible() const;
 
-	// 获取节点名称
-	String getName() const;
-
-	// 获取节点名称的 Hash 值
-	size_t getHashName() const;
-
 	// 获取节点绘图顺序
 	int getOrder() const;
 
@@ -139,11 +133,6 @@ public:
 	// 开启或禁用 onUpdate 函数
 	void setAutoUpdate(
 		bool bAutoUpdate
-	);
-
-	// 设置节点名称
-	void setName(
-		const String& name
 	);
 
 	// 设置节点横坐标
@@ -467,8 +456,6 @@ protected:
 	Vector2		_scale;
 	Vector2		_skewAngle;
 	Point		_anchor;
-	String*		_name;
-	size_t		_hashName;
 	Scene*		_parentScene;
 	Node*		_parent;
 	

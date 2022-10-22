@@ -5,17 +5,7 @@ easy2d::ListenerBase::ListenerBase()
 	: _running(true)
 	, _done(false)
 	, _ignoreGamePaused(false)
-	, _name(nullptr)
 {
-}
-
-easy2d::ListenerBase::~ListenerBase()
-{
-	if (_name)
-	{
-		delete _name;
-		_name = nullptr;
-	}
 }
 
 void easy2d::ListenerBase::receive(Node* target, Event* evt)
@@ -32,35 +22,6 @@ void easy2d::ListenerBase::receive(Node* target, Event* evt)
 bool easy2d::ListenerBase::isRunning() const
 {
 	return _running;
-}
-
-easy2d::String easy2d::ListenerBase::getName() const
-{
-	if (_name)
-	{
-		return *_name;
-	}
-	return String();
-}
-
-void easy2d::ListenerBase::setName(const String & name)
-{
-	if (!name.empty())
-	{
-		if (_name)
-		{
-			*_name = name;
-		}
-		else
-		{
-			_name = new String(name);
-		}
-	}
-	else if (_name)
-	{
-		delete _name;
-		_name = nullptr;
-	}
 }
 
 void easy2d::ListenerBase::done()

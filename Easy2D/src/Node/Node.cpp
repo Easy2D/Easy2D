@@ -1,7 +1,6 @@
 #include <easy2d/e2dnode.h>
 #include <easy2d/e2dmanager.h>
 #include <easy2d/e2daction.h>
-#include <algorithm>
 
 // 默认中心点位置
 static float s_fDefaultAnchorX = 0;
@@ -9,7 +8,6 @@ static float s_fDefaultAnchorY = 0;
 
 easy2d::Node::Node()
 	: _order(0)
-	, _name(nullptr)
 	, _pos()
 	, _size()
 	, _scale(1.0f, 1.0f)
@@ -22,7 +20,6 @@ easy2d::Node::Node()
 	, _visible(true)
 	, _parent(nullptr)
 	, _parentScene(nullptr)
-	, _hashName(0)
 	, _needSort(false)
 	, _dirtyTransform(false)
 	, _dirtyInverseTransform(false)
@@ -40,12 +37,6 @@ easy2d::Node::~Node()
 	{
 		child->_parent = nullptr;
 		GC::release(child);
-	}
-
-	if (_name)
-	{
-		delete _name;
-		_name = nullptr;
 	}
 }
 
@@ -211,20 +202,6 @@ void easy2d::Node::_updateOpacity()
 bool easy2d::Node::isVisible() const
 {
 	return _visible;
-}
-
-easy2d::String easy2d::Node::getName() const
-{
-	if (_name)
-	{
-		return *_name;
-	}
-	return String();
-}
-
-size_t easy2d::Node::getHashName() const
-{
-	return _hashName;
 }
 
 float easy2d::Node::getPosX() const
@@ -609,8 +586,7 @@ std::vector<easy2d::Node*> easy2d::Node::getChildren(const String& name) const
 
 	for (auto child : _children)
 	{
-		// 不同的名称可能会有相同的 Hash 值，但是先比较 Hash 可以提升搜索速度
-		if (child->_hashName == hash && child->getName() == name)
+		if (child->isName(name, hash))
 		{
 			vChildren.push_back(child);
 		}
@@ -624,8 +600,7 @@ easy2d::Node * easy2d::Node::getChild(const String& name) const
 
 	for (auto child : _children)
 	{
-		// 不同的名称可能会有相同的 Hash 值，但是先比较 Hash 可以提升搜索速度
-		if (child->_hashName == hash && child->getName() == name)
+		if (child->isName(name, hash))
 		{
 			return child;
 		}
@@ -696,7 +671,7 @@ void easy2d::Node::removeChildren(const String& childName)
 	for (size_t i = 0; i < size; ++i)
 	{
 		auto child = _children[i];
-		if (child->_hashName == hash && child->getName() == childName)
+		if (child->isName(childName, hash))
 		{
 			_children.erase(_children.begin() + i);
 			child->_parent = nullptr;
@@ -800,31 +775,6 @@ void easy2d::Node::dispatch(Event* evt)
 void easy2d::Node::setVisible(bool value)
 {
 	_visible = value;
-}
-
-void easy2d::Node::setName(const String& name)
-{
-	if (getName() != name)
-	{
-		if (!name.empty())
-		{
-			if (_name)
-			{
-				*_name = name;
-			}
-			else
-			{
-				_name = new String(name);
-			}
-		}
-		else if (_name)
-		{
-			delete _name;
-			_name = nullptr;
-		}
-		// 保存节点 Hash 名
-		_hashName = std::hash<String>{}(name);
-	}
 }
 
 void easy2d::Node::_setParentScene(Scene * scene)
