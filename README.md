@@ -1,4 +1,4 @@
-# Easy2D
+![Easy2D](./logo/logo_text_dark.png)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ah39otggqy7xu0qm/branch/master?svg=true)](https://ci.appveyor.com/project/Nomango/easy2d/branch/master)
 [![GitHub release](https://img.shields.io/github/release/easy2d/easy2d)](https://github.com/Easy2D/Easy2D/releases/latest)
