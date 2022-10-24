@@ -16,8 +16,6 @@ class CustomCursor
 public:
 	void update(Window::Cursor cursor)
 	{
-		::SetCursor(NULL);
-
 		if (_cursor != cursor)
 		{
 			_cursor = cursor;
@@ -34,14 +32,22 @@ public:
 			{
 				clear();
 				_cursorNode = newCursor;
-				_cursorNode->retain();
+				if (_cursorNode)
+				{
+					_cursorNode->retain();
+				}
 			}
+		}
+		else
+		{
+			clear();
 		}
 	}
 
 	void setCursorFunc(const Function<Node* (Window::Cursor)>& f)
 	{
 		_cursorFunc = f;
+		_cursor = Window::Cursor(-1);
 	}
 
 	Node* getCursorNode() const
@@ -60,11 +66,11 @@ public:
 
 	operator bool() const
 	{
-		return (bool)_cursorFunc;
+		return _cursorNode != nullptr;
 	}
 
 private:
-	Window::Cursor _cursor = Window::Cursor::None;
+	Window::Cursor _cursor = Window::Cursor(-1);
 	Function<Node* (Window::Cursor)> _cursorFunc = nullptr;
 	Node* _cursorNode = nullptr;
 };
@@ -172,14 +178,11 @@ void easy2d::Window::__poll()
 
 void easy2d::Window::__updateCursor()
 {
+	s_customCursor.update(s_currentCursor);
 	if (s_customCursor)
 	{
-		s_customCursor.update(s_currentCursor);
+		::SetCursor(NULL); // 保证不显示默认指针
 		return;
-	}
-	else
-	{
-		s_customCursor.clear();
 	}
 
 	LPCWSTR pCursorName = nullptr;
