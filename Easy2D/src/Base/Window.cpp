@@ -9,6 +9,68 @@
 static HWND s_HWnd = nullptr;
 static easy2d::Window::Cursor s_currentCursor = easy2d::Window::Cursor::Normal;
 
+namespace easy2d
+{
+class CustomCursor
+{
+public:
+	void update(Window::Cursor cursor)
+	{
+		::SetCursor(NULL);
+
+		if (_cursor != cursor)
+		{
+			_cursor = cursor;
+			loadCursor();
+		}
+	}
+
+	void loadCursor()
+	{
+		if (_cursorFunc)
+		{
+			auto newCursor = _cursorFunc(_cursor);
+			if (newCursor != _cursorNode)
+			{
+				clear();
+				_cursorNode = newCursor;
+				_cursorNode->retain();
+			}
+		}
+	}
+
+	void setCursorFunc(const Function<Node* (Window::Cursor)>& f)
+	{
+		_cursorFunc = f;
+	}
+
+	Node* getCursorNode() const
+	{
+		return _cursorNode;
+	}
+
+	void clear()
+	{
+		if (_cursorNode)
+		{
+			_cursorNode->release();
+			_cursorNode = nullptr;
+		}
+	}
+
+	operator bool() const
+	{
+		return (bool)_cursorFunc;
+	}
+
+private:
+	Window::Cursor _cursor = Window::Cursor::None;
+	Function<Node* (Window::Cursor)> _cursorFunc = nullptr;
+	Node* _cursorNode = nullptr;
+};
+}
+
+static easy2d::CustomCursor s_customCursor;
 
 bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 {
@@ -83,6 +145,7 @@ bool easy2d::Window::__init(const String& title, int nWidth, int nHeight)
 
 void easy2d::Window::__uninit()
 {
+	s_customCursor.clear();
 	// ¹Ø±Õ¿ØÖÆÌ¨
 	if (::GetConsoleWindow())
 	{
@@ -109,6 +172,16 @@ void easy2d::Window::__poll()
 
 void easy2d::Window::__updateCursor()
 {
+	if (s_customCursor)
+	{
+		s_customCursor.update(s_currentCursor);
+		return;
+	}
+	else
+	{
+		s_customCursor.clear();
+	}
+
 	LPCWSTR pCursorName = nullptr;
 	switch (s_currentCursor)
 	{
@@ -140,6 +213,10 @@ void easy2d::Window::__updateCursor()
 	{
 		HCURSOR hCursor = ::LoadCursor(nullptr, pCursorName);
 		::SetCursor(hCursor);
+	}
+	else
+	{
+		::SetCursor(NULL);
 	}
 }
 
@@ -210,6 +287,25 @@ void easy2d::Window::setIcon(int iconID)
 void easy2d::Window::setCursor(Cursor cursor)
 {
 	s_currentCursor = cursor;
+}
+
+void easy2d::Window::setCustomCursor(Node* cursor)
+{
+	setCustomCursor([=](Cursor) -> Node*
+		{
+			return cursor;
+		});
+}
+
+void easy2d::Window::setCustomCursor(Function<Node* (Cursor)> cursorFunc)
+{
+	s_customCursor.setCursorFunc(cursorFunc);
+	__updateCursor();
+}
+
+easy2d::Node* easy2d::Window::getCustomCursor()
+{
+	return s_customCursor.getCursorNode();
 }
 
 easy2d::String easy2d::Window::getTitle()

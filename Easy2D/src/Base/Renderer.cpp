@@ -708,6 +708,14 @@ void easy2d::Renderer::__render()
 	// ‰÷»æ≥°æ∞
 	SceneManager::__render();
 
+	// ‰÷»æ◊‘∂®“Â÷∏’Î
+	auto cursor = Window::getCustomCursor();
+	if (cursor)
+	{
+		cursor->setPos(Input::getMousePos());
+		cursor->_render();
+	}
+
 	// ‰÷»æ FPS
 	if (s_bShowFps && s_pTextFormat)
 	{
@@ -805,6 +813,7 @@ void easy2d::Renderer::setVSync(bool enabled)
 	{
 		s_bVSyncEnabled = enabled;
 		__discardDeviceResources();
+		__createDeviceResources();
 	}
 }
 

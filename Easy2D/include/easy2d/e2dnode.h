@@ -12,6 +12,7 @@ class Action;
 class KeyFrame;
 class Transition;
 class SceneManager;
+class Renderer;
 
 class Node :
 	public Object
@@ -19,6 +20,7 @@ class Node :
 	friend class Scene;
 	friend class Transition;
 	friend class SceneManager;
+	friend class Renderer;
 
 public:
 	// Ω⁄µ„ Ù–‘

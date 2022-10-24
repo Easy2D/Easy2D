@@ -49,6 +49,7 @@ public:
 	static String getUniqueName();
 };
 
+class Node;
 
 // 窗口控制
 class Window
@@ -59,11 +60,12 @@ public:
 	// 鼠标指针样式
 	enum class Cursor : int
 	{
+		None,		/* 无指针 */
 		Normal,		/* 默认指针样式 */
 		Hand,		/* 手状指针 */
 		No,			/* 禁止指针 */
 		Wait,		/* 沙漏指针 */
-		ArrowWait	/* 默认指针和小沙漏 */
+		ArrowWait,	/* 默认指针和小沙漏 */
 	};
 
 public:
@@ -87,6 +89,19 @@ public:
 	static void setCursor(
 		Cursor cursor
 	);
+
+	// 设置自定义鼠标指针
+	static void setCustomCursor(
+		Node* cursor
+	);
+
+	// 设置自定义鼠标指针
+	static void setCustomCursor(
+		Function<Node*(Cursor)> cursorFunc
+	);
+
+	// 获取自定义鼠标指针
+	static Node* getCustomCursor();
 
 	// 获取窗口标题
 	static String getTitle();
