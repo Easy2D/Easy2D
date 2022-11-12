@@ -439,11 +439,14 @@ protected:
 	// 更新节点透明度
 	void _updateOpacity();
 
+private:
 	// 更新监听器
 	void __updateListeners(Event* evt);
 
 	// 清空监听器
 	void __clearListeners();
+
+	void __clearParents();
 
 protected:
 	bool		_visible;

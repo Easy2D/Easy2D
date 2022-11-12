@@ -642,13 +642,7 @@ bool easy2d::Node::removeChild(Node * child)
 		if (iter != _children.end())
 		{
 			_children.erase(iter);
-			child->_parent = nullptr;
-
-			if (child->_parentScene)
-			{
-				child->_setParentScene(nullptr);
-			}
-
+			child->__clearParents();
 			child->release();
 			return true;
 		}
@@ -667,22 +661,32 @@ void easy2d::Node::removeChildren(const String& childName)
 
 	// 计算名称 Hash 值
 	size_t hash = std::hash<String>{}(childName);
-
-	size_t size = _children.size();
-	for (size_t i = 0; i < size; ++i)
+	auto equals = [&](Node* child)
 	{
-		auto child = _children[i];
-		if (child->isName(childName, hash))
+		return child->isName(childName, hash);
+	};
+
+	auto last = _children.end();
+	auto first = std::find_if(_children.begin(), last, equals);
+	if (first != last)
+	{
+		for (auto i = first; i != last; ++i)
 		{
-			_children.erase(_children.begin() + i);
-			child->_parent = nullptr;
-			if (child->_parentScene)
+			auto child = *i;
+			if (equals(child))
 			{
-				child->_setParentScene(nullptr);
+				// 移除子节点
+				child->__clearParents();
+				child->release();
 			}
-			child->release();
+			else
+			{
+				*first = std::move(child);
+				++first;
+			}
 		}
 	}
+	_children.erase(first, last);
 }
 
 void easy2d::Node::removeAllChildren()
@@ -690,10 +694,20 @@ void easy2d::Node::removeAllChildren()
 	// 所有节点的引用计数减一
 	for (auto child : _children)
 	{
+		child->__clearParents();
 		child->release();
 	}
 	// 清空储存节点的容器
 	_children.clear();
+}
+
+void easy2d::Node::__clearParents()
+{
+	this->_parent = nullptr;
+	if (this->_parentScene)
+	{
+		this->_setParentScene(nullptr);
+	}
 }
 
 void easy2d::Node::runAction(Action * action)
