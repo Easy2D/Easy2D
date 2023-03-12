@@ -321,7 +321,15 @@ int easy2d::Node::getOrder() const
 
 void easy2d::Node::setOrder(int order)
 {
-	_order = order;
+	if (_order != order)
+	{
+		_order = order;
+
+		if (this->_parent != nullptr)
+		{
+			this->_parent->_needSort = true;
+		}
+	}
 }
 
 void easy2d::Node::setPosX(float x)
@@ -498,7 +506,12 @@ void easy2d::Node::setProperty(Property prop)
 	this->setSkew(prop.skewAngle.x, prop.skewAngle.y);
 }
 
-void easy2d::Node::addChild(Node * child, int order  /* = 0 */)
+void easy2d::Node::addChild(Node* child)
+{
+	addChild(child, child->getOrder());
+}
+
+void easy2d::Node::addChild(Node * child, int order)
 {
 	if (child == nullptr) E2D_WARNING("Node::addChild NULL pointer exception.");
 
@@ -541,7 +554,15 @@ void easy2d::Node::addChild(Node * child, int order  /* = 0 */)
 	}
 }
 
-void easy2d::Node::addChild(const std::vector<Node*>& nodes, int order)
+void easy2d::Node::addChildren(std::initializer_list<Node*> nodes)
+{
+	for (auto node : nodes)
+	{
+		this->addChild(node, node->getOrder());
+	}
+}
+
+void easy2d::Node::addChildren(std::initializer_list<Node*> nodes, int order)
 {
 	for (auto node : nodes)
 	{

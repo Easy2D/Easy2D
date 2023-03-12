@@ -185,7 +185,7 @@ public:
 		const Vector2 & v
 	);
 
-	// 设置节点绘图顺序
+	// 设置节点绘图顺序，数字大的会显示在其他兄弟节点上方
 	// 默认为 0
 	void setOrder(
 		int order
@@ -294,14 +294,24 @@ public:
 
 	// 添加子节点
 	void addChild(
-		Node * child,
-		int order = 0	/* 渲染顺序 */
+		Node * child
+	);
+
+	// 添加子节点
+	void addChild(
+		Node* child,
+		int order		/* 渲染顺序，数字大的会显示在其他兄弟节点上方 */
 	);
 
 	// 添加多个子节点
-	void addChild(
-		const std::vector<Node*>& nodes,	/* 节点数组 */
-		int order = 0						/* 渲染顺序 */
+	void addChildren(
+		std::initializer_list<Node*> nodes	/* 节点数组 */
+	);
+
+	// 添加多个子节点
+	void addChildren(
+		std::initializer_list<Node*> nodes,	/* 节点数组 */
+		int order							/* 渲染顺序，数字大的会显示在其他兄弟节点上方 */
 	);
 
 	// 获取所有名称相同的子节点
