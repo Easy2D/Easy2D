@@ -372,19 +372,25 @@ struct KeyCode
 	enum Value : int
 	{
 		Unknown = 0,
-		Up = VK_UP,
-		Left = VK_LEFT,
-		Right = VK_RIGHT,
-		Down = VK_DOWN,
-		Enter = VK_RETURN,
-		Space = VK_SPACE,
-		Esc = VK_ESCAPE,
-		Ctrl = VK_CONTROL,
-		Shift = VK_SHIFT,
-		Alt = VK_MENU,
-		Tab = VK_TAB,
-		Delete = VK_DELETE,
-		Back = VK_BACK,
+		Up = VK_UP,				// 方向键 - 上
+		Left = VK_LEFT,			// 方向键 - 左
+		Right = VK_RIGHT,		// 方向键 - 右
+		Down = VK_DOWN,			// 方向键 - 下
+		Enter = VK_RETURN,		// 回车键
+		Space = VK_SPACE,		// 空格键
+		Esc = VK_ESCAPE,		// Esc 键
+		Ctrl = VK_CONTROL,		// 任意 ctrl 键
+		LCtrl = VK_LCONTROL,	// 左 ctrl 键
+		RCtrl = VK_RCONTROL,	// 右 ctrl 键
+		Shift = VK_SHIFT,		// 任意 shift 键
+		LShift = VK_LSHIFT,		// 左 shift 键
+		RShift = VK_RSHIFT,		// 右 shift 键
+		Alt = VK_MENU,			// 任意 alt 键
+		LAlt = VK_LMENU,		// 左 alt 键
+		RAlt = VK_RMENU,		// 右 alt 键
+		Tab = VK_TAB,			// Tab 键
+		Delete = VK_DELETE,		// 删除键
+		Back = VK_BACK,			// 退格键
 
 		A = 0x41,
 		B,
@@ -413,7 +419,7 @@ struct KeyCode
 		Y,
 		Z,
 
-		Num0 = 0x30,
+		Num0 = 0x30,			// 数字键
 		Num1,
 		Num2,
 		Num3,
@@ -424,7 +430,7 @@ struct KeyCode
 		Num8,
 		Num9,
 
-		Numpad0 = VK_NUMPAD0,
+		Numpad0 = VK_NUMPAD0,	// 小键盘数字键
 		Numpad1,
 		Numpad2,
 		Numpad3,

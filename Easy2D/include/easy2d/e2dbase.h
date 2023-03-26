@@ -214,14 +214,32 @@ public:
 	);
 
 	// 检测键盘某按键是否被点击
-	static bool isPress(
+	static bool isPressed(
 		KeyCode::Value key
 	);
 
+	// deprecated: 请使用 isPressed 替代
+	// 检测键盘某按键是否被点击
+	static inline bool isPress(
+		KeyCode::Value key
+	)
+	{
+		return Input::isPressed(key);
+	}
+
 	// 检测键盘某按键是否正在松开
-	static bool isRelease(
+	static bool isReleased(
 		KeyCode::Value key
 	);
+
+	// deprecated: 请使用 isReleased 替代
+	// 检测键盘某按键是否正在松开
+	static inline bool isRelease(
+		KeyCode::Value key
+	)
+	{
+		return Input::isReleased(key);
+	}
 
 	// 检测鼠标按键是否正被按下
 	static bool isDown(
@@ -229,14 +247,32 @@ public:
 	);
 
 	// 检测鼠标按键是否被点击
-	static bool isPress(
+	static bool isPressed(
 		MouseCode::Value code
 	);
 
+	// deprecated: 请使用 isPressed 替代
+	// 检测鼠标按键是否被点击
+	static inline bool isPress(
+		MouseCode::Value code
+	)
+	{
+		return Input::isPressed(code);
+	}
+
 	// 检测鼠标按键是否正在松开
-	static bool isRelease(
+	static bool isReleased(
 		MouseCode::Value code
 	);
+
+	// deprecated: 请使用 isReleased 替代
+	// 检测鼠标按键是否正在松开
+	static inline bool isRelease(
+		MouseCode::Value code
+	)
+	{
+		return Input::isReleased(code);
+	}
 
 	// 获得鼠标X轴坐标值
 	static float getMouseX();

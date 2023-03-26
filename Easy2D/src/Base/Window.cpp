@@ -357,6 +357,30 @@ void easy2d::Window::error(const String & text, const String & title)
 	Game::reset();
 }
 
+easy2d::KeyCode::Value GetMappedKeyCode(WPARAM wParam, LPARAM lParam)
+{
+	using easy2d::KeyCode;
+	KeyCode::Value vk = KeyCode::Value(wParam);
+	bool extended = (HIWORD(lParam) & KF_EXTENDED) == KF_EXTENDED;
+	BYTE scancode = LOBYTE(HIWORD(lParam));
+
+	switch (vk) {
+	case VK_SHIFT:
+		vk = KeyCode::Value(MapVirtualKey(scancode, MAPVK_VSC_TO_VK_EX));
+		break;
+	case VK_CONTROL:
+		vk = extended ? KeyCode::RCtrl : KeyCode::LCtrl;
+		break;
+	case VK_MENU:
+		vk = extended ? KeyCode::RAlt : KeyCode::LAlt;
+		break;
+	default:
+		// not a key we map from generic to left/right specialized
+		//  just return it.
+		break;
+	}
+	return vk;
+}
 
 LRESULT easy2d::Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -369,16 +393,32 @@ LRESULT easy2d::Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	{
-		KeyDownEvent evt(KeyCode::Value(wParam), int(lParam & 0xFF));
+		KeyCode::Value vk = KeyCode::Value(wParam);
+		KeyDownEvent evt(vk, int(lParam & 0xFF));
 		SceneManager::dispatch(&evt);
+
+		KeyCode::Value newVk = GetMappedKeyCode(wParam, lParam);
+		if (vk != newVk)
+		{
+			KeyDownEvent evt(newVk, int(lParam & 0xFF));
+			SceneManager::dispatch(&evt);
+		}
 	}
 	break;
 
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 	{
-		KeyUpEvent evt(KeyCode::Value(wParam), int(lParam & 0xFF));
+		KeyCode::Value vk = KeyCode::Value(wParam);
+		KeyUpEvent evt(vk, int(lParam & 0xFF));
 		SceneManager::dispatch(&evt);
+
+		KeyCode::Value newVk = GetMappedKeyCode(wParam, lParam);
+		if (vk != newVk)
+		{
+			KeyUpEvent evt(newVk, int(lParam & 0xFF));
+			SceneManager::dispatch(&evt);
+		}
 	}
 	break;
 
