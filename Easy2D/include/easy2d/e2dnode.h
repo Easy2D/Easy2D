@@ -13,11 +13,11 @@ class KeyFrame;
 class Transition;
 class SceneManager;
 class Renderer;
+class Scene;
 
 class Node :
 	public Object
 {
-	friend class Scene;
 	friend class Transition;
 	friend class SceneManager;
 	friend class Renderer;
