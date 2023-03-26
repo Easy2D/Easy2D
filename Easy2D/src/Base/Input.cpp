@@ -228,7 +228,10 @@ bool Input::isDown(KeyCode::Value key)
 {
 	const auto& diks = s_KeyboardMapping.at(key);
 	if (diks.size() == 1)
-		return s_KeyBuffer[diks[0]] & 0x80;
+	{
+		const auto dik = diks[0];
+		return bool(s_KeyBuffer[dik] & 0x80);
+	}
 
 	for (auto dik : diks)
 		if (s_KeyBuffer[dik] & 0x80)
@@ -240,12 +243,13 @@ bool Input::isPressed(KeyCode::Value key)
 {
 	const auto& diks = s_KeyboardMapping.at(key);
 	if (diks.size() == 1)
-		return (s_KeyBuffer[diks[0]] & 0x80) &&
-		!(s_KeyRecordBuffer[diks[0]] & 0x80);
+	{
+		const auto dik = diks[0];
+		return (s_KeyBuffer[dik] & 0x80) && !(s_KeyRecordBuffer[dik] & 0x80);
+	}
 
 	for (auto dik : diks)
-		if ((s_KeyBuffer[dik] & 0x80) &&
-			!(s_KeyRecordBuffer[dik] & 0x80))
+		if ((s_KeyBuffer[dik] & 0x80) && !(s_KeyRecordBuffer[dik] & 0x80))
 			return true;
 	return false;
 }
@@ -254,12 +258,13 @@ bool Input::isReleased(KeyCode::Value key)
 {
 	const auto& diks = s_KeyboardMapping.at(key);
 	if (diks.size() == 1)
-		return !(s_KeyBuffer[diks[0]] & 0x80) &&
-		(s_KeyRecordBuffer[diks[0]] & 0x80);
+	{
+		const auto dik = diks[0];
+		return !(s_KeyBuffer[dik] & 0x80) && (s_KeyRecordBuffer[dik] & 0x80);
+	}
 
 	for (auto dik : diks)
-		if (!(s_KeyBuffer[dik] & 0x80) &&
-			(s_KeyRecordBuffer[dik] & 0x80))
+		if (!(s_KeyBuffer[dik] & 0x80) && (s_KeyRecordBuffer[dik] & 0x80))
 			return true;
 	return false;
 }
