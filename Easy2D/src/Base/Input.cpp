@@ -230,7 +230,7 @@ bool Input::isDown(KeyCode::Value key)
 	if (diks.size() == 1)
 	{
 		const auto dik = diks[0];
-		return bool(s_KeyBuffer[dik] & 0x80);
+		return (s_KeyBuffer[dik] & 0x80) != 0;
 	}
 
 	for (auto dik : diks)
