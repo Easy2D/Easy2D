@@ -1,9 +1,11 @@
 #pragma once
 #include <easy2d/e2dbase.h>
+#include <type_traits>
 
 namespace easy2d
 {
 
+class Node;
 class ShapeMaker;
 class ShapeNode;
 class CanvasBrush;
@@ -12,48 +14,78 @@ class CanvasBrush;
 class Shape :
 	public Object
 {
+	friend Node;
 	friend ShapeMaker;
 	friend ShapeNode;
 	friend CanvasBrush;
 
+	enum class Preset
+	{
+		Line,
+		Rect,
+		RoundedRect,
+		Circle,
+		Ellipse,
+		Polygon,
+	};
+
+	using LineType = std::integral_constant<Preset, Preset::Line>;
+	using RectType = std::integral_constant<Preset, Preset::Rect>;
+	using RoundedRectType = std::integral_constant<Preset, Preset::RoundedRect>;
+	using CircleType = std::integral_constant<Preset, Preset::Circle>;
+	using EllipseType = std::integral_constant<Preset, Preset::Ellipse>;
+	using PolygonType = std::integral_constant<Preset, Preset::Polygon>;
+
 public:
+	static LineType Line;
+	static RectType Rect;
+	static RoundedRectType RoundedRect;
+	static CircleType Circle;
+	static EllipseType Ellipse;
+	static PolygonType Polygon;
+
 	// 创建直线
-	static Shape* createLine(Point begin, Point end);
+	Shape(LineType, Point begin, Point end);
 
 	// 创建矩形
-	static Shape* createRect(const Rect& rect);
+	Shape(RectType, const easy2d::Rect& rect);
 
 	// 创建圆角矩形
-	static Shape* createRoundedRect(
-		const Rect& rect,		// 矩形
-		const Vector2& radius	// 矩形圆角半径
+	Shape(
+		RoundedRectType,
+		const easy2d::Rect& rect,	// 矩形
+		const Vector2& radius		// 矩形圆角半径
 	);
 
 	// 创建圆形
-	static Shape* createCircle(
+	Shape(
+		CircleType,
 		const Point& center,	// 原点
 		float radius			// 半径
 	);
 
 	// 创建椭圆形
-	static Shape* createEllipse(
+	Shape(
+		EllipseType,
 		const Point& center,	// 原点
 		const Vector2& radius	// 半径
 	);
 
 	// 创建多边形
-	static Shape* createPolygon(
+	Shape(
+		PolygonType,
 		std::initializer_list<Point> vertices	// 多边形顶点
 	);
 
 	// 创建多边形
-	static Shape* createPolygon(
+	Shape(
+		PolygonType,
 		const Point* vertices,
 		int count
 	);
 
 	// 获取外切包围盒
-	Rect getBoundingBox(
+	easy2d::Rect getBoundingBox(
 		const Matrix32* transform = nullptr	// 应用到形状上的二维变换
 	) const;
 
@@ -84,12 +116,14 @@ protected:
 	void resetGeometry(ID2D1Geometry* geo);
 
 protected:
-	ID2D1Geometry* _geo;
+	ID2D1Geometry* _geo = nullptr;
 };
 
 // 形状生成器
 class ShapeMaker : public Object
 {
+	friend Shape;
+
 public:
 	// 形状合并方式
 	enum class CombineMode
@@ -155,8 +189,10 @@ protected:
 
 	void closeSink();
 
+	ID2D1PathGeometry* getGeometry() const;
+
 protected:
-	Shape* _shape = nullptr;
+	ID2D1PathGeometry* _geo = nullptr;
 	ID2D1GeometrySink* _sink = nullptr;
 };
 

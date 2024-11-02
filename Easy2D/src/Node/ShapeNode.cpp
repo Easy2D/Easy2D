@@ -1,38 +1,38 @@
 #include <easy2d/e2dnode.h>
 
-easy2d::ShapeNode* easy2d::ShapeNode::createLine(Point begin, Point end, DrawingStyle style)
+easy2d::ShapeNode::ShapeNode(Shape::LineType, Point begin, Point end, DrawingStyle style)
+	: ShapeNode(gcnew Shape(Shape::Line, begin, end), style)
 {
-	return gcnew ShapeNode(Shape::createLine(begin, end), style);
 }
 
-easy2d::ShapeNode* easy2d::ShapeNode::createRect(const Size& size, DrawingStyle style)
+easy2d::ShapeNode::ShapeNode(Shape::RectType, const Size& size, DrawingStyle style)
+	: ShapeNode(gcnew Shape(Shape::Rect, Rect(Point(), size)), style)
 {
-	return gcnew ShapeNode(Shape::createRect(Rect(Point(), size)), style);
 }
 
-easy2d::ShapeNode* easy2d::ShapeNode::createRoundedRect(const Size& size, const Vector2& radius, DrawingStyle style)
+easy2d::ShapeNode::ShapeNode(Shape::RoundedRectType, const Size& size, const Vector2& radius, DrawingStyle style)
+	: ShapeNode(gcnew Shape(Shape::RoundedRect, Rect(Point(), size), radius), style)
 {
-	return gcnew ShapeNode(Shape::createRoundedRect(Rect(Point(), size), radius), style);
 }
 
-easy2d::ShapeNode* easy2d::ShapeNode::createCircle(float radius, DrawingStyle style)
+easy2d::ShapeNode::ShapeNode(Shape::CircleType, float radius, DrawingStyle style)
+	: ShapeNode(gcnew Shape(Shape::Circle, Point(radius, radius), radius), style)
 {
-	return gcnew ShapeNode(Shape::createCircle(Point(radius, radius), radius), style);
 }
 
-easy2d::ShapeNode* easy2d::ShapeNode::createEllipse(const Vector2& radius, DrawingStyle style)
+easy2d::ShapeNode::ShapeNode(Shape::EllipseType, const Vector2& radius, DrawingStyle style)
+	: ShapeNode(gcnew Shape(Shape::Ellipse, radius, radius), style)
 {
-	return gcnew ShapeNode(Shape::createEllipse(radius, radius), style);
 }
 
-easy2d::ShapeNode* easy2d::ShapeNode::createPolygon(std::initializer_list<Point> vertices, DrawingStyle style)
+easy2d::ShapeNode::ShapeNode(Shape::PolygonType, std::initializer_list<Point> vertices, DrawingStyle style)
+	: ShapeNode(gcnew Shape(Shape::Polygon, vertices), style)
 {
-	return gcnew ShapeNode(Shape::createPolygon(vertices), style);
 }
 
-easy2d::ShapeNode* easy2d::ShapeNode::createPolygon(const Point* vertices, int count, DrawingStyle style)
+easy2d::ShapeNode::ShapeNode(Shape::PolygonType, const Point* vertices, int count, DrawingStyle style)
+	: ShapeNode(gcnew Shape(Shape::Polygon, vertices, count), style)
 {
-	return gcnew ShapeNode(Shape::createPolygon(vertices, count), style);
 }
 
 easy2d::ShapeNode::ShapeNode(Shape* shape, DrawingStyle style)

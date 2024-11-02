@@ -21,6 +21,7 @@ easy2d::Node::Node()
 	, _visible(true)
 	, _parent(nullptr)
 	, _parentScene(nullptr)
+	, _body(nullptr)
 	, _needSort(false)
 	, _dirtyTransform(false)
 	, _dirtyInverseTransform(false)
@@ -39,6 +40,8 @@ easy2d::Node::~Node()
 		child->_parent = nullptr;
 		GC::release(child);
 	}
+
+	GC::release(_body);
 }
 
 void easy2d::Node::_update()
@@ -952,4 +955,51 @@ void easy2d::Node::__clearListeners()
 		GC::release(listener);
 	}
 	_listeners.clear();
+}
+
+easy2d::Shape* easy2d::Node::getBodyShape() const
+{
+	return _body;
+}
+
+void easy2d::Node::setBodyShape(Shape* shape)
+{
+	GC::release(_body);
+	_body = shape;
+	GC::retain(_body);
+}
+
+easy2d::BodyRelation easy2d::Node::compareWithBody(Node* other) const
+{
+	if (!_body || !other->_body)
+	{
+		return BodyRelation::Disjoint;
+	}
+
+	const auto geo1 = _body->_geo;
+	const auto geo2 = other->_body->_geo;
+	D2D1_GEOMETRY_RELATION relation = D2D1_GEOMETRY_RELATION::D2D1_GEOMETRY_RELATION_UNKNOWN;
+	Matrix32 transform = getInverseTransform() * other->getTransform();
+	HRESULT hr = geo1->CompareWithGeometry(
+		geo2,
+		reinterpret_cast<D2D1_MATRIX_3X2_F&>(transform),
+		&relation
+	);
+
+	if (FAILED(hr))
+	{
+		E2D_ERROR_IF_FAILED(hr, "CompareWithGeometry failed");
+		return BodyRelation::Disjoint;
+	}
+
+	switch (relation)
+	{
+	case D2D1_GEOMETRY_RELATION::D2D1_GEOMETRY_RELATION_IS_CONTAINED:
+		return BodyRelation::IsContained;
+	case D2D1_GEOMETRY_RELATION::D2D1_GEOMETRY_RELATION_CONTAINS:
+		return BodyRelation::Contains;
+	case D2D1_GEOMETRY_RELATION::D2D1_GEOMETRY_RELATION_OVERLAP:
+		return BodyRelation::Overlap;
+	}
+	return BodyRelation::Disjoint;
 }

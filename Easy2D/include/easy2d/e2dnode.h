@@ -15,6 +15,15 @@ class SceneManager;
 class Renderer;
 class Scene;
 
+// 身体形状关系
+enum class BodyRelation
+{
+	Disjoint,		// 完全不相交
+	IsContained,	// 被对方包含
+	Contains,		// 包含对方
+	Overlap,		// 相交但不包含
+};
+
 class Node :
 	public Object
 {
@@ -425,6 +434,15 @@ public:
 		float defaultAnchorY
 	);
 
+	// 获取身体形状
+	Shape* getBodyShape() const;
+
+	// 设置身体形状
+	void setBodyShape(Shape* shape);
+
+	// 判断和另一节点的身体形状关系
+	BodyRelation compareWithBody(Node* other) const;
+
 protected:
 	// 更新节点
 	void _update();
@@ -474,7 +492,8 @@ protected:
 	Point		_anchor;
 	Scene*		_parentScene;
 	Node*		_parent;
-	
+	Shape*		_body;
+
 	std::vector<Node*>	_children;
 	std::vector<ListenerBase*> _listeners;
 
@@ -1004,45 +1023,52 @@ class ShapeNode :
 {
 public:
 	// 创建直线节点
-	static ShapeNode* createLine(
+	ShapeNode(
+		Shape::LineType,
 		Point begin,
 		Point end,
 		DrawingStyle style = DrawingStyle{}
 	);
 
 	// 创建矩形节点
-	static ShapeNode* createRect(
+	ShapeNode(
+		Shape::RectType,
 		const Size& size,		// 矩形宽高
 		DrawingStyle style = DrawingStyle{}
 	);
 
 	// 创建圆角矩形节点
-	static ShapeNode* createRoundedRect(
+	ShapeNode(
+		Shape::RoundedRectType,
 		const Size& size,		// 矩形宽高
 		const Vector2& radius,	// 矩形圆角半径
 		DrawingStyle style = DrawingStyle{}
 	);
 
 	// 创建圆形节点
-	static ShapeNode* createCircle(
+	ShapeNode(
+		Shape::CircleType,
 		float radius,			// 半径
 		DrawingStyle style = DrawingStyle{}
 	);
 
 	// 创建椭圆形节点
-	static ShapeNode* createEllipse(
+	ShapeNode(
+		Shape::EllipseType,
 		const Vector2& radius,	// 半径
 		DrawingStyle style = DrawingStyle{}
 	);
 
 	// 创建多边形节点
-	static ShapeNode* createPolygon(
+	ShapeNode(
+		Shape::PolygonType,
 		std::initializer_list<Point> vertices,	// 多边形顶点
 		DrawingStyle style = DrawingStyle{}
 	);
 
 	// 创建多边形节点
-	static ShapeNode* createPolygon(
+	ShapeNode(
+		Shape::PolygonType,
 		const Point* vertices,
 		int count,
 		DrawingStyle style = DrawingStyle{}
