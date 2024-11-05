@@ -56,7 +56,7 @@ private:
 	static void __update();
 
 	// 渲染场景画面
-	static void __render();
+	static void __render(bool showBodyShape);
 
 	// 初始化场景
 	static bool __init();

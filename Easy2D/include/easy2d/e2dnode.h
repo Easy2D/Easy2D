@@ -440,6 +440,9 @@ public:
 	// 设置身体形状
 	void setBodyShape(Shape* shape);
 
+	// 渲染身体形状
+	void showBodyShape(bool enabled = true);
+
 	// 判断和另一节点的身体形状关系
 	BodyRelation compareWithBody(Node* other) const;
 
@@ -449,6 +452,8 @@ protected:
 
 	// 渲染节点
 	void _render();
+
+	void _renderBodyShape();
 
 	// 设置节点所在场景
 	void _setParentScene(
@@ -480,7 +485,7 @@ protected:
 	bool		_visible;
 	bool		_autoUpdate;
 	bool		_needSort;
-	bool		_positionFixed;
+	bool		_showBodyShape;
 	int			_order;
 	float		_rotation;
 	float		_displayOpacity;

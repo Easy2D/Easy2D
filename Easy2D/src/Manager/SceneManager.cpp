@@ -150,7 +150,7 @@ void easy2d::SceneManager::__update()
 	}
 }
 
-void easy2d::SceneManager::__render()
+void easy2d::SceneManager::__render(bool showBodyShape)
 {
 	if (s_pTransition)
 	{
@@ -162,6 +162,10 @@ void easy2d::SceneManager::__render()
 		if (s_pCurrScene)
 		{
 			s_pCurrScene->_render();
+			if (showBodyShape)
+			{
+				s_pCurrScene->_renderBodyShape();
+			}
 		}
 	}
 }

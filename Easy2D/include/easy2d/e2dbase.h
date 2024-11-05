@@ -325,6 +325,11 @@ public:
 		bool show = true
 	);
 
+	// 显示身体形状
+	static void showBodyShapes(
+		bool show = true
+	);
+
 	// 设置垂直同步（会重载资源，可能造成卡顿）
 	static void setVSync(
 		bool enabled

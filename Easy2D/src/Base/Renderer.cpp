@@ -485,6 +485,7 @@ STDMETHODIMP TextRenderer::QueryInterface(
 namespace
 {
 	bool s_bShowFps = false;
+	bool s_bShowBodyShapes = false;
 	bool s_bVSyncEnabled = true;
 	bool s_bIsDeviceResourceRecreated = false;
 	float s_fDpiScaleX = 0;
@@ -706,7 +707,7 @@ void easy2d::Renderer::__render()
 	s_pRenderTarget->Clear(s_nClearColor);
 
 	// 渲染场景
-	SceneManager::__render();
+	SceneManager::__render(s_bShowBodyShapes);
 
 	// 渲染自定义指针
 	auto cursor = Window::getCustomCursor();
@@ -805,6 +806,11 @@ void easy2d::Renderer::setBackgroundColor(Color color)
 void easy2d::Renderer::showFps(bool show)
 {
 	s_bShowFps = show;
+}
+
+void easy2d::Renderer::showBodyShapes(bool show)
+{
+	s_bShowBodyShapes = show;
 }
 
 void easy2d::Renderer::setVSync(bool enabled)

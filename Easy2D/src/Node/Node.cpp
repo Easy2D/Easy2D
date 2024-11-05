@@ -26,7 +26,7 @@ easy2d::Node::Node()
 	, _dirtyTransform(false)
 	, _dirtyInverseTransform(false)
 	, _autoUpdate(true)
-	, _positionFixed(false)
+	, _showBodyShape(false)
 {
 }
 
@@ -137,6 +137,36 @@ void easy2d::Node::_render()
 		for (; i < size; ++i)
 			_children[i]->_render();
 	}
+}
+
+void easy2d::Node::_renderBodyShape()
+{
+	size_t size = _children.size();
+	size_t i;
+	for (i = 0; i < size; ++i)
+	{
+		auto child = _children[i];
+		if (child->getOrder() < 0)
+		{
+			child->_renderBodyShape();
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	if (_body && _showBodyShape)
+	{
+		Renderer::getRenderTarget()->SetTransform(_transform.toD2DMatrix());
+		auto pBrush = Renderer::getSolidColorBrush();
+		pBrush->SetOpacity(0.8f);
+		pBrush->SetColor(reinterpret_cast<const D2D1_COLOR_F&>(Color(Color::Red)));
+		Renderer::getRenderTarget()->DrawGeometry(_body->_geo, pBrush, 1.f, Renderer::getMiterID2D1StrokeStyle());
+	}
+
+	for (; i < size; ++i)
+		_children[i]->_renderBodyShape();
 }
 
 void easy2d::Node::_updateTransform() const
@@ -357,15 +387,6 @@ void easy2d::Node::setPos(const Point & p)
 void easy2d::Node::setPos(float x, float y)
 {
 	this->setPos(Point{ x, y });
-}
-
-void easy2d::Node::setPosFixed(bool fixed)
-{
-	if (_positionFixed == fixed)
-		return;
-
-	_positionFixed = fixed;
-	_dirtyTransform = true;
 }
 
 void easy2d::Node::movePosX(float x)
@@ -969,6 +990,11 @@ void easy2d::Node::setBodyShape(Shape* shape)
 	GC::retain(_body);
 }
 
+void easy2d::Node::showBodyShape(bool enabled)
+{
+	_showBodyShape = enabled;
+}
+
 easy2d::BodyRelation easy2d::Node::compareWithBody(Node* other) const
 {
 	if (!_body || !other->_body)
@@ -979,7 +1005,7 @@ easy2d::BodyRelation easy2d::Node::compareWithBody(Node* other) const
 	const auto geo1 = _body->_geo;
 	const auto geo2 = other->_body->_geo;
 	D2D1_GEOMETRY_RELATION relation = D2D1_GEOMETRY_RELATION::D2D1_GEOMETRY_RELATION_UNKNOWN;
-	Matrix32 transform = getInverseTransform() * other->getTransform();
+	Matrix32 transform = other->getTransform() * getInverseTransform();
 	HRESULT hr = geo1->CompareWithGeometry(
 		geo2,
 		reinterpret_cast<D2D1_MATRIX_3X2_F&>(transform),
