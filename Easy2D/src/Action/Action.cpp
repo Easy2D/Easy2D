@@ -37,7 +37,11 @@ void easy2d::Action::stop()
 	_done = true;
 	if (_removeTarget)
 	{
-		_target->removeFromParent();
+		auto parent = _target->getParent();
+		if (parent)
+		{
+			parent->removeChild(_target);
+		}
 		_target = nullptr;
 	}
 }

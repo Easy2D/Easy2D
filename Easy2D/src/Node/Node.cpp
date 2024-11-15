@@ -27,6 +27,7 @@ easy2d::Node::Node()
 	, _dirtyInverseTransform(false)
 	, _autoUpdate(true)
 	, _showBodyShape(false)
+	, _removed(false)
 {
 }
 
@@ -63,19 +64,19 @@ void easy2d::Node::_update()
 
 		// 遍历子节点
 		size_t size = _children.size();
-		size_t i;
-		for (i = 0; i < size; ++i)
+		size_t cursor = 0;
+		bool hasRemoved = false;
+		for (; cursor < size; ++cursor)
 		{
-			auto child = _children[i];
-			// 访问 Order 小于零的节点
-			if (child->getOrder() < 0)
-			{
-				child->_update();
-			}
-			else
-			{
+			auto child = _children[cursor];
+			if (child->getOrder() >= 0)
 				break;
+			if (child->_removed)
+			{
+				hasRemoved = true;
+				continue;
 			}
+			child->_update();
 		}
 
 		if (_autoUpdate && !Game::isPaused())
@@ -83,10 +84,37 @@ void easy2d::Node::_update()
 			this->onUpdate();
 		}
 
-		// 访问其他节点
 		size = _children.size();
-		for (; i < size; ++i)
-			_children[i]->_update();
+		for (; cursor < size; ++cursor)
+		{
+			auto child = _children[cursor];
+			if (child->_removed)
+			{
+				hasRemoved = true;
+				continue;
+			}
+			child->_update();
+		}
+
+		if (hasRemoved)
+		{
+			size_t firstRemoved = 0;
+			size = _children.size();
+			for (size_t i = 0; i < size; ++i)
+			{
+				auto child = _children[i];
+				if (child->_removed)
+				{
+					child->__clearParents();
+					child->release();
+					continue;
+				}
+				_children[firstRemoved] = child;
+				++firstRemoved;
+			}
+			if (firstRemoved < size)
+				_children.erase(_children.begin() + firstRemoved, _children.end());
+		}
 	}
 }
 
@@ -118,14 +146,9 @@ void easy2d::Node::_render()
 		{
 			auto child = _children[i];
 			// 访问 Order 小于零的节点
-			if (child->getOrder() < 0)
-			{
-				child->_render();
-			}
-			else
-			{
+			if (child->getOrder() >= 0)
 				break;
-			}
+			child->_render();
 		}
 
 		// 转换渲染器的二维矩阵
@@ -664,12 +687,9 @@ int easy2d::Node::getChildrenCount() const
 	return static_cast<int>(_children.size());
 }
 
-void easy2d::Node::removeFromParent()
+void easy2d::Node::removeSelfInNextUpdate()
 {
-	if (_parent)
-	{
-		_parent->removeChild(this);
-	}
+	_removed = true;
 }
 
 bool easy2d::Node::removeChild(Node * child)

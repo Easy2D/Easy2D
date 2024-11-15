@@ -168,11 +168,6 @@ public:
 		float y
 	);
 
-	// 节点坐标固定
-	void setPosFixed(
-		bool fixed
-	);
-
 	// 移动节点
 	void movePosX(
 		float x
@@ -349,11 +344,11 @@ public:
 		const String& childName
 	);
 
-	// 从父节点移除
-	void removeFromParent();
-
 	// 移除所有节点
 	void removeAllChildren();
+
+	// 从父节点移除自身（在下一次更新时执行）
+	void removeSelfInNextUpdate();
 
 	// 分发事件
 	virtual void dispatch(Event* evt);
@@ -486,6 +481,7 @@ protected:
 	bool		_autoUpdate;
 	bool		_needSort;
 	bool		_showBodyShape;
+	bool		_removed;
 	int			_order;
 	float		_rotation;
 	float		_displayOpacity;
