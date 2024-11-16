@@ -104,7 +104,7 @@ deploy:
   release: v$(APPVEYOR_BUILD_VERSION)
   description: Easy2D-v$(APPVEYOR_BUILD_VERSION) releases.
   auth_token:
-    secure: 8u4p+GFzlf/lR26bvU+h/GCfmFT34MLdSyNQNjhj5xYzObAJRLqg77aOVl8J/fuf
+    secure: 6yRuZzNX8/6L6f/+DQWEFx0EI3ZJI5n4RrJMIKDgr1OHn1C2ehsJ/ma2EvT4wOf3
   artifact: /.*\.(exe|7z|zip)/
   draft: true
   on:
