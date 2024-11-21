@@ -153,11 +153,11 @@ void easy2d::Sprite::setImage(Image* image, bool resetCropRect)
 		GC::release(_image);
 		_image = image;
 		GC::retain(_image);
+	}
 
-		if (resetCropRect)
-		{
-			crop(Rect{});
-		}
+	if (resetCropRect)
+	{
+		crop(Rect{});
 	}
 }
 
