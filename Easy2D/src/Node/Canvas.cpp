@@ -2,42 +2,51 @@
 #include <easy2d/e2daction.h>
 
 //
-// CanvasBase
+// Canvas
 //
 
-easy2d::CanvasBase::CanvasBase(const Size& size)
+easy2d::Canvas::Canvas(const Size& size)
 	: _image(nullptr)
 	, _rt(nullptr)
 	, _brush(nullptr)
 	, _interpolationMode(InterpolationMode::Linear)
+	, _drawing()
 {
 	setSize(size);
 }
 
-easy2d::CanvasBase::~CanvasBase()
+easy2d::Canvas::~Canvas()
 {
 	_discardResources();
 }
 
-void easy2d::CanvasBase::redraw()
+void easy2d::Canvas::draw(const Function<void(CanvasBrush*)>& drawing)
+{
+	_drawing = drawing;
+	redraw();
+}
+
+void easy2d::Canvas::redraw()
 {
 	_initialize();
-	CanvasBrush brush(_rt, _brush);
-	draw(&brush);
+	if (_drawing)
+	{
+		CanvasBrush brush(_rt, _brush);
+		_drawing(&brush);
+	}
 }
 
-void easy2d::CanvasBase::resizeAndClear(Size size)
+void easy2d::Canvas::clear()
 {
 	_discardResources();
-	setSize(size);
 }
 
-easy2d::Image* easy2d::CanvasBase::getImage() const
+easy2d::Image* easy2d::Canvas::getImage() const
 {
 	return _image;
 }
 
-void easy2d::CanvasBase::onRender()
+void easy2d::Canvas::onRender()
 {
 	if (_image)
 	{
@@ -45,7 +54,6 @@ void easy2d::CanvasBase::onRender()
 		{
 			// 重新构建资源并绘图
 			_discardResources();
-			_initialize();
 			redraw();
 		}
 
@@ -58,12 +66,12 @@ void easy2d::CanvasBase::onRender()
 	}
 }
 
-void easy2d::CanvasBase::_initialize()
+void easy2d::Canvas::_initialize()
 {
 	if (!_rt)
 	{
 		HRESULT hr = S_OK;
-		
+
 		ID2D1BitmapRenderTarget* rt = nullptr;
 		hr = Renderer::getRenderTarget()->CreateCompatibleRenderTarget(
 			reinterpret_cast<const D2D1_SIZE_F&>(getSize()),
@@ -109,50 +117,26 @@ void easy2d::CanvasBase::_initialize()
 
 		if (FAILED(hr))
 		{
-			E2D_ERROR("CanvasBase beginDraw failed! ERR_CODE=%#X", hr);
+			E2D_ERROR("Canvas beginDraw failed! ERR_CODE=%#X", hr);
 		}
 	}
 }
 
-void easy2d::CanvasBase::_discardResources()
+void easy2d::Canvas::_discardResources()
 {
 	SafeRelease(_brush);
 	SafeRelease(_rt);
 	GC::release(_image);
 }
 
-easy2d::InterpolationMode easy2d::CanvasBase::getInterpolationMode() const
+easy2d::InterpolationMode easy2d::Canvas::getInterpolationMode() const
 {
 	return _interpolationMode;
 }
 
-void easy2d::CanvasBase::setInterpolationMode(InterpolationMode mode)
+void easy2d::Canvas::setInterpolationMode(InterpolationMode mode)
 {
 	_interpolationMode = mode;
-}
-
-//
-// Canvas
-//
-
-easy2d::Canvas::Canvas(const Size& size)
-	: CanvasBase(size)
-	, _drawing()
-{
-}
-
-void easy2d::Canvas::draw(const Function<void(CanvasBrush*)>& drawing)
-{
-	_drawing = drawing;
-	redraw();
-}
-
-void easy2d::Canvas::draw(CanvasBrush* brush)
-{
-	if (_drawing)
-	{
-		_drawing(brush);
-	}
 }
 
 //

@@ -896,13 +896,13 @@ protected:
 };
 
 
-class CanvasBase;
+class Canvas;
 
 // 画布画笔
 class CanvasBrush
 	: public Object
 {
-	friend CanvasBase;
+	friend Canvas;
 
 public:
 	// 绘制形状
@@ -1074,19 +1074,22 @@ protected:
 
 
 // 画布
-class CanvasBase
+class Canvas
 	: public Node
 {
 public:
-	CanvasBase(const Size& size);
+	Canvas(const Size& size);
 
-	virtual ~CanvasBase();
+	virtual ~Canvas();
+
+	// 画图
+	void draw(const Function<void(CanvasBrush*)>& drawing);
 
 	// 重新绘制上次内容
 	void redraw();
 
-	// 重设画布大小并清空画布（会导致画刷失效）
-	void resizeAndClear(Size size);
+	// 清空画布
+	void clear();
 
 	// 获取像素插值方式
 	InterpolationMode getInterpolationMode() const;
@@ -1113,22 +1116,6 @@ private:
 	ID2D1RenderTarget* _rt;
 	ID2D1SolidColorBrush* _brush;
 	InterpolationMode _interpolationMode;
-};
-
-// 画布
-class Canvas
-	: public CanvasBase
-{
-public:
-	Canvas(const Size& size);
-
-	// 画图
-	void draw(const Function<void(CanvasBrush*)>& drawing);
-
-protected:
-	virtual void draw(CanvasBrush* brush) override;
-
-private:
 	Function<void(CanvasBrush*)> _drawing;
 };
 

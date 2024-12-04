@@ -8,7 +8,7 @@
 namespace easy2d
 {
 class Game;
-class CanvasBase;
+class Canvas;
 
 // 方向
 enum class Direction : int
@@ -305,7 +305,7 @@ class Image :
 	public Object
 {
 	friend Game;
-	friend CanvasBase;
+	friend Canvas;
 
 public:
 	// 加载图片文件
