@@ -4,6 +4,7 @@
 
 namespace easy2d
 {
+class Node;
 
 
 // 随机数产生器
@@ -218,25 +219,44 @@ class Timer
 	friend class Game;
 
 public:
-	// 添加定时器（每帧执行一次）
-	static void add(
-		const Function<void()>& func,	/* 执行函数 */
-		const String& name = ""		/* 定时器名称 */
-	);
-
 	// 添加定时器
-	static void add(
+	static size_t add(
 		const Function<void()>& func,	/* 执行函数 */
-		float delay,					/* 时间间隔（秒） */
+		float interval,					/* 执行间隔（秒） */
 		int times = -1,					/* 执行次数（设 -1 为永久执行） */
-		bool paused = false,			/* 是否暂停 */
-		const String& name = ""		/* 定时器名称 */
+		const String & name = ""		/* 定时器名称 */
 	);
 
-	// 在足够延迟后执行指定函数
-	static void start(
-		float timeout,					/* 等待的时长（秒） */
+	// 延迟一段时间后执行指定函数一次
+	static size_t runDelayed(
+		float delay,					/* 延迟时长（秒） */
 		const Function<void()>& func	/* 执行的函数 */
+	);
+
+	// 将定时器和节点的生命周期绑定，节点销毁时定时器也销毁
+	static void bind(
+		size_t id,
+		Node* node
+	);
+
+	// 移除和节点绑定的所有定时器
+	static void removeBoundWith(
+		Node* node
+	);
+
+	// 启动定时器
+	static void start(
+		size_t id
+	);
+
+	// 停止定时器
+	static void stop(
+		size_t id
+	);
+
+	// 移除定时器
+	static void remove(
+		size_t id
 	);
 
 	// 启动具有相同名称的定时器

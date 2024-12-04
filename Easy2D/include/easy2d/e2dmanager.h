@@ -109,22 +109,22 @@ private:
 	static void __update();
 
 	// 继续绑定在节点上的所有动作
-	static void __resumeAllBindedWith(
+	static void __resumeAllBoundWith(
 		Node * target
 	);
 
 	// 暂停绑定在节点上的所有动作
-	static void __pauseAllBindedWith(
+	static void __pauseAllBoundWith(
 		Node * target
 	);
 
 	// 停止绑定在节点上的所有动作
-	static void __stopAllBindedWith(
+	static void __stopAllBoundWith(
 		Node * target
 	);
 
 	// 清空绑定在节点上的所有动作
-	static void __clearAllBindedWith(
+	static void __removeAllBoundWith(
 		Node * target
 	);
 

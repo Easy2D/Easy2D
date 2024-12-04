@@ -32,7 +32,7 @@ void easy2d::ActionManager::__update()
 	}
 }
 
-void easy2d::ActionManager::__resumeAllBindedWith(Node * target)
+void easy2d::ActionManager::__resumeAllBoundWith(Node * target)
 {
 	if (s_vActions.empty() || target == nullptr)
 		return;
@@ -46,7 +46,7 @@ void easy2d::ActionManager::__resumeAllBindedWith(Node * target)
 	}
 }
 
-void easy2d::ActionManager::__pauseAllBindedWith(Node * target)
+void easy2d::ActionManager::__pauseAllBoundWith(Node * target)
 {
 	if (s_vActions.empty() || target == nullptr)
 		return;
@@ -60,7 +60,7 @@ void easy2d::ActionManager::__pauseAllBindedWith(Node * target)
 	}
 }
 
-void easy2d::ActionManager::__stopAllBindedWith(Node * target)
+void easy2d::ActionManager::__stopAllBoundWith(Node * target)
 {
 	if (s_vActions.empty() || target == nullptr)
 		return;
@@ -141,7 +141,7 @@ void easy2d::ActionManager::stop(const String& name)
 	}
 }
 
-void easy2d::ActionManager::__clearAllBindedWith(Node * target)
+void easy2d::ActionManager::__removeAllBoundWith(Node * target)
 {
 	if (target)
 	{

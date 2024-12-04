@@ -144,7 +144,7 @@ public:
 
 	// 开启或禁用 onUpdate 函数
 	void setAutoUpdate(
-		bool bAutoUpdate
+		bool autoUpdate
 	);
 
 	// 设置节点横坐标

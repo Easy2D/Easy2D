@@ -1,6 +1,7 @@
 #include <easy2d/e2dnode.h>
 #include <easy2d/e2dmanager.h>
 #include <easy2d/e2daction.h>
+#include <easy2d/e2dtool.h>
 #include <algorithm> // std::sort
 
 // 默认中心点位置
@@ -34,7 +35,8 @@ easy2d::Node::Node()
 easy2d::Node::~Node()
 {
 	__clearListeners();
-	ActionManager::__clearAllBindedWith(this);
+	Timer::removeBoundWith(this);
+	ActionManager::__removeAllBoundWith(this);
 
 	for (auto child : _children)
 	{
@@ -816,9 +818,9 @@ void easy2d::Node::stopAction(const String& name)
 	}
 }
 
-void easy2d::Node::setAutoUpdate(bool bAutoUpdate)
+void easy2d::Node::setAutoUpdate(bool autoUpdate)
 {
-	_autoUpdate = bAutoUpdate;
+	_autoUpdate = autoUpdate;
 }
 
 void easy2d::Node::setDefaultAnchor(float defaultAnchorX, float defaultAnchorY)
@@ -829,17 +831,17 @@ void easy2d::Node::setDefaultAnchor(float defaultAnchorX, float defaultAnchorY)
 
 void easy2d::Node::resumeAllActions()
 {
-	ActionManager::__resumeAllBindedWith(this);
+	ActionManager::__resumeAllBoundWith(this);
 }
 
 void easy2d::Node::pauseAllActions()
 {
-	ActionManager::__pauseAllBindedWith(this);
+	ActionManager::__pauseAllBoundWith(this);
 }
 
 void easy2d::Node::stopAllActions()
 {
-	ActionManager::__stopAllBindedWith(this);
+	ActionManager::__stopAllBoundWith(this);
 }
 
 void easy2d::Node::dispatch(Event* evt)

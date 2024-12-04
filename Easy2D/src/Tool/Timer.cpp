@@ -1,5 +1,6 @@
 #include <easy2d/e2dtool.h>
 #include <easy2d/e2dnode.h>
+#include <map>
 
 namespace easy2d
 {
@@ -7,21 +8,21 @@ namespace easy2d
 		: public Object
 	{
 	public:
-		explicit TimerEntity(
+		TimerEntity(
 			const easy2d::Function<void()>& func,
 			const easy2d::String& name,
-			float delay,
-			int updateTimes,
-			bool paused
+			float interval,
+			int updateTimes
 		)
-			: running(!paused)
-			, stopped(false)
+			: running(true)
+			, removed(false)
 			, runTimes(0)
 			, totalTimes(updateTimes)
-			, delay(max(delay, 0))
+			, interval(max(interval, 0))
 			, lastTime(easy2d::Time::getTotalTime())
 			, callback(func)
 			, name(name)
+			, node(nullptr)
 		{
 		}
 
@@ -33,22 +34,22 @@ namespace easy2d
 			}
 
 			++runTimes;
-			lastTime += delay;
+			lastTime += interval;
 
 			if (runTimes == totalTimes)
 			{
-				stopped = true;
+				removed = true;
 			}
 		}
 
-		bool ready()
+		bool isReady() const
 		{
 			if (this->running)
 			{
-				if (this->delay == 0)
+				if (this->interval == 0)
 					return true;
 
-				if ((easy2d::Time::getTotalTime() - this->lastTime) >= this->delay)
+				if ((easy2d::Time::getTotalTime() - this->lastTime) >= this->interval)
 					return true;
 			}
 			return false;
@@ -56,52 +57,89 @@ namespace easy2d
 
 	public:
 		bool	running;
-		bool	stopped;
+		bool	removed;
 		int		runTimes;
 		int		totalTimes;
-		float	delay;
+		float	interval;
 		float	lastTime;
+		Node*	node;
 		easy2d::String name;
 		easy2d::Function<void()> callback;
 	};
 }
 
-static std::vector<easy2d::TimerEntity*> s_vTimers;
+static std::atomic<size_t> s_vTimerId = 0;
+static std::map<size_t, easy2d::TimerEntity*> s_vTimers;
 
 
-void easy2d::Timer::add(const Function<void()>& func, float delay, int updateTimes, bool paused, const String& name)
+size_t easy2d::Timer::add(const Function<void()>& func, float interval, int updateTimes, const String& name)
 {
-	auto timer = gcnew TimerEntity(func, name, delay, updateTimes, paused);
+	auto timer = gcnew TimerEntity(func, name, interval, updateTimes);
 	GC::retain(timer);
 
-	s_vTimers.push_back(timer);
+	const auto id = s_vTimerId++;
+	s_vTimers.insert(std::make_pair(id, timer));
+	return id;
 }
 
-void easy2d::Timer::add(const Function<void()>& func, const String& name)
+size_t easy2d::Timer::runDelayed(float delay, const Function<void()>& func)
 {
-	Timer::add(func, 0, -1, false, name);
+	return Timer::add(func, delay, 1, "");
 }
 
-void easy2d::Timer::start(float timeout, const Function<void()>& func)
+void easy2d::Timer::bind(size_t id, Node* node)
 {
-	Timer::add(func, timeout, 1, false, "");
-}
-
-void easy2d::Timer::stop(const String& name)
-{
-	for (auto timer : s_vTimers)
+	auto iter = s_vTimers.find(id);
+	if (iter != s_vTimers.end())
 	{
-		if (timer->name == name)
+		iter->second->node = node;
+	}
+}
+
+void easy2d::Timer::removeBoundWith(Node* node)
+{
+	for (const auto& pair : s_vTimers)
+	{
+		auto timer = pair.second;
+		if (timer->node == node)
 		{
-			timer->running = false;
+			timer->removed = true;
 		}
+	}
+}
+
+void easy2d::Timer::start(size_t id)
+{
+	auto iter = s_vTimers.find(id);
+	if (iter != s_vTimers.end())
+	{
+		iter->second->running = true;
+	}
+}
+
+void easy2d::Timer::stop(size_t id)
+{
+	auto iter = s_vTimers.find(id);
+	if (iter != s_vTimers.end())
+	{
+		iter->second->running = false;
+	}
+}
+
+void easy2d::Timer::remove(size_t id)
+{
+	auto iter = s_vTimers.find(id);
+	if (iter != s_vTimers.end())
+	{
+		iter->second->removed = true;
 	}
 }
 
 void easy2d::Timer::start(const String& name)
 {
-	for (auto timer : s_vTimers)
+	for (const auto& pair : s_vTimers)
 	{
+		auto timer = pair.second;
 		if (timer->name == name)
 		{
 			timer->running = true;
@@ -109,38 +147,54 @@ void easy2d::Timer::start(const String& name)
 	}
 }
 
-void easy2d::Timer::remove(const String& name)
+void easy2d::Timer::stop(const String& name)
 {
-	for (auto timer : s_vTimers)
+	for (const auto& pair : s_vTimers)
 	{
+		auto timer = pair.second;
 		if (timer->name == name)
 		{
-			timer->stopped = true;
+			timer->running = false;
+		}
+	}
+}
+
+void easy2d::Timer::remove(const String& name)
+{
+	for (const auto& pair : s_vTimers)
+	{
+		auto timer = pair.second;
+		if (timer->name == name)
+		{
+			timer->removed = true;
 		}
 	}
 }
 
 void easy2d::Timer::stopAll()
 {
-	for (auto timer : s_vTimers)
+	for (const auto& pair : s_vTimers)
 	{
+		auto timer = pair.second;
 		timer->running = false;
 	}
 }
 
 void easy2d::Timer::startAll()
 {
-	for (auto timer : s_vTimers)
+	for (const auto& pair : s_vTimers)
 	{
+		auto timer = pair.second;
 		timer->running = true;
 	}
 }
 
 void easy2d::Timer::removeAll()
 {
-	for (auto timer : s_vTimers)
+	for (const auto& pair : s_vTimers)
 	{
-		timer->stopped = true;
+		auto timer = pair.second;
+		timer->removed = true;
 	}
 }
 
@@ -149,40 +203,41 @@ void easy2d::Timer::__update()
 	if (s_vTimers.empty() || Game::isPaused())
 		return;
 
-	for (size_t i = 0; i < s_vTimers.size();)
+	for (auto iter = s_vTimers.begin(); iter != s_vTimers.end();)
 	{
-		auto timer = s_vTimers[i];
+		auto timer = iter->second;
 		// 清除已停止的定时器
-		if (timer->stopped)
+		if (timer->removed)
 		{
 			GC::release(timer);
-			s_vTimers.erase(s_vTimers.begin() + i);
+			iter = s_vTimers.erase(iter);
 		}
 		else
 		{
 			// 更新定时器
-			if (timer->ready())
+			if (timer->isReady())
 			{
 				timer->update();
 			}
-
-			++i;
+			++iter;
 		}
 	}
 }
 
 void easy2d::Timer::__resetAll()
 {
-	for (auto timer : s_vTimers)
+	for (const auto& pair : s_vTimers)
 	{
+		auto timer = pair.second;
 		timer->lastTime = Time::getTotalTime();
 	}
 }
 
 void easy2d::Timer::__uninit()
 {
-	for (auto timer : s_vTimers)
+	for (const auto& pair : s_vTimers)
 	{
+		auto timer = pair.second;
 		GC::release(timer);
 	}
 	s_vTimers.clear();
