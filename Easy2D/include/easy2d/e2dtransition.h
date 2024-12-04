@@ -65,7 +65,8 @@ class FadeTransition :
 {
 public:
 	explicit FadeTransition(
-		float duration	/* 动画持续时长 */
+		float duration,			/* 动画持续时长 */
+		bool sequential = true	/* 顺序播放淡入淡出 */
 	);
 
 protected:
@@ -78,28 +79,9 @@ protected:
 	) override;
 
 	virtual void _reset() override;
-};
-
-
-// 渐变过渡
-class EmergeTransition :
-	public Transition
-{
-public:
-	explicit EmergeTransition(
-		float duration	/* 浮现动画持续时长 */
-	);
 
 protected:
-	// 更新动画
-	virtual void _updateCustom() override;
-
-	virtual void _init(
-		Scene * prev,
-		Scene * next
-	) override;
-
-	virtual void _reset() override;
+	bool _sequential;
 };
 
 

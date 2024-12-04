@@ -40,7 +40,7 @@
     <Filter Include="src\Node\Text">
       <UniqueIdentifier>{1209ca65-1f96-47d4-873b-7e372e5aace9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Node\Listener">
+    <Filter Include="src\Listener">
       <UniqueIdentifier>{406c6047-beff-414e-a389-20bbeb9370fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -57,19 +57,10 @@
     <ClCompile Include="src\Manager\ActionManager.cpp">
       <Filter>src\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="src\Node\Button.cpp">
-      <Filter>src\Node</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Node\Menu.cpp">
-      <Filter>src\Node</Filter>
-    </ClCompile>
     <ClCompile Include="src\Node\Node.cpp">
       <Filter>src\Node</Filter>
     </ClCompile>
     <ClCompile Include="src\Node\Sprite.cpp">
-      <Filter>src\Node</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Node\Text.cpp">
       <Filter>src\Node</Filter>
     </ClCompile>
     <ClCompile Include="src\Tool\Random.cpp">
@@ -171,9 +162,6 @@
     <ClCompile Include="src\Transition\BoxTransition.cpp">
       <Filter>src\Transition</Filter>
     </ClCompile>
-    <ClCompile Include="src\Transition\EmergeTransition.cpp">
-      <Filter>src\Transition</Filter>
-    </ClCompile>
     <ClCompile Include="src\Transition\FadeTransition.cpp">
       <Filter>src\Transition</Filter>
     </ClCompile>
@@ -182,9 +170,6 @@
     </ClCompile>
     <ClCompile Include="src\Action\FiniteTimeAction.cpp">
       <Filter>src\Action</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Node\ToggleButton.cpp">
-      <Filter>src\Node</Filter>
     </ClCompile>
     <ClCompile Include="src\Base\Logger.cpp">
       <Filter>src\Base</Filter>
@@ -228,9 +213,6 @@
     <ClCompile Include="src\Node\Text\TextStyle.cpp">
       <Filter>src\Node\Text</Filter>
     </ClCompile>
-    <ClCompile Include="src\Node\Text\TextLayout.cpp">
-      <Filter>src\Node\Text</Filter>
-    </ClCompile>
     <ClCompile Include="src\Node\Text\Font.cpp">
       <Filter>src\Node\Text</Filter>
     </ClCompile>
@@ -241,10 +223,16 @@
       <Filter>src\Node</Filter>
     </ClCompile>
     <ClCompile Include="src\Node\Listener\Listener.cpp">
-      <Filter>src\Node\Listener</Filter>
+      <Filter>src\Listener</Filter>
     </ClCompile>
     <ClCompile Include="src\Node\Listener\ButtonListener.cpp">
-      <Filter>src\Node\Listener</Filter>
+      <Filter>src\Listener</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Text\TextLayout.cpp">
+      <Filter>src\Node\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node\Text.cpp">
+      <Filter>src\Node</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -41,22 +41,19 @@
     <ClCompile Include="src\Math\Point.cpp" />
     <ClCompile Include="src\Math\Rect.cpp" />
     <ClCompile Include="src\Math\Size.cpp" />
-    <ClCompile Include="src\Node\Button.cpp" />
     <ClCompile Include="src\Node\Canvas.cpp" />
     <ClCompile Include="src\Node\Listener\ButtonListener.cpp" />
     <ClCompile Include="src\Node\Listener\Listener.cpp" />
     <ClCompile Include="src\Node\Scene.cpp" />
     <ClCompile Include="src\Node\ShapeNode.cpp" />
     <ClCompile Include="src\Node\Shape\ShapeMaker.cpp" />
+    <ClCompile Include="src\Node\Text.cpp" />
     <ClCompile Include="src\Node\Text\Font.cpp" />
     <ClCompile Include="src\Node\Text\TextLayout.cpp" />
     <ClCompile Include="src\Node\Text\TextStyle.cpp" />
-    <ClCompile Include="src\Node\ToggleButton.cpp" />
-    <ClCompile Include="src\Node\Menu.cpp" />
     <ClCompile Include="src\Node\Node.cpp" />
     <ClCompile Include="src\Node\Shape\Shape.cpp" />
     <ClCompile Include="src\Node\Sprite.cpp" />
-    <ClCompile Include="src\Node\Text.cpp" />
     <ClCompile Include="src\Tool\Data.cpp" />
     <ClCompile Include="src\Tool\Music.cpp" />
     <ClCompile Include="src\Tool\Path.cpp" />
@@ -65,7 +62,6 @@
     <ClCompile Include="src\Tool\Timer.cpp" />
     <ClCompile Include="src\Transition\Transition.cpp" />
     <ClCompile Include="src\Transition\BoxTransition.cpp" />
-    <ClCompile Include="src\Transition\EmergeTransition.cpp" />
     <ClCompile Include="src\Transition\FadeTransition.cpp" />
     <ClCompile Include="src\Transition\MoveTransition.cpp" />
   </ItemGroup>

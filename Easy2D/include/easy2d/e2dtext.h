@@ -96,7 +96,7 @@ public:
 	virtual ~TextLayout();
 
 	// 获取文本
-	String getText() const;
+	const String& getText() const;
 
 	// 获取字体
 	Font getFont() const;

@@ -27,7 +27,7 @@ easy2d::TextLayout::~TextLayout()
 	SafeRelease(_textLayout);
 }
 
-easy2d::String easy2d::TextLayout::getText() const
+const easy2d::String& easy2d::TextLayout::getText() const
 {
 	return _text;
 }
