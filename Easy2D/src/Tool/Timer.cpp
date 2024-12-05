@@ -1,5 +1,6 @@
 #include <easy2d/e2dtool.h>
 #include <easy2d/e2dnode.h>
+#include <atomic>
 #include <map>
 
 namespace easy2d
@@ -206,7 +207,7 @@ void easy2d::Timer::__update()
 	for (auto iter = s_vTimers.begin(); iter != s_vTimers.end();)
 	{
 		auto timer = iter->second;
-		// Çå³ýÒÑÍ£Ö¹µÄ¶¨Ê±Æ÷
+		// æ¸…é™¤å·²åœæ­¢çš„å®šæ—¶å™¨
 		if (timer->removed)
 		{
 			GC::release(timer);
@@ -214,7 +215,7 @@ void easy2d::Timer::__update()
 		}
 		else
 		{
-			// ¸üÐÂ¶¨Ê±Æ÷
+			// æ›´æ–°å®šæ—¶å™¨
 			if (timer->isReady())
 			{
 				timer->update();
