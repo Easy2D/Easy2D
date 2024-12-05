@@ -100,19 +100,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\easy2d\e2daction.h" />
-    <ClInclude Include="include\easy2d\e2dbase.h" />
-    <ClInclude Include="include\easy2d\e2dcommon.h" />
-    <ClInclude Include="include\easy2d\e2dlistener.h" />
-    <ClInclude Include="include\easy2d\e2dmacros.h" />
-    <ClInclude Include="include\easy2d\e2dmanager.h" />
-    <ClInclude Include="include\easy2d\e2dmath.h" />
-    <ClInclude Include="include\easy2d\e2dnode.h" />
-    <ClInclude Include="include\easy2d\e2dshape.h" />
-    <ClInclude Include="include\easy2d\e2dtext.h" />
-    <ClInclude Include="include\easy2d\e2dtool.h" />
-    <ClInclude Include="include\easy2d\e2dtransition.h" />
-    <ClInclude Include="include\easy2d\easy2d.h" />
+    <ClInclude Include="..\include\easy2d\e2daction.h" />
+    <ClInclude Include="..\include\easy2d\e2dbase.h" />
+    <ClInclude Include="..\include\easy2d\e2dcommon.h" />
+    <ClInclude Include="..\include\easy2d\e2dlistener.h" />
+    <ClInclude Include="..\include\easy2d\e2dmacros.h" />
+    <ClInclude Include="..\include\easy2d\e2dmanager.h" />
+    <ClInclude Include="..\include\easy2d\e2dmath.h" />
+    <ClInclude Include="..\include\easy2d\e2dnode.h" />
+    <ClInclude Include="..\include\easy2d\e2dshape.h" />
+    <ClInclude Include="..\include\easy2d\e2dtext.h" />
+    <ClInclude Include="..\include\easy2d\e2dtool.h" />
+    <ClInclude Include="..\include\easy2d\e2dtransition.h" />
+    <ClInclude Include="..\include\easy2d\easy2d.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FF7F943D-A89C-4E6C-97CF-84F7D8FF8EDF}</ProjectGuid>
@@ -246,7 +246,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -260,7 +260,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PreprocessorDefinitions>E2D_USE_MCI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -275,7 +275,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -289,7 +289,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PreprocessorDefinitions>E2D_USE_MCI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -307,7 +307,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -326,7 +326,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>E2D_USE_MCI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -346,7 +346,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -365,7 +365,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>E2D_USE_MCI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
