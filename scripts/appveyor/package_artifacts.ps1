@@ -71,15 +71,15 @@ $fileContent = ([System.IO.File]::ReadAllText(($fileToFix | Resolve-Path), $gb23
 [System.IO.File]::WriteAllLines(($fileToFix | Resolve-Path), $fileContent, $gb2312Encoding)
 
 # Copy published files
-$publishedFiles = ('.\Easy2D\include', '.\scripts\7z\install.bat')
+$publishedFiles = ('.\include', '.\scripts\7z\install.bat')
 New-Item -ItemType "directory" -Path "published"
 Copy-Item -Path $publishedFiles -Destination '.\published' -Recurse
-Copy-Item -Path '.\Easy2D\output' -Destination '.\published' -Recurse
+Copy-Item -Path '.\projects\output' -Destination '.\published' -Recurse
 
-$publishedFilesWin7 = ('.\Easy2D\include', '.\scripts\7z\install-win7.bat')
+$publishedFilesWin7 = ('.\include', '.\scripts\7z\install-win7.bat')
 New-Item -ItemType "directory" -Path "published-win7"
 Copy-Item -Path $publishedFilesWin7 -Destination '.\published-win7' -Recurse
-Copy-Item -Path '.\Easy2D\output-win7' -Destination '.\published-win7' -Recurse
+Copy-Item -Path '.\projects\output-win7' -Destination '.\published-win7' -Recurse
 Rename-Item -Path '.\published-win7\output-win7' -NewName 'output'
 
 # Packaging

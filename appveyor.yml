@@ -1,4 +1,4 @@
-version: 2.1.{build}
+version: 3.0.{build}
 
 skip_tags: true
 
@@ -34,7 +34,9 @@ skip_commits:
 
 only_commits:
   files:
-    - Easy2D/
+    - projects/
+    - include/
+    - src/
     - scripts/
     - appveyor.yml
 
@@ -84,7 +86,7 @@ before_build:
 - ps: .\scripts\appveyor\clear_project_configuration.ps1
 
 build:
-  project: Easy2D.sln
+  project: projects/Easy2D.sln
   verbosity: minimal
   parallel: true
 
@@ -92,9 +94,9 @@ after_build:
 - ps: .\scripts\appveyor\package_artifacts.ps1
 
 artifacts:
-- path: Easy2D/output/**/*.lib
+- path: projects/output/**/*.lib
   name: libeasy2d-$(VS_PLATFORM_TOOLSET)-$(PLATFORM)-$(CONFIGURATION)
-- path: Easy2D/output-win7/**/*.lib
+- path: projects/output-win7/**/*.lib
   name: libeasy2d-win7-$(VS_PLATFORM_TOOLSET)-$(PLATFORM)-$(CONFIGURATION)
 
 deploy:

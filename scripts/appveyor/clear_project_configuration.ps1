@@ -1,4 +1,4 @@
-$filePath = 'Easy2D\Easy2D.vcxproj'
+$filePath = 'projects\Easy2D.vcxproj'
 
 $debugInfoReplace = "<DebugInformationFormat>(EditAndContinue|ProgramDatabase)</DebugInformationFormat>"
 $debugInfoReplaceTo = "<DebugInformationFormat>None</DebugInformationFormat>"

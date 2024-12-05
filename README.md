@@ -1,6 +1,6 @@
 <div align="center">
 
-![Easy2D](./logo/logo_text_dark.png)
+![Easy2D](./assets/logo/logo_text_dark.png)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ah39otggqy7xu0qm/branch/master?svg=true)](https://ci.appveyor.com/project/Nomango/easy2d/branch/master)
 [![GitHub release](https://img.shields.io/github/release/easy2d/easy2d)](https://github.com/Easy2D/Easy2D/releases/latest)
@@ -50,9 +50,9 @@ git clone https://github.com/nomango/easy2d.git
 
 #### 从源代码安装
 
-在其他项目使用 Easy2D 时，需要先编译 Easy2D 工程，它会在 `/Easy2D/output/` 目录生成 .lib 文件。
+在其他项目使用 Easy2D 时，需要先编译 Easy2D 工程，它会在 `/projects/output` 目录生成 .lib 文件。
 
-在 VS 中打开你自己项目的项目属性，把 `C/C++` ==> `附加包含目录` 设置为 Easy2D 项目的 `/Easy2D/include/` 目录，再把 `链接器` ==> `附加库目录` 设置为 Easy2D 项目的 `/Easy2D/output/` 目录。
+在 VS 中打开你自己项目的项目属性，把 `C/C++` ==> `附加包含目录` 设置为 Easy2D 项目的 `/include` 目录，再把 `链接器` ==> `附加库目录` 设置为 Easy2D 项目的 `/projects/output` 目录。
 
 然后就可以在你自己的项目中使用 Easy2D 的功能了。
 
@@ -60,9 +60,9 @@ git clone https://github.com/nomango/easy2d.git
 
 ## 计划
 
-Easy2D 是我个人的早期作品，新的游戏引擎项目已经更庞大且更专业，查看详情请移步 [Kiwano 游戏引擎](https://github.com/nomango/kiwano)
+Easy2D 是我个人的早期作品，新的游戏引擎项目已经更庞大且更专业，查看详情请移步 [Kiwano 游戏引擎](https://github.com/kiwanoengine)
 
 ## 联系方式
 
-* Website: [easy2d.cn](//easy2d.cn)
+* Website: [easy2d.cn](https://easy2d.cn)
 * QQ 群: 608406540
