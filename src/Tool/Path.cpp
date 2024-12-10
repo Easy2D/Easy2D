@@ -112,34 +112,6 @@ easy2d::String easy2d::Path::searchForFile(const String& path)
 	return String();
 }
 
-easy2d::String easy2d::Path::extractResource(int resNameId, const String & resType, const String & destFileName)
-{
-	String destFilePath = s_sTempPath + destFileName;
-	// 创建文件
-	HANDLE hFile = ::CreateFileA(destFilePath.c_str(), GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY, NULL);
-	if (hFile == INVALID_HANDLE_VALUE)
-		return String();
-
-	// 查找资源文件中、加载资源到内存、得到资源大小
-	Resource res{ resNameId, resType };
-	auto data = res.loadData();
-
-	if (data.isValid())
-	{
-		// 写入文件
-		DWORD dwWrite = 0;
-		::WriteFile(hFile, data.buffer, (DWORD)data.size, &dwWrite, NULL);
-		::CloseHandle(hFile);
-		return destFilePath;
-	}
-	else
-	{
-		::CloseHandle(hFile);
-		::DeleteFileA(destFilePath.c_str());
-		return String();
-	}
-}
-
 easy2d::String easy2d::Path::getDataSavePath()
 {
 	return s_sDataSavePath;

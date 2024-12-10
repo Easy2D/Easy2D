@@ -1,7 +1,7 @@
 #include <easy2d/e2dtext.h>
 #include <easy2d/e2dbase.h>
 
-easy2d::TextLayout::TextLayout()
+easy2d::Text::Text()
 	: _textFormat(nullptr)
 	, _textLayout(nullptr)
 	, _size()
@@ -10,7 +10,7 @@ easy2d::TextLayout::TextLayout()
 {
 }
 
-easy2d::TextLayout::TextLayout(const String& text, const TextStyle& style)
+easy2d::Text::Text(const String& text, const TextStyle& style)
 	: _textFormat(nullptr)
 	, _textLayout(nullptr)
 	, _size()
@@ -21,28 +21,28 @@ easy2d::TextLayout::TextLayout(const String& text, const TextStyle& style)
 	_recreateLayout();
 }
 
-easy2d::TextLayout::~TextLayout()
+easy2d::Text::~Text()
 {
 	SafeRelease(_textFormat);
 	SafeRelease(_textLayout);
 }
 
-const easy2d::String& easy2d::TextLayout::getText() const
+const easy2d::String& easy2d::Text::getText() const
 {
 	return _text;
 }
 
-easy2d::Font easy2d::TextLayout::getFont() const
+easy2d::Font easy2d::Text::getFont() const
 {
 	return _style.font;
 }
 
-easy2d::TextStyle easy2d::TextLayout::getStyle() const
+easy2d::TextStyle easy2d::Text::getStyle() const
 {
 	return _style;
 }
 
-int easy2d::TextLayout::getLineCount() const
+int easy2d::Text::getLineCount() const
 {
 	if (_textLayout)
 	{
@@ -56,22 +56,22 @@ int easy2d::TextLayout::getLineCount() const
 	}
 }
 
-bool easy2d::TextLayout::hasStrikethrough() const
+bool easy2d::Text::hasStrikethrough() const
 {
 	return _style.hasStrikethrough;
 }
 
-bool easy2d::TextLayout::hasUnderline() const
+bool easy2d::Text::hasUnderline() const
 {
 	return _style.hasUnderline;
 }
 
-easy2d::Size easy2d::TextLayout::getSize() const
+easy2d::Size easy2d::Text::getSize() const
 {
 	return _size;
 }
 
-void easy2d::TextLayout::setText(const String& text)
+void easy2d::Text::setText(const String& text)
 {
 	if (_text != text)
 	{
@@ -82,21 +82,21 @@ void easy2d::TextLayout::setText(const String& text)
 	}
 }
 
-void easy2d::TextLayout::setStyle(const TextStyle& style)
+void easy2d::Text::setStyle(const TextStyle& style)
 {
 	_style = style;
 	_recreateFormat();
 	_recreateLayout();
 }
 
-void easy2d::TextLayout::setFont(const Font& font)
+void easy2d::Text::setFont(const Font& font)
 {
 	_style.font = font;
 	_recreateFormat();
 	_recreateLayout();
 }
 
-void easy2d::TextLayout::setFontFamily(const String& family)
+void easy2d::Text::setFontFamily(const String& family)
 {
 	if (_style.font.family != family)
 	{
@@ -106,7 +106,7 @@ void easy2d::TextLayout::setFontFamily(const String& family)
 	}
 }
 
-void easy2d::TextLayout::setFontSize(float size)
+void easy2d::Text::setFontSize(float size)
 {
 	if (_style.font.size != size)
 	{
@@ -116,7 +116,7 @@ void easy2d::TextLayout::setFontSize(float size)
 	}
 }
 
-void easy2d::TextLayout::setFontWeight(UINT weight)
+void easy2d::Text::setFontWeight(UINT weight)
 {
 	if (_style.font.weight != weight)
 	{
@@ -126,7 +126,7 @@ void easy2d::TextLayout::setFontWeight(UINT weight)
 	}
 }
 
-void easy2d::TextLayout::setItalic(bool italic)
+void easy2d::Text::setItalic(bool italic)
 {
 	if (_style.font.italic != italic)
 	{
@@ -136,7 +136,7 @@ void easy2d::TextLayout::setItalic(bool italic)
 	}
 }
 
-void easy2d::TextLayout::setWrapping(bool wrapping)
+void easy2d::Text::setWrapping(bool wrapping)
 {
 	if (_style.wrapping != wrapping)
 	{
@@ -146,7 +146,7 @@ void easy2d::TextLayout::setWrapping(bool wrapping)
 	}
 }
 
-void easy2d::TextLayout::setWrappingWidth(float wrappingWidth)
+void easy2d::Text::setWrappingWidth(float wrappingWidth)
 {
 	if (_style.wrappingWidth != wrappingWidth)
 	{
@@ -160,7 +160,7 @@ void easy2d::TextLayout::setWrappingWidth(float wrappingWidth)
 	}
 }
 
-void easy2d::TextLayout::setLineSpacing(float lineSpacing)
+void easy2d::Text::setLineSpacing(float lineSpacing)
 {
 	if (_style.lineSpacing != lineSpacing)
 	{
@@ -170,7 +170,7 @@ void easy2d::TextLayout::setLineSpacing(float lineSpacing)
 	}
 }
 
-void easy2d::TextLayout::setAlignment(TextAlign align)
+void easy2d::Text::setAlignment(TextAlign align)
 {
 	if (_style.alignment != align)
 	{
@@ -180,7 +180,7 @@ void easy2d::TextLayout::setAlignment(TextAlign align)
 	}
 }
 
-void easy2d::TextLayout::setUnderline(bool hasUnderline)
+void easy2d::Text::setUnderline(bool hasUnderline)
 {
 	if (_style.hasUnderline != hasUnderline)
 	{
@@ -191,7 +191,7 @@ void easy2d::TextLayout::setUnderline(bool hasUnderline)
 	}
 }
 
-void easy2d::TextLayout::setStrikethrough(bool hasStrikethrough)
+void easy2d::Text::setStrikethrough(bool hasStrikethrough)
 {
 	if (_style.hasStrikethrough != hasStrikethrough)
 	{
@@ -202,7 +202,7 @@ void easy2d::TextLayout::setStrikethrough(bool hasStrikethrough)
 	}
 }
 
-void easy2d::TextLayout::reset(const String& text, const TextStyle& style)
+void easy2d::Text::reset(const String& text, const TextStyle& style)
 {
 	_text = text;
 	_style = style;
@@ -210,7 +210,7 @@ void easy2d::TextLayout::reset(const String& text, const TextStyle& style)
 	_recreateLayout();
 }
 
-void easy2d::TextLayout::_recreateFormat()
+void easy2d::Text::_recreateFormat()
 {
 	SafeRelease(_textFormat);
 
@@ -267,7 +267,7 @@ void easy2d::TextLayout::_recreateFormat()
 	}
 }
 
-void easy2d::TextLayout::_recreateLayout()
+void easy2d::Text::_recreateLayout()
 {
 	SafeRelease(_textLayout);
 
@@ -287,7 +287,7 @@ void easy2d::TextLayout::_recreateLayout()
 	WideString content = NarrowToWide(_text);
 	UINT32 length = (UINT32)content.length();
 
-	// 创建 TextLayout
+	// 创建 Text
 	HRESULT hr;
 	// 对文本自动换行情况下进行处理
 	if (_style.wrapping)

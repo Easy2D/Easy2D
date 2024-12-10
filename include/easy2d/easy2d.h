@@ -17,9 +17,8 @@
 #endif
 
 
-#include <easy2d/e2dmacros.h>
-#include <easy2d/e2dmath.h>
 #include <easy2d/e2dcommon.h>
+#include <easy2d/e2dmath.h>
 #include <easy2d/e2dbase.h>
 #include <easy2d/e2dmanager.h>
 #include <easy2d/e2dlistener.h>

@@ -5,8 +5,8 @@
 
 namespace
 {
-	std::unordered_map<easy2d::String, easy2d::Image*> s_mImagesFromFile;
-	std::unordered_map<easy2d::Resource, easy2d::Image*> s_mImagesFromResource;
+	std::unordered_map<easy2d::String, ID2D1Bitmap*> s_mImagesFromFile;
+	std::unordered_map<easy2d::Resource, ID2D1Bitmap*> s_mImagesFromResource;
 }
 
 namespace easy2d
@@ -16,17 +16,30 @@ namespace easy2d
 }
 
 easy2d::Image::Image(ID2D1Bitmap* bitmap)
-	: _bitmap(bitmap)
+	: _bitmap(nullptr)
 {
-	if (_bitmap)
-	{
-		_bitmap->AddRef();
-	}
+	resetBitmap(bitmap);
 }
 
 easy2d::Image::~Image()
 {
 	SafeRelease(_bitmap);
+}
+
+void easy2d::Image::onDraw()
+{
+	if (_bitmap)
+	{
+		Rect* srcRect = _cropRect.isEmpty() ? nullptr : &_cropRect;
+
+		Renderer::getRenderTarget()->DrawBitmap(
+			_bitmap,
+			reinterpret_cast<const D2D1_RECT_F&>(getBounds()),
+			_displayOpacity,
+			(_interpolationMode == InterpolationMode::Nearest) ? D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR : D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+			reinterpret_cast<const D2D1_RECT_F*>(srcRect)
+		);
+	}
 }
 
 ID2D1Bitmap* easy2d::Image::getBitmap()
@@ -80,120 +93,67 @@ easy2d::Size easy2d::Image::getSize() const
 	}
 }
 
-easy2d::Image* easy2d::Image::load(const String& filePath)
+void easy2d::Image::preload(const String& filePath)
 {
 	auto iter = s_mImagesFromFile.find(filePath);
 	if (iter != s_mImagesFromFile.end())
 	{
-		return iter->second;
+		return;
 	}
 
 	ID2D1Bitmap* pBitmap = nullptr;
 	HRESULT hr = LoadBitmapFromFile(&pBitmap, filePath);
 
-	Image* image = nullptr;
 	if (SUCCEEDED(hr))
 	{
-		image = gcnew Image(pBitmap);
-		image->retain();
-		s_mImagesFromFile.insert(std::make_pair(filePath, image));
-	}
-
-	SafeRelease(pBitmap);
-	if (SUCCEEDED(hr))
-	{
-		return image;
+		s_mImagesFromFile.insert(std::make_pair(filePath, pBitmap));
+		return;
 	}
 
 	E2D_ERROR("Load image failed! ERROR_CODE = %#X", hr);
-	return nullptr;
+	return;
 }
 
-easy2d::Image* easy2d::Image::load(const Resource& res)
+void easy2d::Image::preload(const Resource& res)
 {
 	auto iter = s_mImagesFromResource.find(res);
 	if (iter != s_mImagesFromResource.end())
 	{
-		return iter->second;
+		return;
 	}
 
 	ID2D1Bitmap* pBitmap = nullptr;
 	HRESULT hr = LoadBitmapFromResource(&pBitmap, res);
 
-	Image* image = nullptr;
 	if (SUCCEEDED(hr))
 	{
-		image = gcnew Image(pBitmap);
-		image->retain();
-		s_mImagesFromResource.insert(std::make_pair(res, image));
-	}
-
-	SafeRelease(pBitmap);
-	if (SUCCEEDED(hr))
-	{
-		return image;
+		s_mImagesFromResource.insert(std::make_pair(res, pBitmap));
+		return;
 	}
 
 	E2D_ERROR("Load image failed! ERROR_CODE = %#X", hr);
-	return nullptr;
-}
-
-easy2d::Image* easy2d::Image::load(int resNameId, const String& resType)
-{
-	return load(Resource{ resNameId, resType });
-}
-
-namespace
-{
+	return;
 }
 
 void easy2d::Image::clearCache()
 {
 	for (auto pair : s_mImagesFromFile)
 	{
-		GC::release(pair.second);
+		SafeRelease(pair.second);
 	}
 	s_mImagesFromFile.clear();
 
 	for (auto pair : s_mImagesFromResource)
 	{
-		GC::release(pair.second);
+		SafeRelease(pair.second);
 	}
 	s_mImagesFromResource.clear();
 }
 
 void easy2d::Image::reloadCache()
 {
-	for (auto pair : s_mImagesFromFile)
-	{
-		ID2D1Bitmap* pBitmap = nullptr;
-		HRESULT hr = LoadBitmapFromFile(&pBitmap, pair.first);
-
-		if (SUCCEEDED(hr))
-		{
-			pair.second->resetBitmap(pBitmap);
-		}
-		else
-		{
-			E2D_ERROR("Reload image failed! ERROR_CODE = %#X", hr);
-		}
-		SafeRelease(pBitmap);
-	}
-	for (auto pair : s_mImagesFromResource)
-	{
-		ID2D1Bitmap* pBitmap = nullptr;
-		HRESULT hr = LoadBitmapFromResource(&pBitmap, pair.first);
-
-		if (SUCCEEDED(hr))
-		{
-			pair.second->resetBitmap(pBitmap);
-		}
-		else
-		{
-			E2D_ERROR("Reload image failed! ERROR_CODE = %#X", hr);
-		}
-		SafeRelease(pBitmap);
-	}
+	// TODO
+	Image::clearCache();
 }
 
 namespace easy2d

@@ -1,4 +1,4 @@
-#include <easy2d/e2dcommon.h>
+#include <easy2d/e2devent.h>
 
 easy2d::Event::Event(UINT type)
 	: type(type)
