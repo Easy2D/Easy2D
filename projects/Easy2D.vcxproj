@@ -28,13 +28,6 @@
     <ClCompile Include="..\src\Base\Renderer.cpp" />
     <ClCompile Include="..\src\Base\Time.cpp" />
     <ClCompile Include="..\src\Base\Window.cpp" />
-    <ClCompile Include="..\src\Common\Color.cpp" />
-    <ClCompile Include="..\src\Common\DrawingStyle.cpp" />
-    <ClCompile Include="..\src\Common\Event.cpp" />
-    <ClCompile Include="..\src\Common\Object.cpp" />
-    <ClCompile Include="..\src\Common\Image.cpp" />
-    <ClCompile Include="..\src\Common\Resource.cpp" />
-    <ClCompile Include="..\src\Common\String.cpp" />
     <ClCompile Include="..\src\Manager\ActionManager.cpp" />
     <ClCompile Include="..\src\Manager\SceneManager.cpp" />
     <ClCompile Include="..\src\Math\Matrix.cpp" />
@@ -103,8 +96,8 @@
     <ClInclude Include="..\include\easy2d\e2daction.h" />
     <ClInclude Include="..\include\easy2d\e2dbase.h" />
     <ClInclude Include="..\include\easy2d\e2dcommon.h" />
+    <ClInclude Include="..\include\easy2d\e2ddrawing.h" />
     <ClInclude Include="..\include\easy2d\e2dlistener.h" />
-    <ClInclude Include="..\include\easy2d\e2dmacros.h" />
     <ClInclude Include="..\include\easy2d\e2dmanager.h" />
     <ClInclude Include="..\include\easy2d\e2dmath.h" />
     <ClInclude Include="..\include\easy2d\e2dnode.h" />

@@ -1,20 +1,67 @@
 #include <easy2d/e2dtext.h>
 #include <easy2d/e2dbase.h>
 
+//
+// Font
+//
+
+easy2d::Font::Font()
+	: family("")
+	, size(22)
+	, weight(Font::Weight::Normal)
+	, italic(false)
+{
+}
+
+easy2d::Font::Font(const String & family, float size, UINT weight, bool italic)
+	: family(family)
+	, size(size)
+	, weight(weight)
+	, italic(italic)
+{
+}
+
+//
+// TextBrush
+//
+
+easy2d::TextBrush::TextBrush(
+	Font font,
+	TextAlign alignment,
+	bool wrapping,
+	float wrappingWidth,
+	float lineSpacing,
+	bool hasUnderline,
+	bool hasStrikethrough
+)
+	: font(font)
+	, alignment(alignment)
+	, wrapping(wrapping)
+	, wrappingWidth(wrappingWidth)
+	, lineSpacing(lineSpacing)
+	, hasUnderline(hasUnderline)
+	, hasStrikethrough(hasStrikethrough)
+{
+}
+
+//
+// Text
+//
+
 easy2d::Text::Text()
 	: _textFormat(nullptr)
 	, _textLayout(nullptr)
 	, _size()
-	, _text()
+	, _content()
 	, _style()
 {
 }
 
-easy2d::Text::Text(const String& text, const TextStyle& style)
+easy2d::Text::Text(const String& content, const TextBrush& style)
 	: _textFormat(nullptr)
 	, _textLayout(nullptr)
 	, _size()
-	, _text(text)
+	, _content(content)
 	, _style(style)
 {
 	_recreateFormat();
@@ -29,7 +76,7 @@ easy2d::Text::~Text()
 
 const easy2d::String& easy2d::Text::getText() const
 {
-	return _text;
+	return _content;
 }
 
 easy2d::Font easy2d::Text::getFont() const
@@ -37,7 +84,7 @@ easy2d::Font easy2d::Text::getFont() const
 	return _style.font;
 }
 
-easy2d::TextStyle easy2d::Text::getStyle() const
+easy2d::TextBrush easy2d::Text::getStyle() const
 {
 	return _style;
 }
@@ -71,18 +118,18 @@ easy2d::Size easy2d::Text::getSize() const
 	return _size;
 }
 
-void easy2d::Text::setText(const String& text)
+void easy2d::Text::setText(const String& content)
 {
-	if (_text != text)
+	if (_content != content)
 	{
-		_text = text;
+		_content = content;
 		if (!_textFormat)
 			_recreateFormat();
 		_recreateLayout();
 	}
 }
 
-void easy2d::Text::setStyle(const TextStyle& style)
+void easy2d::Text::setStyle(const TextBrush& style)
 {
 	_style = style;
 	_recreateFormat();
@@ -202,9 +249,9 @@ void easy2d::Text::setStrikethrough(bool hasStrikethrough)
 	}
 }
 
-void easy2d::Text::reset(const String& text, const TextStyle& style)
+void easy2d::Text::reset(const String& content, const TextBrush& style)
 {
-	_text = text;
+	_content = content;
 	_style = style;
 	_recreateFormat();
 	_recreateLayout();
@@ -272,7 +319,7 @@ void easy2d::Text::_recreateLayout()
 	SafeRelease(_textLayout);
 
 	// 文本为空字符串时，重置属性
-	if (_text.empty())
+	if (_content.empty())
 	{
 		_size = Size{};
 		return;
@@ -284,7 +331,7 @@ void easy2d::Text::_recreateLayout()
 		return;
 	}
 
-	WideString content = NarrowToWide(_text);
+	WideString content = NarrowToWide(_content);
 	UINT32 length = (UINT32)content.length();
 
 	// 创建 Text

@@ -110,7 +110,7 @@ public:
 
 
 // 绘图样式
-struct DrawingStyle
+struct Brush
 {
 	// 绘图模式
 	enum class Mode
@@ -120,18 +120,18 @@ struct DrawingStyle
 		Fill,		/* 轮廓 + 填充 */
 	};
 
-	// 绘图样式
-	DrawingStyle(
+	// 纯色无描边画刷
+	Brush(
+		Color fillColor
+	);
+
+	// 画刷
+	Brush(
 		Mode mode = Mode::Fill,
 		Color fillColor = Color::White,
 		Color strokeColor = Color::Transparent,
 		float strokeWidth = 2.0f,
 		LineJoin lineJoin = LineJoin::None
-	);
-
-	// 纯色无描边样式
-	DrawingStyle(
-		Color fillColor
 	);
 
 	Mode	 mode;			// 绘图模式
@@ -142,82 +142,79 @@ struct DrawingStyle
 };
 
 
-// 资源
-class Resource
-{
-public:
-	// 资源的二进制数据
-	struct Data
-	{
-		void* buffer;	// 资源数据
-		int size;	// 资源数据大小
-
-		Data();
-
-		bool isValid() const;
-
-		template <typename Elem>
-		friend std::basic_ostream<Elem>& operator<<(std::basic_ostream<Elem>& out, const Resource::Data& data)
-		{
-			using OStreamType = std::basic_ostream<Elem>;
-
-			typename OStreamType::iostate state = OStreamType::goodbit;
-			const typename OStreamType::sentry ok(out);
-			if (!ok)
-			{
-				state |= OStreamType::badbit;
-			}
-			else
-			{
-				if (data.buffer && data.size)
-				{
-					out.write(reinterpret_cast<const Elem*>(data.buffer), static_cast<std::streamsize>(data.size));
-				}
-				else
-				{
-					state |= OStreamType::badbit;
-				}
-			}
-			out.setstate(state);
-			return out;
-		}
-	};
-
-	Resource(
-		int id,				/* 资源 ID */
-		const String& type	/* 资源类型 */
-	);
-
-	// 加载资源的二进制数据
-	Data loadData() const;
-
-	// 获取资源 ID
-	int getId() const;
-
-	// 获取资源类型
-	String getType() const;
-
-	bool operator==(const Resource& other) const { return _id == other._id && _type == other._type; }
-
-	bool operator<(const Resource& other) const { return _id < other._id || _type < other._type; }
-
-private:
-	int		_id;
-	String	_type;
-};
-
-
-class Drawing
+// 可绘制对象
+class Drawable
 {
 public:
 	virtual void onDraw() = 0;
+
+	// 获取可见状态
+	bool isVisible() const;
+
+	// 设置可见
+	void setVisible(
+		bool value
+	);
+
+	// 获取绘制宽度
+	float getWidth() const;
+
+	// 获取绘制高度
+	float getHeight() const;
+
+	// 获取绘制大小
+	Size getSize() const;
+
+	// 修改绘制宽度
+	void setWidth(
+		float width
+	);
+
+	// 修改绘制高度
+	void setHeight(
+		float height
+	);
+
+	// 修改绘制大小
+	void setSize(
+		const Size& size
+	);
+
+	// 获取透明度
+	float getOpacity() const;
+
+	// 设置透明度
+	// 默认为 1.0f, 范围 [0, 1]
+	void setOpacity(
+		float opacity
+	);
+
+	// 获取锚点
+	Point getAnchor() const;
+
+	// 设置锚点位置
+	// 默认为 (0, 0), 范围 [0, 1]
+	void setAnchor(
+		const Point& anchor
+	);
+
+	// 修改默认锚点位置
+	static void setDefaultAnchor(
+		const Point& defaultAnchor
+	);
+
+protected:
+	bool _visible;
+	float _opacity;
+	Size _size;
+	Point _anchor;
 };
 
 
 // 图片
 class Image :
 	public Object,
-	public Drawing
+	public Drawable
 {
 	friend Game;
 	friend Canvas;
@@ -281,16 +278,4 @@ protected:
 	Rect _cropRect;
 };
 
-}
-
-namespace std
-{
-	template<>
-	struct hash<easy2d::Resource>
-	{
-		size_t operator()(const easy2d::Resource& res) const
-		{
-			return static_cast<size_t>(res.getId());
-		}
-	};
 }

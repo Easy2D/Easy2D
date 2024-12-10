@@ -7,40 +7,40 @@
     <Filter Include="src">
       <UniqueIdentifier>{181bba91-823e-4033-85f3-588dc8e3e8d1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Transition">
+    <Filter Include="src\Transition">
       <UniqueIdentifier>{563b19f2-4c5e-4362-983a-94d2ae724550}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Tool">
+    <Filter Include="src\Tool">
       <UniqueIdentifier>{42d46a92-c043-4667-8c20-358319e5c313}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Node">
+    <Filter Include="src\Node">
       <UniqueIdentifier>{51864c81-02ee-4043-bf09-9ce3cbe5b6da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Node\Shape">
+    <Filter Include="src\Node\Shape">
       <UniqueIdentifier>{eb72b49a-5b2f-4fc0-9ad2-8f5e02efac6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Manager">
+    <Filter Include="src\Manager">
       <UniqueIdentifier>{9031e36b-fa85-4b4e-8e80-657c7e68f283}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Action">
+    <Filter Include="src\Action">
       <UniqueIdentifier>{50293f38-87fe-4dde-b938-cf1b7a2921f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Base">
+    <Filter Include="src\Base">
       <UniqueIdentifier>{261633d3-3814-40c7-bd6d-201ede6c6ade}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Common">
+    <Filter Include="src\Common">
       <UniqueIdentifier>{be5d9314-b00a-4f11-bd2a-1f720dc32407}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Math">
+    <Filter Include="src\Math">
       <UniqueIdentifier>{fbde03ff-4555-4630-b96c-24085ef12c56}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\include\easy2d">
+    <Filter Include="include\easy2d">
       <UniqueIdentifier>{ea6ff341-f5bc-4b2e-b82c-1134390c36c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Node\Text">
+    <Filter Include="src\Node\Text">
       <UniqueIdentifier>{1209ca65-1f96-47d4-873b-7e372e5aace9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\src\Listener">
+    <Filter Include="src\Listener">
       <UniqueIdentifier>{406c6047-beff-414e-a389-20bbeb9370fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

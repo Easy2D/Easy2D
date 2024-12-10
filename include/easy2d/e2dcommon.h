@@ -149,4 +149,81 @@ private:
 	size_t _hashName;
 };
 
+
+// 资源
+class Resource
+{
+public:
+	// 资源的二进制数据
+	struct Data
+	{
+		void* buffer;	// 资源数据
+		int size;	// 资源数据大小
+
+		Data();
+
+		bool isValid() const;
+
+		template <typename Elem>
+		friend std::basic_ostream<Elem>& operator<<(std::basic_ostream<Elem>& out, const Resource::Data& data)
+		{
+			using OStreamType = std::basic_ostream<Elem>;
+
+			typename OStreamType::iostate state = OStreamType::goodbit;
+			const typename OStreamType::sentry ok(out);
+			if (!ok)
+			{
+				state |= OStreamType::badbit;
+			}
+			else
+			{
+				if (data.buffer && data.size)
+				{
+					out.write(reinterpret_cast<const Elem*>(data.buffer), static_cast<std::streamsize>(data.size));
+				}
+				else
+				{
+					state |= OStreamType::badbit;
+				}
+			}
+			out.setstate(state);
+			return out;
+		}
+	};
+
+	Resource(
+		int id,				/* 资源 ID */
+		const String& type	/* 资源类型 */
+	);
+
+	// 加载资源的二进制数据
+	Data loadData() const;
+
+	// 获取资源 ID
+	int getId() const;
+
+	// 获取资源类型
+	String getType() const;
+
+	bool operator==(const Resource& other) const { return _id == other._id && _type == other._type; }
+
+	bool operator<(const Resource& other) const { return _id < other._id || _type < other._type; }
+
+private:
+	int		_id;
+	String	_type;
+};
+
+}
+
+namespace std
+{
+	template<>
+	struct hash<easy2d::Resource>
+	{
+		size_t operator()(const easy2d::Resource& res) const
+		{
+			return static_cast<size_t>(res.getId());
+		}
+	};
 }

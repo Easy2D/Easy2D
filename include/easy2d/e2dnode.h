@@ -56,9 +56,6 @@ public:
 	// 渲染节点
 	virtual void onRender() {}
 
-	// 获取节点显示状态
-	bool isVisible() const;
-
 	// 获取节点绘图顺序
 	int getOrder() const;
 
@@ -71,12 +68,6 @@ public:
 	// 获取节点坐标
 	Point getPos() const;
 
-	// 获取节点宽度
-	float getWidth() const;
-
-	// 获取节点高度
-	float getHeight() const;
-
 	// 获取节点宽度（不考虑缩放）
 	float getRealWidth() const;
 
@@ -85,15 +76,6 @@ public:
 
 	// 获取节点大小（不考虑缩放）
 	Size getRealSize() const;
-
-	// 获取节点的锚点
-	float getAnchorX() const;
-
-	// 获取节点的锚点
-	float getAnchorY() const;
-
-	// 获取节点大小
-	Size getSize() const;
 
 	// 获取节点横向缩放比例
 	float getScaleX() const;
@@ -109,9 +91,6 @@ public:
 
 	// 获取节点旋转角度
 	float getRotation() const;
-
-	// 获取节点透明度
-	float getOpacity() const;
 
 	// 获取节点属性
 	Property getProperty() const;
@@ -137,11 +116,6 @@ public:
 	// 是否包含点坐标
 	virtual bool containsPoint(Point const& point) const;
 
-	// 设置节点是否显示
-	void setVisible(
-		bool value
-	);
-
 	// 开启或禁用 onUpdate 函数
 	void setAutoUpdate(
 		bool autoUpdate
@@ -159,7 +133,7 @@ public:
 
 	// 设置节点坐标
 	void setPos(
-		const Point & point
+		const Point& point
 	);
 
 	// 设置节点坐标
@@ -243,52 +217,6 @@ public:
 	// 默认为 0
 	void setRotation(
 		float rotation
-	);
-
-	// 设置透明度
-	// 默认为 1.0f, 范围 [0, 1]
-	void setOpacity(
-		float opacity
-	);
-
-	// 设置锚点的横向位置
-	// 默认为 0, 范围 [0, 1]
-	void setAnchorX(
-		float anchorX
-	);
-
-	// 设置锚点的纵向位置
-	// 默认为 0, 范围 [0, 1]
-	void setAnchorY(
-		float anchorY
-	);
-
-	// 设置锚点位置
-	// 默认为 (0, 0), 范围 [0, 1]
-	void setAnchor(
-		float anchorX,
-		float anchorY
-	);
-
-	// 修改节点宽度
-	void setWidth(
-		float width
-	);
-
-	// 修改节点高度
-	void setHeight(
-		float height
-	);
-
-	// 修改节点大小
-	void setSize(
-		float width,
-		float height
-	);
-
-	// 修改节点大小
-	void setSize(
-		Size size
 	);
 
 	// 设置节点属性
@@ -423,12 +351,6 @@ public:
 	// 移除所有监听器
 	void removeAllListeners();
 
-	// 修改节点的默认锚点位置
-	static void setDefaultAnchor(
-		float defaultAnchorX,
-		float defaultAnchorY
-	);
-
 	// 获取身体形状
 	Shape* getBodyShape() const;
 
@@ -477,20 +399,15 @@ private:
 	void __clearParents();
 
 protected:
-	bool		_visible;
 	bool		_autoUpdate;
 	bool		_needSort;
 	bool		_showBodyShape;
 	bool		_removed;
 	int			_order;
 	float		_rotation;
-	float		_displayOpacity;
-	float		_realOpacity;
 	Point		_pos;
-	Size		_size;
 	Vector2		_scale;
 	Vector2		_skewAngle;
-	Point		_anchor;
 	Scene*		_parentScene;
 	Node*		_parent;
 	Shape*		_body;

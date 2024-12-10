@@ -16,15 +16,13 @@ enum class TextAlign
 
 
 // 字体
-class Font
+struct Font
 {
-public:
 	String	family;			// 字体族
 	float	size;			// 字号
 	UINT	weight;			// 粗细值
 	bool	italic;			// 斜体
 
-public:
 	// 字体粗细值
 	enum Weight : UINT
 	{
@@ -39,22 +37,20 @@ public:
 		ExtraBlack = 950
 	};
 
-public:
 	Font();
 
-	explicit Font(
+	Font(
 		const String& family,
-		float size = 22,
+		float size,
 		UINT weight = Font::Weight::Normal,
 		bool italic = false
 	);
 };
 
 
-// 文本样式
-class TextStyle
+// 文本画刷
+struct TextBrush
 {
-public:
 	Font		font;				// 字体
 	TextAlign	alignment;			// 对齐方式
 	bool		wrapping;			// 打开自动换行
@@ -63,8 +59,7 @@ public:
 	bool		hasUnderline;		// 下划线
 	bool		hasStrikethrough;	// 删除线
 
-public:
-	TextStyle(
+	TextBrush(
 		Font font = Font(),
 		TextAlign alignment = TextAlign::Left,
 		bool wrapping = false,
@@ -76,33 +71,30 @@ public:
 };
 
 
-class Text;
-
-// 文本布局
-class TextLayout
+// 文本
+class Text
 	: public Object
 {
 	friend Renderer;
-	friend Text;
 
 public:
-	TextLayout();
+	Text();
 
-	TextLayout(
-		const String& text,
-		const TextStyle& style = TextStyle()
+	Text(
+		const String& content,
+		const TextBrush& style = TextBrush()
 	);
 
-	virtual ~TextLayout();
+	virtual ~Text();
 
-	// 获取文本
-	const String& getText() const;
+	// 获取文本内容
+	const String& getContent() const;
 
 	// 获取字体
 	Font getFont() const;
 
-	// 获取文本样式
-	TextStyle getStyle() const;
+	// 获取文本画刷
+	TextBrush getStyle() const;
 
 	// 获取文本显示行数
 	int getLineCount() const;
@@ -116,13 +108,13 @@ public:
 	// 获取大小
 	Size getSize() const;
 
-	// 设置文本
-	void setText(
+	// 设置文本内容
+	void setContent(
 		const String& text
 	);
 
-	// 设置文本样式
-	void setStyle(
+	// 设置文本画刷
+	void setBrush(
 		const TextStyle& style
 	);
 
@@ -181,7 +173,7 @@ public:
 		bool hasStrikethrough
 	);
 
-	void reset(const String& text, const TextStyle& style);
+	void reset(const String& content, const TextBrush& textBrush);
 
 protected:
 	// 创建文字格式化
@@ -194,8 +186,8 @@ protected:
 	IDWriteTextFormat* _textFormat;
 	IDWriteTextLayout* _textLayout;
 	Size				_size;
-	String				_text;
-	TextStyle			_style;
+	String				_content;
+	TextBrush			_textBrush;
 };
 
 }
