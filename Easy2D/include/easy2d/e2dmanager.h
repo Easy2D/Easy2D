@@ -66,7 +66,7 @@ private:
 	static void __uninit();
 
 	// Ìí¼ÓÊÂ¼ş¼àÌıÆ÷
-	static void __pushListener(const Function<void(Event*)>& listener);
+	static void __pushDispatcher(Node* node);
 };
 
 

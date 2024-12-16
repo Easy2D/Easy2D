@@ -982,12 +982,15 @@ void easy2d::Node::__updateListeners()
 
 	if (!_listeners.empty())
 	{
-		SceneManager::__pushListener([=](Event* evt) {
-			for (auto listener : _listeners)
-			{
-				listener->receive(this, evt);
-			}
-			});
+		SceneManager::__pushDispatcher(this);
+	}
+}
+
+void easy2d::Node::__dispatchEvent(Event* evt)
+{
+	for (auto listener : _listeners)
+	{
+		listener->receive(this, evt);
 	}
 }
 

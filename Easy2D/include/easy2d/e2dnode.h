@@ -468,6 +468,8 @@ private:
 	// ¸üĞÂ¼àÌıÆ÷
 	void __updateListeners();
 
+	void __dispatchEvent(Event* evt);
+
 	// Çå¿Õ¼àÌıÆ÷
 	void __clearListeners();
 

@@ -3,14 +3,29 @@
 #include <easy2d/e2dnode.h>
 #include <easy2d/e2dtransition.h>
 #include <easy2d/e2dlistener.h>
-#include <deque>
+#include <list>
 
 static bool s_bSaveCurrScene = true;
 static easy2d::Scene * s_pCurrScene = nullptr;
 static easy2d::Scene * s_pNextScene = nullptr;
 static easy2d::Transition * s_pTransition = nullptr;
 static std::stack<easy2d::Scene*> s_SceneStack;
-static std::deque<easy2d::Function<void(easy2d::Event*)>> s_ListenerList;
+static std::list<easy2d::Node*> s_DispatcherList;
+
+static void addDispatcher(easy2d::Node* node)
+{
+	s_DispatcherList.push_back(node);
+	node->retain();
+}
+
+static void clearDispatcherList()
+{
+	for (auto node : s_DispatcherList)
+	{
+		node->release();
+	}
+	s_DispatcherList.clear();
+}
 
 void easy2d::SceneManager::enter(Scene * scene, Transition * transition /* = nullptr */, bool saveCurrentScene /* = true */)
 {
@@ -71,7 +86,7 @@ void easy2d::SceneManager::back(Transition * transition /* = nullptr */)
 
 void easy2d::SceneManager::clear()
 {
-	s_ListenerList.clear();
+	clearDispatcherList();
 	// Çå¿Õ³¡¾°Õ»
 	while (s_SceneStack.size())
 	{
@@ -98,15 +113,15 @@ bool easy2d::SceneManager::isTransitioning()
 
 void easy2d::SceneManager::dispatch(Event* evt)
 {
-	for (const auto& listener : s_ListenerList)
+	for (const auto& node : s_DispatcherList)
 	{
-		listener(evt);
+		node->__dispatchEvent(evt);
 	}
 }
 
 void easy2d::SceneManager::__update()
 {
-	s_ListenerList.clear();
+	clearDispatcherList();
 
 	if (s_pTransition == nullptr)
 	{
@@ -200,7 +215,7 @@ void easy2d::SceneManager::__uninit()
 	SceneManager::clear();
 }
 
-void easy2d::SceneManager::__pushListener(const Function<void(Event*)>& listener)
+void easy2d::SceneManager::__pushDispatcher(Node* node)
 {
-	s_ListenerList.push_back(listener);
+	addDispatcher(node);
 }
