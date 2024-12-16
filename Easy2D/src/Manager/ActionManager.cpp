@@ -17,8 +17,8 @@ void easy2d::ActionManager::__update()
 		// 获取动作运行状态
 		if (action->_isDone())
 		{
-			action->release();
 			action->_target = nullptr;
+			action->release();
 			s_vActions.erase(s_vActions.begin() + i);
 		}
 		else
