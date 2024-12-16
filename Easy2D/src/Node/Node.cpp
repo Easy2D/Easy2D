@@ -57,6 +57,7 @@ void easy2d::Node::_update()
 		if (_autoUpdate && !Game::isPaused())
 		{
 			this->onUpdate();
+			__updateListeners();
 		}
 	}
 	else
@@ -84,6 +85,7 @@ void easy2d::Node::_update()
 		if (_autoUpdate && !Game::isPaused())
 		{
 			this->onUpdate();
+			__updateListeners();
 		}
 
 		size = _children.size();
@@ -239,7 +241,7 @@ void easy2d::Node::_sortChildren()
 		std::sort(
 			std::begin(_children),
 			std::end(_children),
-			[](Node * n1, Node * n2) { return n1->getOrder() < n2->getOrder(); }
+			[](Node* n1, Node* n2) { return n1->getOrder() < n2->getOrder(); }
 		);
 
 		_needSort = false;
@@ -400,7 +402,7 @@ void easy2d::Node::setPosY(float y)
 	this->setPos(_pos.x, y);
 }
 
-void easy2d::Node::setPos(const Point & p)
+void easy2d::Node::setPos(const Point& p)
 {
 	if (_pos != p)
 	{
@@ -429,7 +431,7 @@ void easy2d::Node::movePos(float x, float y)
 	this->setPos(_pos.x + x, _pos.y + y);
 }
 
-void easy2d::Node::movePos(const Vector2 & v)
+void easy2d::Node::movePos(const Vector2& v)
 {
 	this->movePos(v.x, v.y);
 }
@@ -560,7 +562,7 @@ void easy2d::Node::addChild(Node* child)
 	addChild(child, child->getOrder());
 }
 
-void easy2d::Node::addChild(Node * child, int order)
+void easy2d::Node::addChild(Node* child, int order)
 {
 	if (child == nullptr) E2D_WARNING("Node::addChild NULL pointer exception.");
 
@@ -572,7 +574,7 @@ void easy2d::Node::addChild(Node * child, int order)
 			return;
 		}
 
-		for (Node * parent = this; parent != nullptr; parent = parent->getParent())
+		for (Node* parent = this; parent != nullptr; parent = parent->getParent())
 		{
 			if (child == parent)
 			{
@@ -631,12 +633,12 @@ easy2d::Matrix32 easy2d::Node::getInverseTransform() const
 	return _inverseTransform;
 }
 
-easy2d::Node * easy2d::Node::getParent() const
+easy2d::Node* easy2d::Node::getParent() const
 {
 	return _parent;
 }
 
-easy2d::Scene * easy2d::Node::getParentScene() const
+easy2d::Scene* easy2d::Node::getParentScene() const
 {
 	return _parentScene;
 }
@@ -665,7 +667,7 @@ std::vector<easy2d::Node*> easy2d::Node::getChildren(const String& name) const
 	return vChildren;
 }
 
-easy2d::Node * easy2d::Node::getChild(const String& name) const
+easy2d::Node* easy2d::Node::getChild(const String& name) const
 {
 	size_t hash = std::hash<String>{}(name);
 
@@ -694,7 +696,7 @@ void easy2d::Node::removeSelfInNextUpdate()
 	_removed = true;
 }
 
-bool easy2d::Node::removeChild(Node * child)
+bool easy2d::Node::removeChild(Node* child)
 {
 	if (child == nullptr) E2D_WARNING("Node::removeChildren NULL pointer exception.");
 
@@ -729,9 +731,9 @@ void easy2d::Node::removeChildren(const String& childName)
 	// 计算名称 Hash 值
 	size_t hash = std::hash<String>{}(childName);
 	auto equals = [&](Node* child)
-	{
-		return child->isName(childName, hash);
-	};
+		{
+			return child->isName(childName, hash);
+		};
 
 	auto last = _children.end();
 	auto first = std::find_if(_children.begin(), last, equals);
@@ -777,7 +779,7 @@ void easy2d::Node::__clearParents()
 	}
 }
 
-void easy2d::Node::runAction(Action * action)
+void easy2d::Node::runAction(Action* action)
 {
 	ActionManager::start(action, this, false);
 }
@@ -844,22 +846,12 @@ void easy2d::Node::stopAllActions()
 	ActionManager::__stopAllBoundWith(this);
 }
 
-void easy2d::Node::dispatch(Event* evt)
-{
-	__updateListeners(evt);
-
-	for (const auto& child : _children)
-	{
-		child->dispatch(evt);
-	}
-}
-
 void easy2d::Node::setVisible(bool value)
 {
 	_visible = value;
 }
 
-void easy2d::Node::_setParentScene(Scene * scene)
+void easy2d::Node::_setParentScene(Scene* scene)
 {
 	_parentScene = scene;
 	for (auto child : _children)
@@ -968,7 +960,7 @@ void easy2d::Node::removeAllListeners()
 	}
 }
 
-void easy2d::Node::__updateListeners(Event* evt)
+void easy2d::Node::__updateListeners()
 {
 	if (_listeners.empty())
 		return;
@@ -984,10 +976,18 @@ void easy2d::Node::__updateListeners(Event* evt)
 		}
 		else
 		{
-			// 更新监听器
-			listener->receive(this, evt);
 			++i;
 		}
+	}
+
+	if (!_listeners.empty())
+	{
+		SceneManager::__pushListener([=](Event* evt) {
+			for (auto listener : _listeners)
+			{
+				listener->receive(this, evt);
+			}
+			});
 	}
 }
 

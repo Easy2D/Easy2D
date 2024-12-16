@@ -20,6 +20,7 @@ class Transition;
 // 场景管理器
 class SceneManager
 {
+	friend class Node;
 	friend class Game;
 	friend class Renderer;
 
@@ -63,6 +64,9 @@ private:
 
 	// 回收场景资源
 	static void __uninit();
+
+	// 添加事件监听器
+	static void __pushListener(const Function<void(Event*)>& listener);
 };
 
 

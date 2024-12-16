@@ -350,9 +350,6 @@ public:
 	// 从父节点移除自身（在下一次更新时执行）
 	void removeSelfInNextUpdate();
 
-	// 分发事件
-	virtual void dispatch(Event* evt);
-
 	// 执行动作
 	void runAction(
 		Action * action
@@ -469,7 +466,7 @@ protected:
 
 private:
 	// 更新监听器
-	void __updateListeners(Event* evt);
+	void __updateListeners();
 
 	// 清空监听器
 	void __clearListeners();

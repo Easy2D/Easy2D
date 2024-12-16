@@ -2,12 +2,15 @@
 #include <easy2d/e2dbase.h>
 #include <easy2d/e2dnode.h>
 #include <easy2d/e2dtransition.h>
+#include <easy2d/e2dlistener.h>
+#include <deque>
 
 static bool s_bSaveCurrScene = true;
 static easy2d::Scene * s_pCurrScene = nullptr;
 static easy2d::Scene * s_pNextScene = nullptr;
 static easy2d::Transition * s_pTransition = nullptr;
 static std::stack<easy2d::Scene*> s_SceneStack;
+static std::deque<easy2d::Function<void(easy2d::Event*)>> s_ListenerList;
 
 void easy2d::SceneManager::enter(Scene * scene, Transition * transition /* = nullptr */, bool saveCurrentScene /* = true */)
 {
@@ -68,6 +71,7 @@ void easy2d::SceneManager::back(Transition * transition /* = nullptr */)
 
 void easy2d::SceneManager::clear()
 {
+	s_ListenerList.clear();
 	// 清空场景栈
 	while (s_SceneStack.size())
 	{
@@ -94,14 +98,16 @@ bool easy2d::SceneManager::isTransitioning()
 
 void easy2d::SceneManager::dispatch(Event* evt)
 {
-	if (s_pCurrScene)
+	for (const auto& listener : s_ListenerList)
 	{
-		s_pCurrScene->dispatch(evt);
+		listener(evt);
 	}
 }
 
 void easy2d::SceneManager::__update()
 {
+	s_ListenerList.clear();
+
 	if (s_pTransition == nullptr)
 	{
 		// 更新场景内容
@@ -192,4 +198,9 @@ void easy2d::SceneManager::__uninit()
 	GC::release(s_pNextScene);
 	GC::release(s_pTransition);
 	SceneManager::clear();
+}
+
+void easy2d::SceneManager::__pushListener(const Function<void(Event*)>& listener)
+{
+	s_ListenerList.push_back(listener);
 }
