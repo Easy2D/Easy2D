@@ -16,6 +16,6 @@ function OSS-UploadFile {
         [string]$File,
         [string]$Target
     )
-    ./ossutil32/ossutil32.exe cp $File $Target
+    ./ossutil32/ossutil32.exe cp $File $Target --meta X-oss-Storage-Class:Standard
     return
 }
