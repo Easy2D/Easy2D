@@ -2,18 +2,11 @@ Win32/
 x64/
 Debug/
 Release/
-
+.xmake/
+.vscode/
+.trae/
+.cache/
+docs/
 build/
-output/
-build-win7/
-output-win7/
-
-# vs2010
-ipch/
-*.opensdf
-*.sdf
-*.suo
-
-*.user
-*.lnk
-.vs
+logs/
+*.json
