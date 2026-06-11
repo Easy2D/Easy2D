@@ -42,7 +42,7 @@ for:
 -
   branches:
     only:
-      - master
+      - main
   environment:
     matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
@@ -58,7 +58,7 @@ for:
 -
   branches:
     except:
-      - master
+      - main
   # only_commits:
   #   message: /\[build\]/
   environment:
@@ -108,7 +108,7 @@ deploy:
   artifact: /.*\.(exe|7z|zip)/
   draft: true
   on:
-    branch: master
+    branch: main
     # APPVEYOR_REPO_TAG: true
     flag_to_deploy: true
 
